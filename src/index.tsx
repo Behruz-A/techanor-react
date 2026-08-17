@@ -7,6 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./app/MaterialTheme";
+import { BrowserRouter as Router } from "react-router-dom";
 import "./css/index.css";
 
 ReactDOM.render(
@@ -14,7 +15,9 @@ ReactDOM.render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <App />
+        <Router>
+          <App />
+        </Router>
       </ThemeProvider>
     </Provider>
   </React.StrictMode>,
