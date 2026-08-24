@@ -34,7 +34,7 @@ export default function Footer() {
         </div>
         <div className="footer-grid">
           <section className="footer-brand-column">
-            <Link className="footer-brand" to="/">Techanor</Link>
+            <Link className="footer-brand" to="/">TECHANOR</Link>
             <p className="footer-description">
               Smart technology, carefully selected. Discover devices and
               accessories built for work, creativity and everyday life.
@@ -46,13 +46,13 @@ export default function Footer() {
             </div>
             <div className="footer-socials" aria-label="Social media">
               <a href="#instagram" aria-label="Instagram">
-                <img src="/icons/instagramlogo.png" alt="" />
+                <span className="footer-social-icon footer-social-instagram" aria-hidden="true" />
               </a>
               <a href="#telegram" aria-label="Telegram">
-                <img src="/icons/telegramlogo.png" alt="" />
+                <span className="footer-social-icon footer-social-telegram" aria-hidden="true" />
               </a>
               <a href="#youtube" aria-label="YouTube">
-                <img src="/icons/youtubelogo.png" alt="" />
+                <span className="footer-social-icon footer-social-youtube" aria-hidden="true" />
               </a>
             </div>
           </section>
@@ -74,8 +74,8 @@ export default function Footer() {
             <nav className="footer-links" aria-label="Footer navigation">
               <Link to="/">Home</Link>
               <Link to="/products">Shop products</Link>
-              <a href="#blog">Blog</a>
-              <a href="#about-us">About us</a>
+              <a href="/#blog">Blog</a>
+              <a href="/#about-us">About us</a>
               <Link to="/help">Customer help</Link>
             </nav>
           </section>

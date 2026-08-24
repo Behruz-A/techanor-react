@@ -11,12 +11,21 @@ class ProductService {
 
   public async getProducts(input: ProductInquiry): Promise<Product[]> {
     try {
-      let url = `${this.path}/product/all?order=${input.order}&page=${input.page}&limit=${input.limit}`;
-      if (input.productCollection)
-        url += `&productCollection=${input.productCollection}`;
-      if (input.search) url += `&search=${input.search}`;
+      const params = new URLSearchParams({
+        order: input.order,
+        page: String(input.page),
+        limit: String(input.limit),
+      });
+      if (input.productCondition) params.set("productCondition", input.productCondition);
+      if (input.productCategory) params.set("productCategory", input.productCategory);
+      if (input.productBrand) params.set("productBrand", input.productBrand);
+      if (input.productMemory) params.set("productMemory", input.productMemory);
+      if (input.productScreenSize) params.set("productScreenSize", input.productScreenSize);
+      if (input.search) params.set("search", input.search);
 
-      const result = await axios.get(url);
+      const url = `${this.path}/admin/product/all?${params.toString()}`;
+
+      const result = await axios.get(url, { withCredentials: true });
       console.log("getProducts", result);
 
       return result.data;

@@ -43,7 +43,7 @@ class MemberService {
   // burchagida authenticatet bolgan memberni malumotlari kerak boladi image, etc
   public async signup(input: MemberInput): Promise<Member> {
     try {
-      const url = this.path + "/member/signup";
+      const url = this.path + "/signup";
       const result = await axios.post(url, input, { withCredentials: true });
       console.log("signup:", result);
       const member: Member = result.data.member;
@@ -60,7 +60,7 @@ class MemberService {
 
   public async login(input: LoginInput): Promise<Member> {
     try {
-      const url = this.path + "/member/login";
+      const url = this.path + "/login";
 
       const result = await axios.post(url, input, { withCredentials: true }); // backend frontendga cookie ni joyledi
       console.log("login:", result);
@@ -77,17 +77,7 @@ class MemberService {
   }
 
   public async logout(): Promise<void> {
-    try {
-      const url = this.path + "/member/logout";
-
-      const result = await axios.post(url, {}, { withCredentials: true }); // backend frontendga cookie ni joyledi
-      console.log("logout:", result);
-
-      localStorage.removeItem("memberData");
-    } catch (err) {
-      console.log("Error,  logout:", err);
-      throw err;
-    }
+    localStorage.removeItem("memberData");
   }
 
   public async updateMember(input: MemberUpdateInput): Promise<Member> {

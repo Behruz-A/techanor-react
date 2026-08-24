@@ -1,17 +1,10 @@
-import {
-  Box,
-  Button,
-  Container,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Stack,
-} from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import { ListItemIcon, Menu, MenuItem } from "@mui/material";
+import { CloseRounded, Logout, MenuRounded } from "@mui/icons-material";
+import { Link, NavLink } from "react-router-dom";
 import Basket from "./Basket";
 import { useGlobals } from "../../hooks/useGlobals";
 import { serverApi } from "../../../lib/config";
-import { Logout } from "@mui/icons-material";
 
 interface OtherNavbarProps {
   setSignupOpen: (isOpen: boolean) => void;
@@ -22,123 +15,50 @@ interface OtherNavbarProps {
   handleLogoutRequest: () => void;
 }
 
-export default function OtherNavbar(props: OtherNavbarProps) {
-  const {
-    setLoginOpen,
-    handleLogoutClick,
-    anchorEl,
-    handleCloseLogout,
-    handleLogoutRequest,
-  } = props;
+export default function OtherNavbar({
+  setSignupOpen, setLoginOpen, handleLogoutClick, anchorEl,
+  handleCloseLogout, handleLogoutRequest,
+}: OtherNavbarProps) {
   const { authMember } = useGlobals();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
-    <div className="other-navbar">
-      <Container className="navbar-container">
-        <Stack className="menu">
-          <Box>
-            <NavLink to="/">
-              <span className="brand-logo">Techanor</span>
-            </NavLink>
-          </Box>
-          <Stack className="links">
-            <Box className={"hover-line"}>
-              <NavLink to="/">Home</NavLink>
-            </Box>
-            <Box className={"hover-line"}>
-              <NavLink to="/products" activeClassName={"underline"}>
-                Products
-              </NavLink>
-            </Box>
-            {authMember ? (
-              <Box className={"hover-line"}>
-                <NavLink to="/orders" activeClassName={"underline"}>
-                  Orders
-                </NavLink>
-              </Box>
-            ) : null}
-            {authMember ? (
-              <Box className={"hover-line"}>
-                <NavLink to="/member-page" activeClassName={"underline"}>
-                  My Page
-                </NavLink>
-              </Box>
-            ) : null}
-            <Box className={"hover-line"}>
-              <NavLink to="/help" activeClassName={"underline"}>
-                Help
-              </NavLink>
-            </Box>
-            <Basket />
-
-            {!authMember ? (
-              <Box>
-                <Button
-                  variant="contained"
-                  className="login-button"
-                  onClick={() => setLoginOpen(true)}
-                >
-                  Login
-                </Button>
-              </Box>
-            ) : (
-              <img
-                className="user-avatar"
-                src={
-                  authMember?.memberImage
-                    ? `${serverApi}/${authMember?.memberImage}`
-                    : "/icons/default-user.svg"
-                }
-                alt="Account"
-                onClick={handleLogoutClick}
-              />
-            )}
-
-            <Menu
-              anchorEl={anchorEl}
-              id="account-menu"
-              open={Boolean(anchorEl)}
-              onClose={handleCloseLogout}
-              onClick={handleCloseLogout}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  overflow: "visible",
-                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                  mt: 1.5,
-                  "& .MuiAvatar-root": {
-                    width: 32,
-                    height: 32,
-                    ml: -0.5,
-                    mr: 1,
-                  },
-                  "&:before": {
-                    content: '""',
-                    display: "block",
-                    position: "absolute",
-                    top: 0,
-                    right: 14,
-                    width: 10,
-                    height: 10,
-                    bgcolor: "background.paper",
-                    transform: "translateY(-50%) rotate(45deg)",
-                    zIndex: 0,
-                  },
-                },
-              }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-            >
-              <MenuItem onClick={handleLogoutRequest}>
-                <ListItemIcon>
-                  <Logout fontSize="small" style={{ color: "blue" }} />
-                </ListItemIcon>
-                Logout
-              </MenuItem>
-            </Menu>
-          </Stack>
-        </Stack>
-      </Container>
-    </div>
+    <header className="other-navbar">
+      <nav className="other-nav" aria-label="Main navigation">
+        <Link className="other-brand" to="/" aria-label="Techanor home">
+          <span className="other-brand-copy"><strong>TECHANOR</strong></span>
+        </Link>
+        <button className="other-menu-toggle" type="button" aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
+          {mobileMenuOpen ? <CloseRounded /> : <MenuRounded />}
+        </button>
+        <div className={`other-nav-links${mobileMenuOpen ? " open" : ""}`}>
+          <NavLink exact to="/" activeClassName="active" onClick={closeMobileMenu}>Home</NavLink>
+          <NavLink to="/products" activeClassName="active" onClick={closeMobileMenu}>Products</NavLink>
+          <a href="/#blog" onClick={closeMobileMenu}>Blog</a>
+          {authMember && <NavLink to="/member-page" activeClassName="active" onClick={closeMobileMenu}>My Page</NavLink>}
+          {authMember && <NavLink to="/orders" activeClassName="active" onClick={closeMobileMenu}>Orders</NavLink>}
+        </div>
+        <div className="other-nav-actions">
+          {authMember && <div className="other-nav-basket"><Basket /></div>}
+          {!authMember ? (
+            <>
+              <button className="other-login-button" type="button" onClick={() => setLoginOpen(true)}>Log in</button>
+              <button className="other-signup-button" type="button" onClick={() => setSignupOpen(true)}>Sign Up</button>
+            </>
+          ) : (
+            <button className="other-avatar-button" type="button" aria-label="Open account menu" onClick={handleLogoutClick}>
+              <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" />
+            </button>
+          )}
+        </div>
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseLogout} onClick={handleCloseLogout} transformOrigin={{ horizontal: "right", vertical: "top" }} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
+          <MenuItem onClick={handleLogoutRequest}>
+            <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
+            Logout
+          </MenuItem>
+        </Menu>
+      </nav>
+    </header>
   );
 }

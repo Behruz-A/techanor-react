@@ -1,3 +1,1 @@
-export enum ViewGroup {
-  PRODUCT = "PRODUCT",
-}
+export { ViewGroup } from "../../constants/enums";

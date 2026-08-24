@@ -1,4 +1,4 @@
-import { MemberStatus, MemberType } from "../enums/member.enum";
+import { AuthProvider, MemberStatus, MemberType } from "../enums/member.enum";
 
 export interface Member {
   _id: string;
@@ -7,12 +7,15 @@ export interface Member {
   memberNick: string;
   memberPhone: string;
   memberPassword?: string;
+  memberEmail?: string;
+  googleId?: string;
+  authProvider?: AuthProvider;
   memberAddress?: string;
   memberDesc?: string;
   memberImage?: string;
   memberPoints: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MemberInput {

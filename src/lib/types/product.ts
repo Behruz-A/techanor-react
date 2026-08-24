@@ -1,29 +1,72 @@
 import {
-  ProductCollection,
-  ProductSize,
+  ProductBrand,
+  ProductCategory,
+  ProductCondition,
+  ProductMemory,
+  ProductScreenSize,
   ProductStatus,
-} from "../enums/product.enum";
+} from "../../constants/enums";
 
 export interface Product {
   _id: string;
   productStatus: ProductStatus;
-  productCollection: ProductCollection;
   productName: string;
+  productSku?: string;
   productPrice: number;
   productLeftCount: number;
-  productSize: ProductSize;
-  productVolume: number;
+  productCondition?: ProductCondition;
+  productCategory?: ProductCategory;
+  productBrand?: ProductBrand;
+  productMemory?: ProductMemory;
+  productScreenSize?: ProductScreenSize;
   productDesc?: string;
   productImages: string[];
   productViews: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface ProductInquiry {
+export interface ProductCreateInput {
+  productStatus?: ProductStatus;
+  productCondition: ProductCondition;
+  productCategory: ProductCategory;
+  productBrand?: ProductBrand;
+  productMemory?: ProductMemory;
+  productScreenSize?: ProductScreenSize;
+  productName: string;
+  productSku?: string;
+  productPrice: number;
+  productLeftCount: number;
+  productDesc?: string;
+  productImages?: File[];
+}
+
+export interface ProductUpdateInput {
+  productStatus?: ProductStatus;
+  productCondition?: ProductCondition;
+  productCategory?: ProductCategory;
+  productBrand?: ProductBrand;
+  productMemory?: ProductMemory;
+  productScreenSize?: ProductScreenSize;
+  productName?: string;
+  productSku?: string;
+  productPrice?: number;
+  productLeftCount?: number;
+  productDesc?: string;
+  productImages?: string[];
+  productViews?: number;
+}
+
+export interface ProductFilters {
   order: string;
   page: number;
   limit: number;
-  productCollection?: ProductCollection;
+  productCondition?: ProductCondition;
+  productCategory?: ProductCategory;
+  productBrand?: ProductBrand;
+  productMemory?: ProductMemory;
+  productScreenSize?: ProductScreenSize;
   search?: string;
 }
+
+export type ProductInquiry = ProductFilters;

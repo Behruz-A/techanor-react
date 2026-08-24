@@ -96,7 +96,7 @@ export default function HomeNavbar({
     <header className="home-navbar">
       <nav className="home-nav" aria-label="Main navigation">
         <Link className="home-brand" to="/" aria-label="Techanor home">
-          Techanor
+          TECHANOR
         </Link>
 
         <div className="home-nav-links">
