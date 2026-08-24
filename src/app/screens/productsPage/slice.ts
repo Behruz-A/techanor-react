@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ProductsPageState } from "../../../lib/types/screen";
-import { act } from "react-dom/test-utils";
 
 const initialState: ProductsPageState = {
   restaurant: null,

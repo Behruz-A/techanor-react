@@ -14,22 +14,13 @@ import "swiper/css/thumbs";
 import { useGlobals } from "../../hooks/useGlobals";
 
 import { setRestaurant, setChosenProduct } from "./slice";
-import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import { Product } from "../../../lib/types/product";
 
 import { createSelector } from "reselect";
 import { retrieveChosenProduct, retrieveRestaurant } from "./selector";
 import ProductService from "../../services/ProductService";
 import MemberService from "../../services/MemberService";
-import { Member } from "../../../lib/types/member";
 import { serverApi } from "../../../lib/config";
-import { CartItem } from "../../../lib/types/search";
-
-const actionDispatch = (dispatch: Dispatch) => ({
-  setRestaurant: (data: Member) => dispatch(setRestaurant(data)),
-  setChosenProduct: (data: Product) => dispatch(setChosenProduct(data)),
-});
 
 const chosenProductRetriever = createSelector(
   retrieveChosenProduct,
@@ -45,15 +36,13 @@ const restaurantRetriever = createSelector(
   }),
 );
 
-interface ChosenProductProps {}
-
 export default function ChosenProduct() {
   const {
     basket: { onAdd },
   } = useGlobals();
 
   const { productId } = useParams<{ productId: string }>();
-  const { setRestaurant, setChosenProduct } = actionDispatch(useDispatch());
+  const dispatch = useDispatch();
   const { chosenProduct } = useSelector(chosenProductRetriever);
   const { restaurant } = useSelector(restaurantRetriever);
 
@@ -61,14 +50,14 @@ export default function ChosenProduct() {
     const product = new ProductService();
     product
       .getProduct(productId)
-      .then((data) => setChosenProduct(data))
+      .then((data) => dispatch(setChosenProduct(data)))
       .catch((err) => console.log(err));
     const member = new MemberService();
     member
       .getRestaurant()
-      .then((data) => setRestaurant(data))
+      .then((data) => dispatch(setRestaurant(data)))
       .catch((err) => console.log(err));
-  }, []);
+  }, [dispatch, productId]);
 
   if (!chosenProduct) return null;
   return (
@@ -87,7 +76,7 @@ export default function ChosenProduct() {
               const imagePath = `${serverApi}/${ele}`;
               return (
                 <SwiperSlide key={index}>
-                  <img className="slider-image" src={imagePath} />
+                  <img className="slider-image" src={imagePath} alt={`${chosenProduct.productName} ${index + 1}`} />
                 </SwiperSlide>
               );
             })}

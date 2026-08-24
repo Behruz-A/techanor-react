@@ -1,85 +1,89 @@
-import { Box, Stack } from "@mui/material";
-import { Swiper, SwiperSlide } from "swiper/react"; // @ts-ignore
-import SwiperCore, { Autoplay, Navigation, Pagination } from "swiper";
-import { plans } from "../../../lib/data/plans";
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { Autoplay, EffectCoverflow, Navigation, Pagination } from "swiper";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
-SwiperCore.use([Autoplay, Navigation, Pagination]);
+SwiperCore.use([Autoplay, EffectCoverflow, Navigation, Pagination]);
+
+const stories = [
+  { title: "The next fold is here", category: "Mobile", date: "Today", image: "/img/samsunggalaxy.jpg" },
+  { title: "Sound without limits", category: "Audio", date: "2 days ago", image: "/img/testheadphone.avif" },
+  { title: "Power meets portability", category: "Computing", date: "4 days ago", image: "/img/mackboooook.jpg" },
+  { title: "A smarter everyday", category: "Wearables", date: "A week ago", image: "/img/watchhomenavbar.jpg" },
+  { title: "Capture every detail", category: "Cameras", date: "A week ago", image: "/img/camerabanner.jpg" },
+];
 
 export default function Events() {
   return (
-    <div className={"events-frame"}>
-      <Stack className={"events-main"}>
-        <Box className={"events-text"}>
-          <span className={"category-title"}>Events</span>
-        </Box>
+    <section className="events-frame" aria-labelledby="stories-title">
+      <div className="events-main">
+        <header className="events-text">
+          <span>Always active</span>
+          <h2 id="stories-title">Exclusive Stories</h2>
+          <p>Explore what&apos;s new across the world of technology.</p>
+        </header>
 
         <Swiper
-          className={"events-info swiper-wrapper"}
-          slidesPerView={"auto"}
-          centeredSlides={true}
-          spaceBetween={30}
+          className="events-info"
+          effect="coverflow"
+          grabCursor
+          centeredSlides
+          loop
+          loopedSlides={5}
+          loopAdditionalSlides={5}
+          slidesPerView="auto"
+          speed={12000}
+          coverflowEffect={{
+            rotate: 7,
+            stretch: 15,
+            depth: 180,
+            modifier: 1.15,
+            slideShadows: false,
+          }}
           navigation={{
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
+            nextEl: ".events-next",
+            prevEl: ".events-prev",
           }}
           pagination={{
-            el: ".swiper-pagination",
+            el: ".events-pagination",
             clickable: true,
           }}
           autoplay={{
-            delay: 2000,
-            disableOnInteraction: true,
+            delay: 1,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: false,
+            waitForTransition: true,
+            reverseDirection: false,
           }}
         >
-          {plans.map((value, number) => {
-            return (
-              <SwiperSlide key={number} className={"events-info-frame"}>
-                <div className={"events-img"}>
-                  <img src={value.img} className={"events-img"} />
+          {stories.map((story) => (
+            <SwiperSlide key={story.title} className="events-info-frame">
+              <article className="story-card">
+                <div className="story-card__image">
+                  <img src={story.image} alt={story.title} loading="lazy" />
                 </div>
-                <Box className={"events-desc"}>
-                  <Box className={"events-bott"}>
-                    <Box className={"bott-left"}>
-                      <div className={"event-title-speaker"}>
-                        <strong>{value.title}</strong>
-                        <div className={"event-organizator"}>
-                          <img src={"/icons/speaker.svg"} />
-                          <p className={"spec-text-author"}>{value.author}</p>
-                        </div>
-                      </div>
-
-                      <p className={"text-desc"}> {value.desc} </p>
-
-                      <div className={"bott-info"}>
-                        <div className={"bott-info-main"}>
-                          <img src={"/icons/calendar.svg"} />
-                          {value.date}
-                        </div>
-                        <div className={"bott-info-main"}>
-                          <img src={"/icons/location.svg"} />
-                          {value.location}
-                        </div>
-                      </div>
-                    </Box>
-                  </Box>
-                </Box>
-              </SwiperSlide>
-            );
-          })}
+                <div className="story-card__body">
+                  <div className="story-card__meta">
+                    <span>{story.category}</span>
+                    <time>{story.date}</time>
+                  </div>
+                  <h3>{story.title}</h3>
+                  <span className="story-card__link">Discover story <b aria-hidden="true">→</b></span>
+                </div>
+              </article>
+            </SwiperSlide>
+          ))}
         </Swiper>
-        <Box className={"prev-next-frame"}>
-          <img
-            src={"/icons/arrow-right.svg"}
-            className={"swiper-button-prev"}
-          />
-          <div className={"dot-frame-pagination swiper-pagination"}></div>
-          <img
-            src={"/icons/arrow-right.svg"}
-            className={"swiper-button-next"}
-            style={{ transform: "rotate(-180deg)" }}
-          />
-        </Box>
-      </Stack>
-    </div>
+
+        <div className="events-controls">
+          <button className="events-prev" type="button" aria-label="Previous story">←</button>
+          <div className="events-pagination" />
+          <button className="events-next" type="button" aria-label="Next story">→</button>
+        </div>
+      </div>
+    </section>
   );
 }

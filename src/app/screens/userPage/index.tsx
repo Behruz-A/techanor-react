@@ -43,6 +43,7 @@ export default function UserPage() {
                         : "/icons/default-user.svg"
                     }
                     className={"order-user-avatar"}
+                    alt={authMember?.memberNick || "Account"}
                   />
                   <div className={"order-user-icon-box"}>
                     <img
@@ -51,6 +52,7 @@ export default function UserPage() {
                           ? "/icons/restaurant.svg"
                           : "/icons/user-badge.svg"
                       }
+                      alt=""
                     />
                   </div>
                 </div>

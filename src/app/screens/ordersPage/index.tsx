@@ -8,9 +8,8 @@ import PausedOrders from "./PausedOrders";
 import ProcessOrders from "./ProcessOrders";
 import FinishedOrders from "./FinishedOrders";
 import { useDispatch } from "react-redux";
-import { Dispatch } from "@reduxjs/toolkit";
 import { setPausedOrders, setProcessOrders, setFinishedOrders } from "./slice";
-import { Order, OrderInquiry } from "../../../lib/types/order";
+import { OrderInquiry } from "../../../lib/types/order";
 import { OrderStatus } from "../../../lib/enums/order.enum";
 import OrderService from "../../services/OrderService";
 import { useGlobals } from "../../hooks/useGlobals";
@@ -19,21 +18,13 @@ import "../../../css/order.css";
 import { serverApi } from "../../../lib/config";
 import { MemberType } from "../../../lib/enums/member.enum";
 
-/**REDUX SLICE & SELECTOR */
-const actionDispatch = (dispatch: Dispatch) => ({
-  setPausedOrders: (data: Order[]) => dispatch(setPausedOrders(data)),
-  setProcessOrders: (data: Order[]) => dispatch(setProcessOrders(data)),
-  setFinishedOrders: (data: Order[]) => dispatch(setFinishedOrders(data)),
-});
-
 export default function OrdersPage() {
-  const { setPausedOrders, setProcessOrders, setFinishedOrders } =
-    actionDispatch(useDispatch());
+  const dispatch = useDispatch();
 
   const { orderBuilder, authMember } = useGlobals();
   const history = useHistory();
   const [value, setValue] = useState("1");
-  const [orderInquiry, setOrderInquiry] = useState<OrderInquiry>({
+  const [orderInquiry] = useState<OrderInquiry>({
     page: 1,
     limit: 5,
     orderStatus: OrderStatus.PAUSE,
@@ -44,19 +35,19 @@ export default function OrdersPage() {
 
     order
       .getMyOrders({ ...orderInquiry, orderStatus: OrderStatus.PAUSE })
-      .then((data) => setPausedOrders(data))
+      .then((data) => dispatch(setPausedOrders(data)))
       .catch((err) => console.log(err));
 
     order
       .getMyOrders({ ...orderInquiry, orderStatus: OrderStatus.PROCESS })
-      .then((data) => setProcessOrders(data))
+      .then((data) => dispatch(setProcessOrders(data)))
       .catch((err) => console.log(err));
 
     order
       .getMyOrders({ ...orderInquiry, orderStatus: OrderStatus.FINISH })
-      .then((data) => setFinishedOrders(data))
+      .then((data) => dispatch(setFinishedOrders(data)))
       .catch((err) => console.log(err));
-  }, [orderInquiry, orderBuilder]);
+  }, [dispatch, orderBuilder, orderInquiry]);
 
   /**HANDLERS */
 
@@ -104,6 +95,7 @@ export default function OrdersPage() {
                       : "/icons/default-user.svg"
                   }
                   className={"order-user-avatar"}
+                  alt={authMember?.memberNick || "Account"}
                 />
                 <div className={"order-user-icon-box"}>
                   <img
@@ -113,6 +105,7 @@ export default function OrdersPage() {
                         : "/icons/user-badge.svg"
                     }
                     className={"order-user-prof-img"}
+                    alt=""
                   />
                 </div>
               </div>
@@ -171,10 +164,10 @@ export default function OrdersPage() {
               className={"card-input"}
             />
             <div className={"cards-box"}>
-              <img src={"/icons/western-card.svg"} />
-              <img src={"/icons/master-card.svg"} />
-              <img src={"/icons/paypal-card.svg"} />
-              <img src={"/icons/visa-card.svg"} />
+              <img src={"/icons/western-card.svg"} alt="Western Union" />
+              <img src={"/icons/master-card.svg"} alt="Mastercard" />
+              <img src={"/icons/paypal-card.svg"} alt="PayPal" />
+              <img src={"/icons/visa-card.svg"} alt="Visa" />
             </div>
           </Box>
         </Stack>

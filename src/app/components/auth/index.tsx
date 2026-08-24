@@ -87,7 +87,7 @@ export default function AuthenticationModal(props: AuthenticationModalProps) {
       };
 
       const member = new MemberService();
-      const result = await member.signup(signupInput);
+      await member.signup(signupInput);
 
       // Saving Authenticated User
       handleSignupClose();

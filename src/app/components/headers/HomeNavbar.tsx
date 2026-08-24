@@ -5,6 +5,9 @@ import { Link, NavLink } from "react-router-dom";
 
 import { useGlobals } from "../../hooks/useGlobals";
 import { serverApi } from "../../../lib/config";
+import Basket from "./Basket";
+
+const SLIDE_DURATION_MS = 11000;
 
 interface HomeNavbarProps {
   setSignupOpen: (isOpen: boolean) => void;
@@ -17,28 +20,39 @@ interface HomeNavbarProps {
 
 const slides = [
   {
-    image: "/img/mackboooook.jpg",
-    eyebrow: "MacBook Air",
-    title: "Lightness meets power.",
-    description: "A remarkably thin design. All-day performance. Ready wherever inspiration takes you.",
-    action: "Explore MacBook",
-    theme: "macbook",
+    image: "/img/image2.jpg",
+    eyebrow: "Performance",
+    title: "Built to play. Ready to create.",
+    description: "Powerful devices for gaming, work and everything in between.",
+    position: "center center",
   },
   {
-    image: "/img/iphonebanner.jpg",
-    eyebrow: "iPhone 17 Series",
-    title: "Hello, future.",
-    description: "A brilliant display, powerful cameras and effortless performance — beautifully designed for every day.",
-    action: "Explore iPhone",
-    theme: "iphone",
+    image: "/img/image1.jpg",
+    eyebrow: "Computing",
+    title: "Your next idea starts here.",
+    description: "Laptops selected for focus, speed and effortless everyday work.",
+    position: "center center",
   },
   {
-    image: "/img/samsunggalaxy.jpg",
-    eyebrow: "Galaxy Z Series",
-    title: "Unfold what’s next.",
-    description: "A bigger canvas, intelligent features and an iconic foldable design. One device, endless possibilities.",
-    action: "Explore Galaxy",
-    theme: "galaxy",
+    image: "/img/slaydjon4.png",
+    eyebrow: "Techanor selection",
+    title: "Technology, thoughtfully selected.",
+    description: "Discover standout devices from the brands you trust.",
+    position: "center center",
+  },
+  {
+    image: "/img/slaydjon20.png",
+    eyebrow: "Entertainment",
+    title: "Bring every detail to life.",
+    description: "Vivid displays and cinematic sound made for moments that matter.",
+    position: "center center",
+  },
+  {
+    image: "/img/slaydjon3.png",
+    eyebrow: "Mobile technology",
+    title: "Stay connected to what matters.",
+    description: "Smartphones and accessories designed around your everyday life.",
+    position: "center center",
   },
 ];
 
@@ -55,10 +69,17 @@ export default function HomeNavbar({
   const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
+    slides.forEach(({ image }) => {
+      const preloadImage = new Image();
+      preloadImage.src = image;
+    });
+  }, []);
+
+  useEffect(() => {
     if (!isPlaying) return;
     const interval = window.setInterval(
       () => setActiveSlide((current) => (current + 1) % slides.length),
-      6000
+      SLIDE_DURATION_MS
     );
     return () => window.clearInterval(interval);
   }, [isPlaying]);
@@ -86,6 +107,9 @@ export default function HomeNavbar({
         </div>
 
         <div className="home-nav-actions">
+          <div className="home-nav-basket">
+            <Basket />
+          </div>
           {!authMember ? (
             <>
               <button className="home-login-button" type="button" onClick={() => setLoginOpen(true)}>Log in</button>
@@ -107,14 +131,21 @@ export default function HomeNavbar({
       </nav>
 
       <section className="home-hero" aria-roledescription="carousel">
-        <div className="home-slide-content" aria-live="polite">
-          <div className="home-slide-copy" key={`copy-${activeSlide}`}>
-            <span className="home-slide-eyebrow">{slide.eyebrow}</span>
+        <div className="home-slide-content">
+          <div className="home-hero-center" key={`hero-${activeSlide}`} aria-live="polite">
+            <span className="home-hero-eyebrow">{slide.eyebrow}</span>
             <h1>{slide.title}</h1>
             <p>{slide.description}</p>
-            <Link className="home-slide-cta" to="/products">
-              {slide.action}<span aria-hidden="true">&rarr;</span>
-            </Link>
+
+            <div className="home-hero-actions" aria-label="Explore Techanor">
+              <Link className="home-slide-cta" to="/products">
+                Shop products <span aria-hidden="true">&rarr;</span>
+              </Link>
+              <a className="home-slide-secondary" href="#shop-categories">
+                Browse categories
+              </a>
+            </div>
+
           </div>
 
           <div className="home-slider-controls">
@@ -130,10 +161,28 @@ export default function HomeNavbar({
           </div>
         </div>
 
-        <div className={`home-slide-image-wrap ${slide.theme}`}>
-          <img key={slide.image} className="home-slide-image" src={slide.image} alt={slide.title} />
+        <div className="home-slide-image-wrap">
+          {slides.map((item, index) => (
+            <img
+              key={item.image}
+              className={`home-slide-image${index === activeSlide ? " active" : ""}`}
+              src={item.image}
+              alt=""
+              aria-hidden={index !== activeSlide}
+              style={{ objectPosition: item.position }}
+            />
+          ))}
         </div>
       </section>
+
+      <div className="home-trust-strip" aria-label="Shopping benefits">
+        <div className="home-trust-strip__inner">
+          <span><b aria-hidden="true">✓</b><span><strong>Official warranty</strong><small>Trusted brand coverage</small></span></span>
+          <span><b aria-hidden="true">◇</b><span><strong>Secure checkout</strong><small>Protected payments</small></span></span>
+          <span><b aria-hidden="true">↻</b><span><strong>Easy returns</strong><small>Simple return process</small></span></span>
+          <span><b aria-hidden="true">24/7</b><span><strong>Customer support</strong><small>Here when you need us</small></span></span>
+        </div>
+      </div>
     </header>
   );
 }

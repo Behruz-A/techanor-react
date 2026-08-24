@@ -10,7 +10,6 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import { setProducts } from "./slice";
-import { Dispatch } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { Product, ProductInquiry } from "../../../lib/types/product";
 
@@ -20,12 +19,7 @@ import ProductService from "../../services/ProductService";
 import { ProductCollection } from "../../../lib/enums/product.enum";
 import { serverApi } from "../../../lib/config";
 import { useHistory } from "react-router-dom";
-import { CartItem } from "../../../lib/types/search";
 import { useGlobals } from "../../hooks/useGlobals";
-
-const actionDispatch = (dispatch: Dispatch) => ({
-  setProducts: (data: Product[]) => dispatch(setProducts(data)),
-});
 
 const productsRetriever = createSelector(retrieveProducts, (products) => ({
   products,
@@ -35,7 +29,7 @@ export default function Products() {
   const {
     basket: { onAdd },
   } = useGlobals();
-  const { setProducts } = actionDispatch(useDispatch());
+  const dispatch = useDispatch();
   const { products } = useSelector(productsRetriever);
   const [productSearch, setProductSearch] = useState<ProductInquiry>({
     page: 1,
@@ -56,15 +50,16 @@ export default function Products() {
       .getProducts(productSearch)
       .then((data) =>
         // 3 JARAYON:  ESHMAT SLICE GA berebmiz
-        setProducts(data),
+        dispatch(setProducts(data)),
       )
       .catch((err) => console.log(err));
-  }, [productSearch]);
+  }, [dispatch, productSearch]);
 
   useEffect(() => {
     if (searchText === "") {
-      productSearch.search = "";
-      setProductSearch({ ...productSearch });
+      setProductSearch((current) =>
+        current.search === "" ? current : { ...current, search: "", page: 1 },
+      );
     }
   }, [searchText]);
 
@@ -104,7 +99,7 @@ export default function Products() {
         <Stack flexDirection={"column"} alignItems={"center"}>
           <Stack className={"avatar-big-box"}>
             <Stack className={"top-text"}>
-              <p>Burak Restaurant</p>
+              <p>Techanor Store</p>
               <Stack className={"single-search-big-box"}>
                 <input
                   type={"search"}
@@ -275,6 +270,7 @@ export default function Products() {
                           <img
                             src={"/icons/shopping-cart.svg"}
                             style={{ display: "flex" }}
+                            alt=""
                           />
                         </Button>
                         <Button className={"view-btn"} sx={{ right: "36px" }}>
@@ -338,16 +334,16 @@ export default function Products() {
           <Box className={"category-title"}>Our Family Brands</Box>
           <Stack className={"brand-list"}>
             <Box className={"review-box"}>
-              <img src={"/img/gurme.webp"} />
+              <img src={"/img/gurme.webp"} alt="Gurme brand" />
             </Box>
             <Box className={"review-box"}>
-              <img src={"/img/seafood.webp"} />
+              <img src={"/img/seafood.webp"} alt="Seafood brand" />
             </Box>
             <Box className={"review-box"}>
-              <img src={"/img/doner.webp"} />
+              <img src={"/img/doner.webp"} alt="Doner brand" />
             </Box>
             <Box className={"review-box"}>
-              <img src={"/img/sweets.webp"} />
+              <img src={"/img/sweets.webp"} alt="Sweets brand" />
             </Box>
           </Stack>
         </Container>
@@ -358,6 +354,7 @@ export default function Products() {
           <Stack className={"address-area"}>
             <Box className={"title"}>Our address</Box>
             <iframe
+              title="Techanor location"
               style={{ marginTop: "60px" }}
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d96326.03685561026!2d28.92022666528895!3d41.02112846139867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab82bea99445f%3A0x6ed7f4baceb4476c!2sMaiden&#39;s%20Tower!5e0!3m2!1sen!2skr!4v1757106097524!5m2!1sen!2skr"
               width="1320"

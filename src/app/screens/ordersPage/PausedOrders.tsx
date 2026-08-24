@@ -92,13 +92,13 @@ export default function PausedOrders(props: PausedOrdersProps) {
                   const imagePath = `${serverApi}/${product.productImages[0]}`;
                   return (
                     <Box key={item._id} className={"orders-name-price"}>
-                      <img src={imagePath} className={"order-dish-img"} />
+                      <img src={imagePath} className={"order-dish-img"} alt={product.productName} />
                       <p className={"title-dish"}>{product.productName}</p>
                       <Box className={"price-box"}>
                         <p>${item.itemPrice}</p>
-                        <img src={"/icons/close.svg"} />
+                        <img src={"/icons/close.svg"} alt="" />
                         <p>{item.itemQuantity}</p>
-                        <img src={"/icons/pause.svg"} />
+                        <img src={"/icons/pause.svg"} alt="" />
                         <p style={{ marginLeft: "15px" }}>
                           ${item.itemQuantity * item.itemPrice}
                         </p>
@@ -112,11 +112,12 @@ export default function PausedOrders(props: PausedOrdersProps) {
                 <Box className={"box-total"}>
                   <p>Product price</p>
                   <p>${order.orderTotal - order.orderDelivery}</p>
-                  <img src={"/icons/plus.svg"} style={{ marginLeft: "20px" }} />
+                  <img src={"/icons/plus.svg"} style={{ marginLeft: "20px" }} alt="" />
                   <p>Delivery cost</p>
                   <p>${order.orderDelivery}</p>
                   <img
                     src={"/icons/pause.svg"}
+                    alt=""
                     style={{ marginLeft: "20px" }}
                   />
                   <p>Total</p>
@@ -153,6 +154,7 @@ export default function PausedOrders(props: PausedOrdersProps) {
             >
               <img
                 src={"/icons/noimage-list.svg"}
+                alt="No paused orders"
                 style={{ width: 300, height: 300 }}
               />
             </Box>

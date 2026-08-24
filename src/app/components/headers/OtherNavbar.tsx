@@ -12,7 +12,6 @@ import Basket from "./Basket";
 import { useGlobals } from "../../hooks/useGlobals";
 import { serverApi } from "../../../lib/config";
 import { Logout } from "@mui/icons-material";
-import useBasket from "../../hooks/useBasket";
 
 interface OtherNavbarProps {
   setSignupOpen: (isOpen: boolean) => void;
@@ -25,7 +24,6 @@ interface OtherNavbarProps {
 
 export default function OtherNavbar(props: OtherNavbarProps) {
   const {
-    setSignupOpen,
     setLoginOpen,
     handleLogoutClick,
     anchorEl,
@@ -40,7 +38,7 @@ export default function OtherNavbar(props: OtherNavbarProps) {
         <Stack className="menu">
           <Box>
             <NavLink to="/">
-              <img className="brand-logo" src="/icons/burak.svg" />
+              <span className="brand-logo">Techanor</span>
             </NavLink>
           </Box>
           <Stack className="links">
@@ -91,7 +89,7 @@ export default function OtherNavbar(props: OtherNavbarProps) {
                     ? `${serverApi}/${authMember?.memberImage}`
                     : "/icons/default-user.svg"
                 }
-                aria-haspopup={"true"}
+                alt="Account"
                 onClick={handleLogoutClick}
               />
             )}
