@@ -1,17 +1,17 @@
-import { SyntheticEvent, useEffect, useState } from "react";
+import { useEffect, useState, SyntheticEvent } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
-import { CreditCardRounded, LocationOnRounded, LockRounded } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import LocationOnOutlined from "@mui/icons-material/LocationOnOutlined";
 import PausedOrders from "./PausedOrders";
 import ProcessOrders from "./ProcessOrders";
 import FinishedOrders from "./FinishedOrders";
+import { useDispatch } from "react-redux";
 import { setPausedOrders, setProcessOrders, setFinishedOrders } from "./slice";
 import { OrderInquiry } from "../../../lib/types/order";
 import { OrderStatus } from "../../../lib/enums/order.enum";
 import OrderService from "../../services/OrderService";
 import { useGlobals } from "../../hooks/useGlobals";
+import { useHistory } from "react-router-dom";
 import { serverApi } from "../../../lib/config";
 import "../../../css/order.css";
 
@@ -29,27 +29,23 @@ export default function OrdersPage() {
     service.getMyOrders({ ...orderInquiry, orderStatus: OrderStatus.FINISH }).then((data) => dispatch(setFinishedOrders(Array.isArray(data) ? data : []))).catch(console.log);
   }, [dispatch, orderBuilder, orderInquiry]);
 
-  const handleChange = (_: SyntheticEvent, newValue: string) => setValue(newValue);
   if (!authMember) history.push("/");
+  const handleChange = (_event: SyntheticEvent, newValue: string) => setValue(newValue);
+  const avatar = authMember?.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg";
 
-  return <main className="order-page"><section className="orders-shell">
-    <header className="orders-heading"><div><span>YOUR ACCOUNT</span><h1>My Orders</h1></div><p>Review purchases, complete payments and follow every order from checkout to delivery.</p></header>
-    <div className="orders-layout">
-      <section className="orders-workspace"><TabContext value={value}>
-        <Box className="orders-tabs-wrap"><Tabs value={value} onChange={handleChange} className="orders-tabs" aria-label="Order status"><Tab label="Pending" value="1" /><Tab label="Processing" value="2" /><Tab label="Completed" value="3" /></Tabs></Box>
-        <div className="orders-content"><PausedOrders setValue={setValue} /><ProcessOrders setValue={setValue} /><FinishedOrders /></div>
-      </TabContext></section>
-      <aside className="orders-aside">
-        <section className="account-summary-card">
-          <div className="account-summary-top"><img src={authMember?.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt={authMember?.memberNick || "Account"} /><div><small>Signed in as</small><h2>{authMember?.memberNick}</h2><span>{authMember?.memberType}</span></div></div>
-          <div className="account-summary-row"><LocationOnRounded /><span><small>Delivery address</small>{authMember?.memberAddress || "Add your delivery address"}</span></div>
-        </section>
-        <section className="payment-summary-card">
-          <div className="payment-summary-title"><span><CreditCardRounded /> Payment method</span><LockRounded /></div><div className="payment-card-chip" aria-hidden="true" /><strong>•••• &nbsp;•••• &nbsp;•••• &nbsp;7495</strong>
-          <div className="payment-card-meta"><span><small>CARD HOLDER</small>{authMember?.memberNick || "Techanor user"}</span><span><small>EXPIRES</small>07/28</span></div>
-          <p><LockRounded /> Payment details are encrypted and securely stored.</p>
-        </section>
-      </aside>
-    </div>
-  </section></main>;
+  return <main className="order-page">
+    <section className="order-journey-hero"><div className="order-journey-inner">
+      <span className="order-journey-eyebrow">TECHANOR ORDER CENTER</span><h1>TRACK EVERY <em>MOMENT.</em></h1>
+      <p>One clear place to manage purchases and follow each product to your door.</p>
+    </div></section>
+
+    <section className="burak-orders-shell"><div className="burak-orders-main">
+      <TabContext value={value}><Box className="burak-order-tabs"><Tabs value={value} onChange={handleChange} aria-label="Order status">
+        <Tab label="AWAITING PAYMENT" value="1"/><Tab label="IN PROGRESS" value="2"/><Tab label="ORDER HISTORY" value="3"/>
+      </Tabs></Box><PausedOrders setValue={setValue}/><ProcessOrders setValue={setValue}/><FinishedOrders/></TabContext>
+    </div><aside className="burak-orders-aside">
+      <div className="burak-profile-card"><img src={avatar} alt={authMember?.memberNick || "Account"}/><h2>{authMember?.memberNick}</h2><span>{authMember?.memberType}</span><div><LocationOnOutlined/>{authMember?.memberAddress || "Do not exist"}</div></div>
+      <div className="burak-payment-card"><input placeholder="Card number : **** 4090 2002 7495"/><div><input placeholder="07 / 24"/><input placeholder="CVV : 010"/></div><input placeholder="Justin Robertson"/><figure><img src="/icons/western-card.svg" alt="Western Union"/><img src="/icons/master-card.svg" alt="Mastercard"/><img src="/icons/paypal-card.svg" alt="PayPal"/><img src="/icons/visa-card.svg" alt="Visa"/></figure></div>
+    </aside></section>
+  </main>;
 }
