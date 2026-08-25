@@ -1,6 +1,6 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Pagination } from "@mui/material";
-import { FavoriteBorderRounded, SearchRounded, ShoppingBagOutlined, SortRounded } from "@mui/icons-material";
+import { ChevronLeftRounded, ChevronRightRounded, FavoriteBorderRounded, SearchRounded, ShoppingBagOutlined, SortRounded } from "@mui/icons-material";
 import { createSelector } from "reselect";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -38,6 +38,16 @@ const showcaseProducts: Product[] = [
   { _id: "demo-camera", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.USED, productCategory: ProductCategory.OTHERS, productBrand: ProductBrand.SONY, productName: "Mirrorless Camera", productPrice: 899, productLeftCount: 4, productDesc: "4K video · Fast autofocus · Wi-Fi", productImages: ["/img/camerabanner.jpg"], productViews: 198, createdAt, updatedAt: createdAt },
 ];
 
+const customerReviews = [
+  { name: "Daniel K.", rating: "4.8/5", image: "/img/iwatch.jpg", productImage: "/img/iwatch.jpg", product: "Apple Watch · GPS · Cellular", review: "Battery life is impressive and the display is incredibly clear. It has quickly become part of my everyday routine." },
+  { name: "Sophia L.", rating: "4.9/5", image: "/img/headphonenew.jpg", productImage: "/img/headphonenew.jpg", product: "Studio Wireless Headphones", review: "The sound is balanced, noise cancelling works extremely well, and the headphones remain comfortable even during long work sessions." },
+  { name: "Noah P.", rating: "4.7/5", image: "/img/samsungphone.jpg", productImage: "/img/samsungphone.jpg", product: "Samsung Galaxy · 256GB", review: "The phone looks and feels brand new. The camera is fantastic and the whole buying experience was simple and reliable." },
+  { name: "Emma R.", rating: "4.8/5", image: "/img/airphone.jpg", productImage: "/img/airphone.jpg", product: "True Wireless Earbuds", review: "Small, comfortable and surprisingly powerful. They connect instantly and the charging case easily lasts through the week." },
+  { name: "James T.", rating: "4.9/5", image: "/img/Asuslaptop.jpg", productImage: "/img/Asuslaptop.jpg", product: "ASUS Performance Laptop · 1TB SSD", review: "A fast and dependable laptop for both work and gaming. The screen is sharp, the keyboard feels great, and it stays quiet under normal use." },
+  { name: "Lucas M.", rating: "4.9/5", image: "/img/gamingimg.jpg", productImage: "/img/gamingimg.jpg", product: "Pro Gaming Setup · RGB Edition", review: "The performance is smooth, the setup looks incredible, and every detail feels built for serious gaming. It completely upgraded my desk." },
+  { name: "Olivia C.", rating: "4.8/5", image: "/img/cameraimg.jpg", productImage: "/img/cameraimg.jpg", product: "Sony Mirrorless Camera · 4K", review: "Autofocus is incredibly quick and the photos have beautiful detail. It was packed securely and arrived sooner than I expected." },
+];
+
 const imageUrl = (path: string) => path.startsWith("/") ? path : `${serverApi}/${path}`;
 
 export default function Products() {
@@ -49,6 +59,7 @@ export default function Products() {
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
   const [productSearch, setProductSearch] = useState<ProductInquiry>({ page: 1, limit: 9, order: "createdAt" });
+  const reviewsTrackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     new ProductService().getProducts(productSearch)
@@ -77,6 +88,7 @@ export default function Products() {
   };
 
   const addToBasket = (product: Product) => onAdd({ _id: product._id, quantity: 1, name: product.productName, price: product.productPrice, image: product.productImages[0] });
+  const scrollReviews = (direction: number) => reviewsTrackRef.current?.scrollBy({ left: direction * 330, behavior: "smooth" });
 
   return (
     <div className="products">
@@ -140,6 +152,36 @@ export default function Products() {
           </section>
         </div>
       </main>
+
+      <section className="customer-reviews" aria-labelledby="customer-reviews-title">
+        <div className="customer-reviews-inner">
+          <header className="customer-reviews-header">
+            <div><span>REAL EXPERIENCES</span><h2 id="customer-reviews-title">See what our customers say</h2></div>
+            <div className="customer-reviews-controls">
+              <button type="button" aria-label="Previous reviews" onClick={() => scrollReviews(-1)}><ChevronLeftRounded /></button>
+              <button type="button" aria-label="Next reviews" onClick={() => scrollReviews(1)}><ChevronRightRounded /></button>
+            </div>
+          </header>
+          <div className="customer-reviews-track" ref={reviewsTrackRef}>
+            {customerReviews.map((item) => (
+              <article className="customer-review-card" key={item.name}>
+                <div className="customer-review-story">
+                  <img src={item.image} alt="" />
+                  <span className="customer-review-name">{item.name}</span>
+                  <div className="customer-review-copy">
+                    <p>{item.review}</p>
+                    <strong aria-label={`${item.rating} stars`}><span aria-hidden="true">★★★★★</span> {item.rating}</strong>
+                  </div>
+                </div>
+                <div className="customer-review-product">
+                  <img src={item.productImage} alt="" />
+                  <span>{item.product}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

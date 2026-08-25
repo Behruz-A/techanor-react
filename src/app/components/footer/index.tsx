@@ -27,7 +27,6 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-container">
         <div className="footer-top-row">
-          <span>Explore more with Techanor</span>
           <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             Back to top <span aria-hidden="true">↑</span>
           </button>
