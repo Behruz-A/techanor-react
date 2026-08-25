@@ -1,10 +1,9 @@
 import React from "react";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Drawer } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
-import Menu from "@mui/material/Menu";
-import CancelIcon from "@mui/icons-material/Cancel";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import CloseRounded from "@mui/icons-material/CloseRounded";
+import DeleteOutlineRounded from "@mui/icons-material/DeleteOutlineRounded";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useHistory } from "react-router-dom";
 import { CartItem } from "../../../lib/types/search";
@@ -30,16 +29,15 @@ export default function Basket(props: BasketProps) {
   const shippingCost: number = itemsPrice < 100 ? 5 : 0;
   const totalPrice = (itemsPrice + shippingCost).toFixed(1);
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const [open, setOpen] = React.useState(false);
 
   /** HANDLERS **/
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(e.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleClick = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const continueShopping = () => {
+    handleClose();
+    history.push("/products");
   };
 
   const ProceedOrderHandler = async () => {
@@ -74,111 +72,37 @@ export default function Basket(props: BasketProps) {
           <img src={"/icons/shopping-cart.svg"} alt="" />
         </Badge>
       </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
+      <Drawer
+        anchor="right"
         open={open}
         onClose={handleClose}
-        // onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 10px 30px rgba(20, 29, 45, 0.14))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        className="basket-drawer"
+        PaperProps={{ className: "basket-drawer-paper" }}
       >
-        <Stack className={"basket-frame"}>
-          <Box className={"all-check-box"}>
-            {cartItems.length === 0 ? (
-              <div>Your cart is empty</div>
-            ) : (
-              <Stack flexDirection={"row"}>
-                <div>Your cart</div>
-                <DeleteForeverIcon
-                  sx={{ ml: "5px", cursor: "pointer" }}
-                  color={"primary"}
-                  onClick={() => onDeleteAll()}
-                />
-              </Stack>
-            )}
-          </Box>
+        <Box className="basket-drawer-shell" role="dialog" aria-label="Shopping bag">
+          <header className="basket-drawer-header">
+            <div><span>YOUR SELECTION</span><h2>Shopping bag <small>{cartItems.length}</small></h2></div>
+            <IconButton onClick={handleClose} aria-label="Close shopping bag"><CloseRounded /></IconButton>
+          </header>
 
-          <Box className={"orders-main-wrapper"}>
-            <Box className={"orders-wrapper"}>
+          {cartItems.length === 0 ? <div className="basket-drawer-empty"><ShoppingCartIcon/><h3>Your bag is empty</h3><p>Explore our collection and add something you love.</p><button type="button" onClick={continueShopping}>Explore products</button></div> : <>
+            <div className="basket-drawer-tools"><span>{cartItems.length} {cartItems.length === 1 ? "item" : "items"}</span><button type="button" onClick={onDeleteAll}><DeleteOutlineRounded/>Clear bag</button></div>
+            <div className="basket-drawer-items">
               {cartItems.map((item: CartItem) => {
-                const imagePath = `${serverApi}/${item.image}`;
+                const imagePath = item.image.startsWith("/") ? item.image : `${serverApi}/${item.image}`;
                 return (
-                  <Box className={"basket-info-box"} key={item._id}>
-                    <div className={"cancel-btn"}>
-                      <CancelIcon
-                        color={"primary"}
-                        onClick={() => onDelete(item)}
-                      />
-                    </div>
-                    <img src={imagePath} className={"product-img"} alt={item.name} />
-                    <span className={"product-name"}>{item.name}</span>
-                    <p className={"product-price"}>
-                      {" "}
-                      ${item.price} x {item.quantity}
-                    </p>
-                    <Box sx={{ minWidth: 68 }}>
-                      <div className="col-2">
-                        <button
-                          onClick={() => onRemove(item)}
-                          className="remove"
-                        >
-                          -
-                        </button>{" "}
-                        <button onClick={() => onAdd(item)} className="add">
-                          +
-                        </button>
-                      </div>
-                    </Box>
-                  </Box>
+                  <article className="basket-drawer-item" key={item._id}>
+                    <div className="basket-drawer-media"><img src={imagePath} alt={item.name} /></div>
+                    <div className="basket-drawer-item-copy"><h3>{item.name}</h3><p>${item.price.toLocaleString()}</p><div className="basket-quantity"><button type="button" onClick={() => onRemove(item)} aria-label={`Decrease ${item.name} quantity`}>−</button><span>{item.quantity}</span><button type="button" onClick={() => onAdd(item)} aria-label={`Increase ${item.name} quantity`}>+</button></div><button className="basket-remove" type="button" onClick={() => onDelete(item)}>Remove</button></div>
+                    <strong>${(item.price * item.quantity).toLocaleString()}</strong>
+                  </article>
                 );
               })}
-            </Box>
-          </Box>
-          {cartItems.length !== 0 ? (
-            <Box className={"basket-order"}>
-              <span className={"price"}>
-                Total: <strong>${totalPrice}</strong>
-              </span>
-              <Button
-                onClick={ProceedOrderHandler}
-                startIcon={<ShoppingCartIcon />}
-                variant={"contained"}
-              >
-                Checkout
-              </Button>
-            </Box>
-          ) : (
-            ""
-          )}
-        </Stack>
-      </Menu>
+            </div>
+            <footer className="basket-drawer-footer"><div><span>Subtotal</span><strong>${itemsPrice.toLocaleString()}</strong></div><p>{shippingCost ? `$${shippingCost.toFixed(2)} shipping will be added.` : "Complimentary shipping included."}</p><Button onClick={ProceedOrderHandler} variant="contained">Checkout · ${totalPrice}</Button><button type="button" onClick={continueShopping}>Continue shopping</button></footer>
+          </>}
+        </Box>
+      </Drawer>
     </Box>
   );
 }

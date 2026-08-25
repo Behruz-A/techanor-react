@@ -106,6 +106,7 @@ export function Settings() {
 
   return (
     <Box className={"settings"}>
+      <Box className="edit-profile-row"><div><strong>Account details</strong><span>{isEditing ? "Editing is enabled. Review your details before saving." : "Your personal and delivery information is securely stored."}</span></div><Button className="edit-profile-button" onClick={() => setIsEditing(true)} disabled={isEditing}>Edit profile</Button></Box>
       <Box className={"member-media-frame"}>
         <Button className="avatar-upload" component="label" onChange={handleImageViewer} aria-label="Change profile picture" disabled={!isEditing}>
           <img src={memberImage} className={"mb-image"} alt="Profile" />
@@ -113,8 +114,8 @@ export function Settings() {
           <input type="file" accept="image/jpeg,image/png" hidden />
         </Button>
         <div className={"media-change-box"}>
-          <span>Profile picture</span>
-          <p>JPG, JPEG or PNG. Shown across your Techanor account.</p>
+          <span>Profile photo</span>
+          <p>Personalize your account with a clear JPG or PNG image.</p>
           <div className={"up-del-box"}>
             <Button component="label" onChange={handleImageViewer} disabled={!isEditing}>
               <CloudDownloadIcon /><span>Change photo</span>
@@ -123,10 +124,9 @@ export function Settings() {
           </div>
         </div>
       </Box>
-      <Box className="edit-profile-row"><div><strong>Profile details</strong><span>{isEditing ? "You can now update your information." : "Your information is protected until editing is enabled."}</span></div><Button className="edit-profile-button" onClick={() => setIsEditing(true)} disabled={isEditing}>Edit profile</Button></Box>
       <Box className={"input-frame"}>
         <div className={"long-input"}>
-          <label className={"spec-label"}>Username</label>
+          <label className={"spec-label"}>Display name</label>
           <input
             className={"spec-input mb-nick"}
             type="text"
@@ -140,7 +140,7 @@ export function Settings() {
       </Box>
       <Box className={"input-frame"}>
         <div className={"short-input"}>
-          <label className={"spec-label"}>Phone</label>
+          <label className={"spec-label"}>Phone number</label>
           <input
             className={"spec-input mb-phone"}
             type="text"
@@ -150,7 +150,7 @@ export function Settings() {
             onChange={memberPhoneHandler}
             disabled={!isEditing}
           />
-          <small className="field-helper">Use international format, e.g. +82 10-1234-5678</small>
+          <small className="field-helper">Use an international format, for example +82 10-1234-5678.</small>
         </div>
         <div className={"short-input"}>
           <label className={"spec-label"}>Address</label>
@@ -163,12 +163,12 @@ export function Settings() {
             onChange={memberAddressHandler}
             disabled={!isEditing}
           />
-          <small className="field-helper">Used as your default delivery address</small>
+          <small className="field-helper">This address will be selected by default during checkout.</small>
         </div>
       </Box>
       <Box className={"input-frame"}>
         <div className={"long-input"}>
-          <label className={"spec-label"}>Description</label>
+          <label className={"spec-label"}>About you</label>
           <textarea
             className={"spec-textarea mb-description"}
             placeholder={
@@ -180,7 +180,7 @@ export function Settings() {
             disabled={!isEditing}
             rows={3}
           />
-          <small className="field-helper">A short introduction, up to a few sentences</small>
+          <small className="field-helper">Add a short introduction that appears on your profile.</small>
         </div>
       </Box>
       {isEditing && <Box className={"save-box"}>

@@ -2,12 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const categories = [
-  { name: "Laptops", image: "/img/mackboooook.jpg", tone: "ice" },
-  { name: "Smartphones", image: "/img/samsunggalaxy.jpg", tone: "lilac" },
-  { name: "Audio", image: "/img/testheadphone.avif", tone: "sky" },
-  { name: "Gaming", image: "/img/image2.jpg", tone: "slate" },
-  { name: "Cameras", image: "/img/camerabanner.jpg", tone: "mist" },
-  { name: "Wearables", image: "/img/watchhomenavbar.jpg", tone: "blue" },
+  { name: "Laptops", image: "/img/mackboooook.jpg", tone: "ice", productId: "demo-macbook" },
+  { name: "Smartphones", image: "/img/samsunggalaxy.jpg", tone: "lilac", productId: "demo-galaxy" },
+  { name: "Audio", image: "/img/testheadphone.avif", tone: "sky", productId: "demo-headphones" },
+  { name: "Gaming", image: "/img/image2.jpg", tone: "slate", productId: "demo-gaming" },
+  { name: "Cameras", image: "/img/camerabanner.jpg", tone: "mist", productId: "demo-camera" },
+  { name: "Wearables", image: "/img/watchhomenavbar.jpg", tone: "blue", productId: "demo-gaming" },
 ];
 
 export default function ShopCategories() {
@@ -26,7 +26,7 @@ export default function ShopCategories() {
           {categories.map((category) => (
             <Link
               className={`category-tile category-tile--${category.tone}`}
-              to={`/products?category=${category.name.toLowerCase()}`}
+              to={`/products/${category.productId}`}
               key={category.name}
             >
               <div className="category-tile__media">

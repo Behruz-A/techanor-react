@@ -2,13 +2,28 @@
 import Swal from "sweetalert2";
 import { Messages } from "./config";
 
+const techanorAlertClasses = {
+  container: "techanor-alert-container",
+  popup: "techanor-alert-card",
+  icon: "techanor-alert-icon",
+  title: "techanor-alert-title",
+  htmlContainer: "techanor-alert-message",
+  actions: "techanor-alert-actions",
+  confirmButton: "techanor-alert-confirm",
+  closeButton: "techanor-alert-close",
+};
+
 export const sweetErrorHandling = async (err: any) => {
   const error = err.response?.data ?? err;
   const message = error?.message ?? Messages.error1;
   await Swal.fire({
     icon: "error",
+    title: "Unable to complete request",
     text: message,
-    showConfirmButton: false,
+    confirmButtonText: "Close",
+    showCloseButton: true,
+    buttonsStyling: false,
+    customClass: techanorAlertClasses,
   });
 };
 
@@ -50,9 +65,13 @@ export const sweetFailureProvider = (
 ) => {
   Swal.fire({
     icon: "error",
-    title: msg,
+    title: "Unable to complete request",
+    text: msg,
     showConfirmButton: show_button,
-    confirmButtonText: "OK",
+    showCloseButton: true,
+    confirmButtonText: "Close",
+    buttonsStyling: false,
+    customClass: techanorAlertClasses,
   }).then(() => {
     if (forward_url !== "") {
       window.location.replace(forward_url);

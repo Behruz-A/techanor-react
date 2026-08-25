@@ -103,6 +103,8 @@ export default function HomeNavbar({
           <NavLink exact to="/" activeClassName="active">Home</NavLink>
           <NavLink to="/products" activeClassName="active">Products</NavLink>
           <NavLink to="/blog" activeClassName="active">Blog</NavLink>
+          {authMember && <NavLink to="/member-page" activeClassName="active">My Page</NavLink>}
+          {authMember && <NavLink to="/orders" activeClassName="active">Orders</NavLink>}
         </div>
 
         <div className="home-nav-actions">

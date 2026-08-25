@@ -1,134 +1,211 @@
-import React, { useEffect } from "react";
-import { Container, Stack, Box } from "@mui/material";
-import { Swiper, SwiperSlide } from "swiper/react";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import Divider from "../../components/divider";
-import Button from "@mui/material/Button";
-import Rating from "@mui/material/Rating";
-import { useParams } from "react-router-dom"; // @ts-ignore
-import { FreeMode, Navigation, Thumbs } from "swiper";
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/navigation";
-import "swiper/css/thumbs";
-import { useGlobals } from "../../hooks/useGlobals";
-
-import { setRestaurant, setChosenProduct } from "./slice";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
 import { createSelector } from "reselect";
-import { retrieveChosenProduct, retrieveRestaurant } from "./selector";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
+import ReplayOutlinedIcon from "@mui/icons-material/ReplayOutlined";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import { useGlobals } from "../../hooks/useGlobals";
+import { setChosenProduct } from "./slice";
+import { retrieveChosenProduct } from "./selector";
 import ProductService from "../../services/ProductService";
-import MemberService from "../../services/MemberService";
 import { serverApi } from "../../../lib/config";
+import { Product } from "../../../lib/types/product";
+import { findShowcaseProduct, showcaseProducts } from "./showcaseProducts";
 
-const chosenProductRetriever = createSelector(
+const productPageRetriever = createSelector(
   retrieveChosenProduct,
-  (chosenProduct) => ({
-    chosenProduct,
-  }),
+  (chosenProduct) => ({ chosenProduct }),
 );
 
-const restaurantRetriever = createSelector(
-  retrieveRestaurant,
-  (restaurant) => ({
-    restaurant,
-  }),
-);
+const resolveImage = (image?: string) => {
+  if (!image) return "";
+  return image.startsWith("/") || image.startsWith("http") ? image : `${serverApi}/${image}`;
+};
+
+const formatLabel = (value?: string) =>
+  value
+    ? value.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase())
+    : "Not specified";
 
 export default function ChosenProduct() {
-  const {
-    basket: { onAdd },
-  } = useGlobals();
-
+  const { basket: { onAdd } } = useGlobals();
   const { productId } = useParams<{ productId: string }>();
   const dispatch = useDispatch();
-  const { chosenProduct } = useSelector(chosenProductRetriever);
-  const { restaurant } = useSelector(restaurantRetriever);
+  const { chosenProduct } = useSelector(productPageRetriever);
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
+  const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState(0);
+  const [activeTab, setActiveTab] = useState<"related" | "reviews" | "other">("related");
 
   useEffect(() => {
-    const product = new ProductService();
-    product
+    const service = new ProductService();
+    const showcaseProduct = findShowcaseProduct(productId);
+    if (showcaseProduct) {
+      dispatch(setChosenProduct(showcaseProduct));
+      setCatalogProducts(showcaseProducts);
+      return;
+    }
+    service
       .getProduct(productId)
       .then((data) => dispatch(setChosenProduct(data)))
       .catch((err) => console.log(err));
-    const member = new MemberService();
-    member
-      .getRestaurant()
-      .then((data) => dispatch(setRestaurant(data)))
-      .catch((err) => console.log(err));
+    service
+      .getProducts({ page: 1, limit: 12, order: "createdAt" })
+      .then((data) => setCatalogProducts(Array.isArray(data) ? data : []))
+      .catch(() => setCatalogProducts([]));
   }, [dispatch, productId]);
 
-  if (!chosenProduct) return null;
-  return (
-    <div className={"chosen-product"}>
-      <Box className={"title"}>Product Detail</Box>
-      <Container className={"product-container"}>
-        <Stack className={"chosen-product-slider"}>
-          <Swiper
-            loop={true}
-            spaceBetween={10}
-            navigation={true}
-            modules={[FreeMode, Navigation, Thumbs]}
-            className="swiper-area"
-          >
-            {chosenProduct?.productImages.map((ele: string, index: number) => {
-              const imagePath = `${serverApi}/${ele}`;
-              return (
-                <SwiperSlide key={index}>
-                  <img className="slider-image" src={imagePath} alt={`${chosenProduct.productName} ${index + 1}`} />
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </Stack>
-        <Stack className={"chosen-product-info"}>
-          <Box className={"info-box"}>
-            <strong className={"product-name"}>
-              {chosenProduct?.productName}
-            </strong>
-            <span className={"resto-name"}>{restaurant?.memberNick}</span>
-            <span className={"resto-name"}>{restaurant?.memberPhone}</span>
+  useEffect(() => {
+    setQuantity(1);
+    setActiveImage(0);
+  }, [productId]);
 
-            <Box className={"rating-box"}>
-              <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
-              <div className={"evaluation-box"}>
-                <div className={"product-view"}>
-                  <RemoveRedEyeIcon sx={{ mr: "10px" }} />
-                  <span>{chosenProduct?.productViews}</span>
+  if (!chosenProduct) return null;
+
+  const sourceImages = chosenProduct.productImages?.length ? chosenProduct.productImages : [""];
+  const images = sourceImages.length === 1 ? [sourceImages[0], sourceImages[0]] : sourceImages;
+  const relatedProducts = catalogProducts
+    .filter((product) => product._id !== chosenProduct._id && product.productCategory === chosenProduct.productCategory)
+    .slice(0, 4);
+  const otherProducts = catalogProducts
+    .filter((product) => product._id !== chosenProduct._id && product.productCategory !== chosenProduct.productCategory)
+    .slice(0, 4);
+  const addToBasket = () => {
+    for (let index = 0; index < quantity; index += 1) {
+      onAdd({
+        _id: chosenProduct._id,
+        quantity: 1,
+        name: chosenProduct.productName,
+        price: chosenProduct.productPrice,
+        image: chosenProduct.productImages?.[0] || "",
+      });
+    }
+  };
+
+  return (
+    <main className="techanor-product-detail">
+      <section className="product-detail-shell">
+        <div className="product-breadcrumb">
+          Products <span>/</span> {formatLabel(chosenProduct.productCategory)} <span>/</span>
+          <strong>{chosenProduct.productName}</strong>
+        </div>
+
+        <div className="product-detail-grid">
+          <div className="product-gallery">
+            <div className="product-main-image">
+              {images[activeImage] ? (
+                <img src={resolveImage(images[activeImage])} alt={chosenProduct.productName} />
+              ) : (
+                <div className="product-image-placeholder">Image unavailable</div>
+              )}
+            </div>
+            {images.length > 1 && (
+              <div className="product-thumbnails" aria-label="Product images">
+                {images.map((image, index) => (
+                  <button
+                    key={`${image}-${index}`}
+                    className={index === activeImage ? "active" : ""}
+                    onClick={() => setActiveImage(index)}
+                    aria-label={`View image ${index + 1}`}
+                  >
+                    <img src={resolveImage(image)} alt="" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="product-detail-copy">
+            <span className="product-category-label">{formatLabel(chosenProduct.productCategory)}</span>
+            <h1>{chosenProduct.productName}</h1>
+            <div className="product-detail-meta">
+              <span className="product-stars" aria-label="Rated 4.8 out of 5">★★★★★</span>
+              <span>4.8</span><span className="meta-divider" />
+              <RemoveRedEyeOutlinedIcon /><span>{chosenProduct.productViews || 0} views</span>
+            </div>
+
+            <p className="product-detail-description">
+              {chosenProduct.productDesc || "A thoughtfully selected device designed for dependable everyday performance, work and entertainment."}
+            </p>
+
+            <dl className="product-quick-specs">
+              <div><dt>Brand</dt><dd>{formatLabel(chosenProduct.productBrand)}</dd></div>
+              <div><dt>Condition</dt><dd>{formatLabel(chosenProduct.productCondition)}</dd></div>
+              {chosenProduct.productMemory && <div><dt>Storage</dt><dd>{chosenProduct.productMemory}</dd></div>}
+              {chosenProduct.productScreenSize && <div><dt>Screen</dt><dd>{chosenProduct.productScreenSize}&quot;</dd></div>}
+            </dl>
+
+            <div className="product-purchase-row">
+              <div className="product-price-block"><span>Price</span><strong>${chosenProduct.productPrice.toLocaleString()}</strong></div>
+              <div className="product-quantity-block">
+                <span>Quantity</span>
+                <div className="quantity-control">
+                  <button onClick={() => setQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity"><RemoveIcon /></button>
+                  <strong>{quantity}</strong>
+                  <button onClick={() => setQuantity((value) => Math.min(chosenProduct.productLeftCount || 99, value + 1))} aria-label="Increase quantity"><AddIcon /></button>
                 </div>
               </div>
-            </Box>
-            <p className={"product-desc"}>
-              {chosenProduct?.productDesc
-                ? chosenProduct?.productDesc
-                : "No Description"}
+            </div>
+
+            <button className="product-add-button" onClick={addToBasket}><ShoppingBagOutlinedIcon /> Add to cart</button>
+            <p className="product-stock-note">
+              {chosenProduct.productLeftCount > 0 ? `${chosenProduct.productLeftCount} items available` : "Currently out of stock"}
             </p>
-            <Divider height="1" width="100%" bg="#000000" />
-            <div className={"product-price"}>
-              <span>Price:</span>
-              <span>{chosenProduct?.productPrice}</span>
+            <div className="product-trust-row">
+              <span><LocalShippingOutlinedIcon /> Fast delivery</span>
+              <span><VerifiedUserOutlinedIcon /> Secure checkout</span>
+              <span><ReplayOutlinedIcon /> Easy returns</span>
             </div>
-            <div className={"button-box"}>
-              <Button
-                variant="contained"
-                onClick={(e) => {
-                  onAdd({
-                    _id: chosenProduct._id,
-                    quantity: 1,
-                    name: chosenProduct.productName,
-                    price: chosenProduct.productPrice,
-                    image: chosenProduct.productImages[0],
-                  });
-                  e.stopPropagation();
-                }}
-              >
-                Add To Basket
-              </Button>
-            </div>
-          </Box>
-        </Stack>
-      </Container>
-    </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="product-detail-lower">
+        <div className="product-detail-tabs" role="tablist">
+          <button className={activeTab === "related" ? "active" : ""} onClick={() => setActiveTab("related")}>Related products</button>
+          <button className={activeTab === "reviews" ? "active" : ""} onClick={() => setActiveTab("reviews")}>Customer reviews</button>
+          <button className={activeTab === "other" ? "active" : ""} onClick={() => setActiveTab("other")}>Other products</button>
+        </div>
+
+        {activeTab === "related" && (
+          <div className="related-product-grid">
+            {relatedProducts.length ? relatedProducts.map((product: Product) => (
+              <article className="related-product-card" key={product._id}>
+                <a href={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0])} alt={product.productName} /></a>
+                <span>{formatLabel(product.productCategory)}</span>
+                <h3>{product.productName}</h3>
+                <strong>${product.productPrice.toLocaleString()}</strong>
+              </article>
+            )) : (
+              <div className="product-tab-message"><strong>More products are coming soon.</strong><span>Explore the full collection to discover other Techanor devices.</span></div>
+            )}
+          </div>
+        )}
+        {activeTab === "reviews" && (
+          <div className="detail-review-grid">
+            <article><div><strong>Daniel K.</strong><span>★★★★★</span></div><p>Excellent condition and dependable everyday performance. The product arrived carefully packed and exactly as described.</p></article>
+            <article><div><strong>Sophia L.</strong><span>★★★★★</span></div><p>A smooth buying experience from checkout to delivery. The quality feels premium and everything works beautifully.</p></article>
+            <article><div><strong>Noah P.</strong><span>★★★★☆</span></div><p>Very good value and fast delivery. Product details were accurate and setup was simple from the first day.</p></article>
+          </div>
+        )}
+        {activeTab === "other" && (
+          <div className="related-product-grid">
+            {otherProducts.length ? otherProducts.map((product: Product) => (
+              <article className="related-product-card" key={product._id}>
+                <a href={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0])} alt={product.productName} /></a>
+                <span>{formatLabel(product.productCategory)}</span>
+                <h3>{product.productName}</h3>
+                <strong>${product.productPrice.toLocaleString()}</strong>
+              </article>
+            )) : <div className="product-tab-message"><strong>Explore the collection.</strong><span>Other product recommendations will appear here.</span></div>}
+          </div>
+        )}
+      </section>
+    </main>
   );
 }

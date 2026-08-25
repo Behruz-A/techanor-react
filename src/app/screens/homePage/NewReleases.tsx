@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const releases = [
   {
-    id: "galaxy-fold",
+    id: "demo-galaxy",
     name: "Galaxy Z Fold",
     price: "$1,299",
     image: "/img/samsunggalaxy.jpg",
@@ -11,7 +11,7 @@ const releases = [
     views: 248,
   },
   {
-    id: "headphones",
+    id: "demo-headphones",
     name: "Studio Headphones",
     price: "$349",
     image: "/img/testheadphone.avif",
@@ -19,7 +19,7 @@ const releases = [
     views: 186,
   },
   {
-    id: "macbook-air",
+    id: "demo-macbook",
     name: "MacBook Air",
     price: "$999",
     image: "/img/mackboooook.jpg",
@@ -27,7 +27,7 @@ const releases = [
     views: 321,
   },
   {
-    id: "iphone-pro",
+    id: "demo-iphone-17",
     name: "iPhone Pro",
     price: "$1,099",
     image: "/img/iphonebanner.jpg",
@@ -50,7 +50,7 @@ export default function NewReleases() {
 
         <div className="new-releases__grid">
           {releases.map((product) => (
-            <Link className="release-card" to="/products" key={product.id}>
+            <Link className="release-card" to={`/products/${product.id}`} key={product.id}>
               <div className="release-card__media">
                 <span className="release-card__badge">{product.badge}</span>
                 <img src={product.image} alt={product.name} loading="lazy" />

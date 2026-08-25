@@ -16,27 +16,14 @@ import {
   ProductBrand,
   ProductCategory,
   ProductCondition,
-  ProductMemory,
-  ProductStatus,
 } from "../../../constants/enums";
 import { serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
+import { showcaseProducts } from "./showcaseProducts";
 
 const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
 const categories = Object.values(ProductCategory).map((value) => ({ value, label: PRODUCT_CATEGORY_LABELS[value] }));
-const createdAt = new Date().toISOString();
-
-const showcaseProducts: Product[] = [
-  { _id: "demo-iphone-17", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.NEW, productCategory: ProductCategory.SMARTPHONE, productBrand: ProductBrand.APPLE, productMemory: ProductMemory.GB_256, productName: "iPhone 17 Pro", productPrice: 1199, productLeftCount: 8, productDesc: "A18 Pro chip · 256GB · 5G", productImages: ["/img/iphone 17 pro.jpg"], productViews: 428, createdAt, updatedAt: createdAt },
-  { _id: "demo-galaxy", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.NEW, productCategory: ProductCategory.SMARTPHONE, productBrand: ProductBrand.SAMSUNG, productMemory: ProductMemory.GB_256, productName: "Samsung Galaxy", productPrice: 999, productLeftCount: 12, productDesc: "AMOLED display · 256GB · AI camera", productImages: ["/img/samsunggalaxy.jpg"], productViews: 362, createdAt, updatedAt: createdAt },
-  { _id: "demo-asus", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.NEW, productCategory: ProductCategory.LAPTOP, productBrand: ProductBrand.OTHER, productMemory: ProductMemory.TB_1, productName: "ASUS Performance Laptop", productPrice: 1399, productLeftCount: 5, productDesc: "Intel Core · 16GB RAM · 1TB SSD", productImages: ["/img/Asuslaptop.jpg"], productViews: 301, createdAt, updatedAt: createdAt },
-  { _id: "demo-macbook", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.NEW, productCategory: ProductCategory.LAPTOP, productBrand: ProductBrand.APPLE, productMemory: ProductMemory.GB_512, productName: "MacBook Air", productPrice: 1099, productLeftCount: 7, productDesc: "Apple silicon · 16GB · 512GB SSD", productImages: ["/img/mackboooook.jpg"], productViews: 516, createdAt, updatedAt: createdAt },
-  { _id: "demo-headphones", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.NEW, productCategory: ProductCategory.AUDIO, productBrand: ProductBrand.SONY, productName: "Studio Wireless Headphones", productPrice: 249, productLeftCount: 18, productDesc: "Noise cancelling · 40-hour battery", productImages: ["/img/headphone.jpg"], productViews: 214, createdAt, updatedAt: createdAt },
-  { _id: "demo-airphone", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.NEW, productCategory: ProductCategory.AUDIO, productBrand: ProductBrand.APPLE, productName: "True Wireless Earbuds", productPrice: 149, productLeftCount: 24, productDesc: "Spatial audio · Wireless charging", productImages: ["/img/airphone.jpg"], productViews: 187, createdAt, updatedAt: createdAt },
-  { _id: "demo-gaming", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.NEW, productCategory: ProductCategory.GAMING, productBrand: ProductBrand.OTHER, productName: "Gaming Smart Watch", productPrice: 329, productLeftCount: 9, productDesc: "Performance tracking · GPS · Always-on display", productImages: ["/img/watchhomenavbar.jpg"], productViews: 276, createdAt, updatedAt: createdAt },
-  { _id: "demo-camera", productStatus: ProductStatus.PROCESS, productCondition: ProductCondition.USED, productCategory: ProductCategory.OTHERS, productBrand: ProductBrand.SONY, productName: "Mirrorless Camera", productPrice: 899, productLeftCount: 4, productDesc: "4K video · Fast autofocus · Wi-Fi", productImages: ["/img/camerabanner.jpg"], productViews: 198, createdAt, updatedAt: createdAt },
-];
 
 const customerReviews = [
   { name: "Daniel K.", rating: "4.8/5", image: "/img/iwatch.jpg", productImage: "/img/iwatch.jpg", product: "Apple Watch · GPS · Cellular", review: "Battery life is impressive and the display is incredibly clear. It has quickly become part of my everyday routine." },
@@ -68,14 +55,21 @@ export default function Products() {
   }, [dispatch, productSearch]);
 
   const sourceProducts = products.length ? products : showcaseProducts;
-  const visibleProducts = useMemo(() => sourceProducts.filter((product) => {
-    const categoryMatches = !productSearch.productCategory || product.productCategory === productSearch.productCategory;
-    const searchMatches = !submittedSearch || `${product.productName} ${product.productDesc || ""}`.toLowerCase().includes(submittedSearch.toLowerCase());
-    const conditionMatches = !productSearch.productCondition || product.productCondition === productSearch.productCondition;
-    const brandMatches = !productSearch.productBrand || product.productBrand === productSearch.productBrand;
-    const priceMatches = priceFilter === "all" || (priceFilter === "under-300" && product.productPrice < 300) || (priceFilter === "300-900" && product.productPrice >= 300 && product.productPrice <= 900) || (priceFilter === "over-900" && product.productPrice > 900);
-    return categoryMatches && searchMatches && conditionMatches && brandMatches && priceMatches;
-  }), [sourceProducts, productSearch.productCategory, productSearch.productCondition, productSearch.productBrand, submittedSearch, priceFilter]);
+  const visibleProducts = useMemo(() => {
+    const filteredProducts = sourceProducts.filter((product) => {
+      const categoryMatches = !productSearch.productCategory || product.productCategory === productSearch.productCategory;
+      const searchMatches = !submittedSearch || `${product.productName} ${product.productDesc || ""}`.toLowerCase().includes(submittedSearch.toLowerCase());
+      const conditionMatches = !productSearch.productCondition || product.productCondition === productSearch.productCondition;
+      const brandMatches = !productSearch.productBrand || product.productBrand === productSearch.productBrand;
+      return categoryMatches && searchMatches && conditionMatches && brandMatches;
+    });
+
+    return filteredProducts.sort((first, second) => {
+      if (productSearch.order === "productPrice") return first.productPrice - second.productPrice;
+      if (productSearch.order === "productViews") return (second.productViews || 0) - (first.productViews || 0);
+      return new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime();
+    });
+  }, [sourceProducts, productSearch.productCategory, productSearch.productCondition, productSearch.productBrand, productSearch.order, submittedSearch]);
 
   const submitSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -85,6 +79,13 @@ export default function Products() {
 
   const selectCategory = (value?: ProductCategory) => {
     setProductSearch((current) => ({ ...current, page: 1, productCategory: value }));
+  };
+
+  const activeFilterCount = [productSearch.productCategory, productSearch.productCondition, productSearch.productBrand, submittedSearch].filter(Boolean).length;
+  const clearFilters = () => {
+    setSearchText("");
+    setSubmittedSearch("");
+    setProductSearch((current) => ({ ...current, page: 1, search: "", productCategory: undefined, productCondition: undefined, productBrand: undefined }));
   };
 
   const addToBasket = (product: Product) => onAdd({ _id: product._id, quantity: 1, name: product.productName, price: product.productPrice, image: product.productImages[0] });
@@ -100,26 +101,26 @@ export default function Products() {
             <p>Thoughtfully selected devices for work, creativity, entertainment and everyday life.</p>
             <a className="products-hero-cta" href="#product-catalog">Explore Products <span aria-hidden="true">→</span></a>
           </div>
-          <div className="products-hero-visual" aria-hidden="true"><img src="/img/products-hero-v2.png" alt="" /></div>
+          <div className="products-hero-visual" aria-hidden="true"><img src="/img/productspagehero.png" alt="" /></div>
         </div>
       </section>
 
       <main className="catalog-shell" id="product-catalog">
         <header className="catalog-heading">
           <div><span>OUR COLLECTION</span><h2>All products</h2></div>
-          <p>{visibleProducts.length} products found</p>
+          <p className="catalog-result-count"><strong>{visibleProducts.length}</strong> products found</p>
         </header>
 
         <div className="catalog-toolbar catalog-toolbar-modern">
-          <strong className="catalog-toolbar-label">Filters:</strong>
-          <select aria-label="Filter by category" value={productSearch.productCategory || "all"} onChange={(e) => selectCategory(e.target.value === "all" ? undefined : e.target.value as ProductCategory)}>
+          <div className="catalog-filter-heading"><strong className="catalog-toolbar-label">Filters</strong>{activeFilterCount > 0 && <span>{activeFilterCount} active</span>}{activeFilterCount > 0 && <button type="button" onClick={clearFilters}>Clear filters</button>}</div>
+          <select className={productSearch.productCategory ? "filter-select active" : "filter-select"} aria-label="Filter by category" value={productSearch.productCategory || "all"} onChange={(e) => selectCategory(e.target.value === "all" ? undefined : e.target.value as ProductCategory)}>
             <option value="all">Category</option>
             {categories.map((category) => <option key={category.value} value={category.value}>{category.label}</option>)}
           </select>
-          <select aria-label="Filter by condition" value={productSearch.productCondition || "all"} onChange={(e) => setProductSearch((current) => ({ ...current, page: 1, productCondition: e.target.value === "all" ? undefined : e.target.value as ProductCondition }))}>
+          <select className={productSearch.productCondition ? "filter-select active" : "filter-select"} aria-label="Filter by condition" value={productSearch.productCondition || "all"} onChange={(e) => setProductSearch((current) => ({ ...current, page: 1, productCondition: e.target.value === "all" ? undefined : e.target.value as ProductCondition }))}>
             <option value="all">Condition</option>{Object.values(ProductCondition).map((value) => <option key={value} value={value}>{PRODUCT_CONDITION_LABELS[value]}</option>)}
           </select>
-          <select aria-label="Filter by brand" value={productSearch.productBrand || "all"} onChange={(e) => setProductSearch((current) => ({ ...current, page: 1, productBrand: e.target.value === "all" ? undefined : e.target.value as ProductBrand }))}>
+          <select className={productSearch.productBrand ? "filter-select active" : "filter-select"} aria-label="Filter by brand" value={productSearch.productBrand || "all"} onChange={(e) => setProductSearch((current) => ({ ...current, page: 1, productBrand: e.target.value === "all" ? undefined : e.target.value as ProductBrand }))}>
             <option value="all">Brand</option>{Object.values(ProductBrand).map((value) => <option key={value} value={value}>{PRODUCT_BRAND_LABELS[value]}</option>)}
           </select>
           <select aria-label="Filter by price" value={priceFilter} onChange={(e) => setPriceFilter(e.target.value)}>
@@ -128,7 +129,7 @@ export default function Products() {
           <form className="catalog-search" onSubmit={submitSearch}>
             <SearchRounded /><input type="search" value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder="Search products" aria-label="Search products" />
           </form>
-          <label className="catalog-sort"><SortRounded /><select aria-label="Sort products" value={productSearch.order} onChange={(e) => setProductSearch((current) => ({ ...current, page: 1, order: e.target.value }))}><option value="createdAt">Recommended</option><option value="productPrice">Price: low to high</option><option value="productViews">Most viewed</option></select></label>
+          <label className="catalog-sort" title="Choose how products are ordered"><SortRounded /><span>Sort by</span><select aria-label="Sort products" value={productSearch.order} onChange={(e) => setProductSearch((current) => ({ ...current, page: 1, order: e.target.value }))}><option value="createdAt">New</option><option value="productPrice">Price</option><option value="productViews">Views</option></select></label>
         </div>
 
         <div className="catalog-layout catalog-layout-wide">
@@ -136,7 +137,7 @@ export default function Products() {
             <div className="catalog-grid">
               {visibleProducts.map((product) => (
                 <article className="catalog-card" key={product._id}>
-                  <div className="catalog-card-media" onClick={() => !product._id.startsWith("demo-") && history.push(`/products/${product._id}`)}>
+                  <div className="catalog-card-media" onClick={() => history.push(`/products/${product._id}`)}>
                     <button className="catalog-wishlist" type="button" aria-label={`Save ${product.productName}`}><FavoriteBorderRounded /></button>
                     <img src={imageUrl(product.productImages[0])} alt={product.productName} />
                   </div>
