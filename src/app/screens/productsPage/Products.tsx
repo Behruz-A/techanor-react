@@ -94,16 +94,17 @@ export default function Products() {
     <div className="products">
       <section className="products-hero" aria-labelledby="products-hero-title">
         <div className="products-hero-content">
-          <span className="products-hero-eyebrow">TECHANOR COLLECTION</span>
-          <h1 id="products-hero-title">TECHNOLOGY FOR<br /><em>EVERYDAY MOMENTS.</em></h1>
-          <div className="products-hero-meta">
+          <div className="products-hero-copy">
+            <span className="products-hero-eyebrow">TECHANOR COLLECTION</span>
+            <h1 id="products-hero-title">TECHNOLOGY FOR<br /><em>EVERYDAY MOMENTS.</em></h1>
             <p>Thoughtfully selected devices for work, creativity, entertainment and everyday life.</p>
-            <span><small>COLLECTION</small><strong>2026</strong></span>
+            <a className="products-hero-cta" href="#product-catalog">Explore Products <span aria-hidden="true">→</span></a>
           </div>
+          <div className="products-hero-visual" aria-hidden="true"><img src="/img/products-hero-v2.png" alt="" /></div>
         </div>
       </section>
 
-      <main className="catalog-shell">
+      <main className="catalog-shell" id="product-catalog">
         <header className="catalog-heading">
           <div><span>OUR COLLECTION</span><h2>All products</h2></div>
           <p>{visibleProducts.length} products found</p>

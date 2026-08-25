@@ -18,31 +18,27 @@
 
 .products-page .products .products-hero {
   position: relative;
-  isolation: isolate;
   width: 100%;
-  min-height: 380px;
+  min-height: 400px;
   overflow: hidden;
-  background: #f4efe7 url("/public/img/products-hero.png") center right / cover no-repeat;
+  background: linear-gradient(110deg,#f7f5f1 0%,#f7f6f3 50%,#f1f4f7 100%);
 }
 
-.products-page .products .products-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(90deg, rgba(247,244,239,.98) 0%, rgba(247,244,239,.92) 39%, rgba(247,244,239,.2) 65%, transparent 82%);
-}
+.products-page .products .products-hero::after,
+.products-page .products .products-hero::before { display: none; }
 
 .products-hero-content {
-  width: min(1180px, calc(100% - 48px));
-  min-height: 380px;
+  width: min(1300px, calc(100% - 48px));
+  min-height: 400px;
   margin: 0 auto;
-  padding: 50px 0 44px;
+  padding: 28px 0;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(0,.88fr) minmax(0,1.12fr);
+  align-items: center;
+  gap: clamp(34px,4vw,72px);
 }
+.products-hero-copy { position: relative; z-index: 2; max-width: 535px; }
 
 .products-hero-eyebrow {
   display: inline-flex;
@@ -55,13 +51,15 @@
 }
 
 .products-hero-eyebrow::before { content: ""; width: 34px; height: 1px; background: #9e968b; }
-.products-hero-content h1 { max-width: 700px; margin: 20px 0 0; color: #1f201f; font-size: clamp(52px,5vw,74px); font-weight: 450; line-height: .98; letter-spacing: -3.6px; }
+.products-hero-content h1 { max-width: 535px; margin: 18px 0 0; color: #202124; font-size: clamp(42px,3.65vw,56px); font-weight: 470; line-height: 1.04; letter-spacing: -2.8px; }
 .products-hero-content h1 em { color: #2563eb; font-style: normal; font-weight: 430; }
-.products-hero-meta { max-width: 650px; margin-top: 38px; display: flex; align-items: flex-end; justify-content: space-between; gap: 36px; }
-.products-hero-meta p { max-width: 430px; margin: 0; color: #706f6c; font-size: 14px; line-height: 1.6; }
-.products-hero-meta > span { display: flex; flex-direction: column; color: #232423; }
-.products-hero-meta small { color: #817d76; font-size: 8px; font-weight: 750; letter-spacing: 1.7px; }
-.products-hero-meta strong { margin-top: 4px; font-size: 13px; }
+.products-hero-copy > p { max-width: 370px; margin: 25px 0 0; color: #666a70; font-size: 14px; line-height: 1.7; }
+.products-hero-cta { width: max-content; min-height: 44px; margin-top: 25px; padding: 0 18px; display: inline-flex; align-items: center; gap: 12px; border-radius: 9px; background: #2563eb; color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; transition: background 180ms ease,transform 180ms ease; }
+.products-hero-cta:hover { background: #1d4ed8; transform: translateY(-1px); }
+.products-hero-cta span { font-size: 17px; line-height: 1; transition: transform 180ms ease; }
+.products-hero-cta:hover span { transform: translateX(2px); }
+.products-hero-visual { align-self: stretch; min-width: 0; overflow: hidden; }
+.products-hero-visual img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 66% center; filter: drop-shadow(0 10px 15px rgba(35,39,45,.04)); }
 
 .products-page .products .avatar-big-box {
   position: relative;
@@ -214,12 +212,13 @@
 }
 
 @media (max-width: 760px) {
-  .products-page .products .products-hero { min-height: 470px; background-position: 65% center; }
-  .products-page .products .products-hero::after { background: linear-gradient(90deg,rgba(247,244,239,.98) 0%,rgba(247,244,239,.88) 66%,rgba(247,244,239,.4) 100%); }
-  .products-hero-content { width: calc(100% - 34px); min-height: 470px; padding: 58px 0 44px; justify-content: flex-start; }
-  .products-hero-content h1 { max-width: 540px; font-size: clamp(42px,12vw,60px); letter-spacing: -2.8px; }
-  .products-hero-meta { margin-top: 28px; align-items: flex-start; }
-  .products-hero-meta > span { display: none; }
+  .products-page .products .products-hero { min-height: auto; }
+  .products-hero-content { width: calc(100% - 34px); min-height: auto; padding: 48px 0 0; grid-template-columns: 1fr; gap: 24px; }
+  .products-hero-copy { max-width: 560px; }
+  .products-hero-content h1 { max-width: 520px; font-size: clamp(39px,11vw,52px); letter-spacing: -2.4px; }
+  .products-hero-copy > p { margin-top: 22px; }
+  .products-hero-visual { height: 245px; margin: 0 -17px; }
+  .products-hero-visual img { object-position: 68% center; }
 }
 
 /* Customer review carousel */
