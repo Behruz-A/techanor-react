@@ -84,7 +84,7 @@ export default function Basket(props: BasketProps) {
           elevation: 0,
           sx: {
             overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            filter: "drop-shadow(0px 10px 30px rgba(20, 29, 45, 0.14))",
             mt: 1.5,
             "& .MuiAvatar-root": {
               width: 32,
@@ -112,10 +112,10 @@ export default function Basket(props: BasketProps) {
         <Stack className={"basket-frame"}>
           <Box className={"all-check-box"}>
             {cartItems.length === 0 ? (
-              <div>Cart is empty!</div>
+              <div>Your cart is empty</div>
             ) : (
               <Stack flexDirection={"row"}>
-                <div>Cart Products:</div>
+                <div>Your cart</div>
                 <DeleteForeverIcon
                   sx={{ ml: "5px", cursor: "pointer" }}
                   color={"primary"}
@@ -143,7 +143,7 @@ export default function Basket(props: BasketProps) {
                       {" "}
                       ${item.price} x {item.quantity}
                     </p>
-                    <Box sx={{ minWidth: 120 }}>
+                    <Box sx={{ minWidth: 68 }}>
                       <div className="col-2">
                         <button
                           onClick={() => onRemove(item)}
@@ -164,14 +164,14 @@ export default function Basket(props: BasketProps) {
           {cartItems.length !== 0 ? (
             <Box className={"basket-order"}>
               <span className={"price"}>
-                Total: ${totalPrice}({itemsPrice} + {shippingCost})
+                Total: <strong>${totalPrice}</strong>
               </span>
               <Button
                 onClick={ProceedOrderHandler}
                 startIcon={<ShoppingCartIcon />}
                 variant={"contained"}
               >
-                Order
+                Checkout
               </Button>
             </Box>
           ) : (

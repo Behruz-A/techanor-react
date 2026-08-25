@@ -8,6 +8,7 @@ import HomeNavbar from "./components/headers/HomeNavbar";
 import OtherNavbar from "./components/headers/OtherNavbar";
 import Footer from "./components/footer";
 import HelpPage from "./screens/helpPage";
+import BlogPage from "./screens/blogPage";
 import AuthenticationModal from "./components/auth";
 import { sweetErrorHandling, sweetTopSuccessAlert } from "../lib/sweetAlert";
 import { Messages } from "../lib/config";
@@ -68,6 +69,7 @@ function App() {
         />
       )}
       <Switch>
+        <Route path="/blog"><BlogPage /></Route>
         <Route path="/products">
           <ProductsPage />
         </Route>

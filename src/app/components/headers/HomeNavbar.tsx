@@ -102,8 +102,7 @@ export default function HomeNavbar({
         <div className="home-nav-links">
           <NavLink exact to="/" activeClassName="active">Home</NavLink>
           <NavLink to="/products" activeClassName="active">Products</NavLink>
-          <a href="#blog">Blog</a>
-          <a href="#about-us">About Us</a>
+          <NavLink to="/blog" activeClassName="active">Blog</NavLink>
         </div>
 
         <div className="home-nav-actions">

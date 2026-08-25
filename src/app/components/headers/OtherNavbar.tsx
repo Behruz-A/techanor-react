@@ -35,7 +35,7 @@ export default function OtherNavbar({
         <div className={`other-nav-links${mobileMenuOpen ? " open" : ""}`}>
           <NavLink exact to="/" activeClassName="active" onClick={closeMobileMenu}>Home</NavLink>
           <NavLink to="/products" activeClassName="active" onClick={closeMobileMenu}>Products</NavLink>
-          <a href="/#blog" onClick={closeMobileMenu}>Blog</a>
+          <NavLink to="/blog" activeClassName="active" onClick={closeMobileMenu}>Blog</NavLink>
           {authMember && <NavLink to="/member-page" activeClassName="active" onClick={closeMobileMenu}>My Page</NavLink>}
           {authMember && <NavLink to="/orders" activeClassName="active" onClick={closeMobileMenu}>Orders</NavLink>}
         </div>
