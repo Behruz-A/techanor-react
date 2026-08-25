@@ -17,7 +17,7 @@ export default function UserPage() {
     <section className="account-hero"><div>
       <span>YOUR TECHANOR ACCOUNT</span>
       <h1>My <em>Profile</em></h1>
-      <p>Manage your personal information and keep your TechAnor account up to date.</p>
+      <p>Manage your personal information and keep your Techanor account up to date.</p>
     </div></section>
     <Container maxWidth={false} className="account-container">
       <Stack className="my-page-frame">

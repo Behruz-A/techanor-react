@@ -114,7 +114,7 @@ export function Settings() {
         </Button>
         <div className={"media-change-box"}>
           <span>Profile picture</span>
-          <p>JPG, JPEG or PNG. Shown across your TechAnor account.</p>
+          <p>JPG, JPEG or PNG. Shown across your Techanor account.</p>
           <div className={"up-del-box"}>
             <Button component="label" onChange={handleImageViewer} disabled={!isEditing}>
               <CloudDownloadIcon /><span>Change photo</span>

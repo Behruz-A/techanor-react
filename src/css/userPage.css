@@ -35,7 +35,7 @@
 @media(max-width:900px){.user-page .my-page-frame{grid-template-columns:1fr}.my-page-frame .my-page-right{grid-row:1}.user-page .order-info-box{display:grid;grid-template-columns:auto 1fr;column-gap:20px}.user-page .order-info-box>div:first-child{grid-row:1/4}.profile-detail{padding:10px 0}.user-page .order-info-box .user-desc{grid-column:1/-1;margin-top:10px}}
 @media(max-width:600px){.account-hero>div{width:calc(100% - 28px);padding:42px 0}.user-page .my-page-frame{padding:30px 0 65px}.my-page-left .menu-name{padding:22px 18px 18px}.my-page-left .menu-content{padding:0 18px 22px}.user-page .settings .member-media-frame{margin:0 -18px 22px;padding:20px 18px}.user-page .settings .input-frame{display:block}.user-page .settings .short-input{width:100%}.user-page .order-info-box{display:flex}.my-page-frame .my-page-right{grid-row:auto}}
 
-/* Original My Page layout, refined with the TechAnor palette. */
+/* Original My Page layout, refined with the Techanor palette. */
 .user-page .my-page-frame{padding:50px 0;display:flex;flex-direction:row;gap:30px}
 .my-page-frame .my-page-left{width:70%}.my-page-frame .my-page-right{width:30%}
 .my-page-left>div{overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none}
