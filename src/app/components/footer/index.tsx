@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import BrandLogo from "../BrandLogo";
 
 const categories = [
   "Computers & Laptops",
@@ -33,7 +34,7 @@ export default function Footer() {
         </div>
         <div className="footer-grid">
           <section className="footer-brand-column">
-            <Link className="footer-brand" to="/">TECHANOR</Link>
+            <Link className="footer-brand" to="/" aria-label="Techanor home"><BrandLogo tone="dark" /></Link>
             <p className="footer-description">
               Smart technology, carefully selected. Discover devices and
               accessories built for work, creativity and everyday life.

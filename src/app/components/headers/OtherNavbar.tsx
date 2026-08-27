@@ -5,6 +5,7 @@ import { Link, NavLink } from "react-router-dom";
 import Basket from "./Basket";
 import { useGlobals } from "../../hooks/useGlobals";
 import { serverApi } from "../../../lib/config";
+import BrandLogo from "../BrandLogo";
 
 interface OtherNavbarProps {
   setSignupOpen: (isOpen: boolean) => void;
@@ -27,7 +28,7 @@ export default function OtherNavbar({
     <header className="other-navbar">
       <nav className="other-nav" aria-label="Main navigation">
         <Link className="other-brand" to="/" aria-label="Techanor home">
-          <span className="other-brand-copy"><strong>TECHANOR</strong></span>
+          <BrandLogo tone="dark" />
         </Link>
         <button className="other-menu-toggle" type="button" aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
           {mobileMenuOpen ? <CloseRounded /> : <MenuRounded />}

@@ -12,7 +12,7 @@ test("renders the Techanor footer navigation", () => {
     </MemoryRouter>,
   );
 
-  expect(screen.getByText("Techanor", { selector: ".footer-brand" })).toBeInTheDocument();
+  expect(screen.getByLabelText("Techanor home", { selector: ".footer-brand" })).toBeInTheDocument();
   expect(screen.getByText(/Back to top/i, { selector: "button" })).toBeInTheDocument();
   consoleError.mockRestore();
 });
