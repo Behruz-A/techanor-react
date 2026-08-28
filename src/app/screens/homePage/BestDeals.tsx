@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import { useGlobals } from "../../hooks/useGlobals";
 
 const deals = [
   {
@@ -70,7 +69,6 @@ function DealTimer() {
 }
 
 export default function BestDeals() {
-  const { basket } = useGlobals();
   const [favorites, setFavorites] = useState<string[]>([]);
 
   const toggleFavorite = (id: string) => {
@@ -117,19 +115,7 @@ export default function BestDeals() {
                   </div>
                   <div className="deal-card__footer">
                     <span>Available: <strong>{deal.left} products</strong></span>
-                    <button
-                      type="button"
-                      onClick={() => basket.onAdd({
-                        _id: deal.id,
-                        quantity: 1,
-                        name: deal.name,
-                        price: deal.price,
-                        image: deal.image,
-                      })}
-                    >
-                      <ShoppingBagOutlinedIcon />
-                      Add to cart
-                    </button>
+                    <Link className="deal-card__shop" to="/products">Shop deal</Link>
                   </div>
                 </div>
               </article>

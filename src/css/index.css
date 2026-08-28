@@ -12,5 +12,129 @@ code {
     monospace;
 }
 
-/* Global Techanor feedback dialog */
-.techanor-alert-container{padding:20px;background:rgba(17,24,39,.48)!important;backdrop-filter:blur(3px)}.techanor-alert-card{width:min(430px,calc(100vw - 32px))!important;padding:30px 30px 26px!important;border:1px solid #e3e7ed!important;border-radius:18px!important;background:#fff!important;box-shadow:0 28px 80px rgba(15,23,42,.2)!important}.techanor-alert-icon{width:58px!important;height:58px!important;margin:2px auto 20px!important;border-width:2px!important}.techanor-alert-icon.swal2-error{border-color:#f0b6b8!important;color:#dc5258!important}.techanor-alert-icon.swal2-error [class^=swal2-x-mark-line]{height:2px!important;background-color:#dc5258!important}.techanor-alert-title{padding:0!important;color:#1d222a!important;font-family:inherit!important;font-size:22px!important;font-weight:700!important;line-height:1.25!important;letter-spacing:-.35px!important}.techanor-alert-message{margin:10px auto 0!important;padding:0!important;color:#68717d!important;font-family:inherit!important;font-size:13px!important;line-height:1.65!important}.techanor-alert-actions{width:100%!important;margin:24px 0 0!important}.techanor-alert-confirm{width:100%;min-height:44px;padding:0 18px;border:0;border-radius:9px;background:#2563eb;color:#fff;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .18s ease,transform .18s ease}.techanor-alert-confirm:hover{background:#1d4ed8;transform:translateY(-1px)}.techanor-alert-confirm:focus-visible{outline:3px solid rgba(37,99,235,.24);outline-offset:3px}.techanor-alert-close{top:12px!important;right:12px!important;width:34px!important;height:34px!important;border-radius:50%!important;color:#7c8490!important;font-size:25px!important;transition:background .18s ease,color .18s ease}.techanor-alert-close:hover{background:#f1f4f8!important;color:#20252d!important}.techanor-alert-card.swal2-show{animation:techanor-alert-in .22s cubic-bezier(.22,.61,.36,1)}@keyframes techanor-alert-in{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}@media(max-width:520px){.techanor-alert-card{padding:27px 22px 22px!important}.techanor-alert-title{font-size:20px!important}}
+/* Global TECHANOR feedback dialog */
+.techanor-alert-container {
+  padding: 20px;
+  background: rgba(7, 24, 32, 0.46) !important;
+  backdrop-filter: blur(7px);
+}
+
+.techanor-alert-card {
+  width: min(410px, calc(100vw - 32px)) !important;
+  padding: 28px 28px 24px !important;
+  border: 1px solid rgba(13, 42, 54, 0.1) !important;
+  border-radius: 20px !important;
+  background: #fff !important;
+  box-shadow: 0 24px 70px rgba(6, 25, 34, 0.2) !important;
+}
+
+.techanor-alert-icon {
+  width: 48px !important;
+  height: 48px !important;
+  margin: 0 auto 18px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: #fff1f1 !important;
+}
+
+.techanor-alert-icon.swal2-error [class^="swal2-x-mark-line"] {
+  top: 23px !important;
+  width: 23px !important;
+  height: 2px !important;
+  background-color: #e2555a !important;
+}
+
+.techanor-alert-icon.swal2-error .swal2-x-mark-line-left {
+  left: 13px !important;
+}
+
+.techanor-alert-icon.swal2-error .swal2-x-mark-line-right {
+  right: 12px !important;
+}
+
+.techanor-alert-title {
+  padding: 0 !important;
+  color: #0a2733 !important;
+  font-family: inherit !important;
+  font-size: 21px !important;
+  font-weight: 750 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.35px !important;
+}
+
+.techanor-alert-message {
+  max-width: 320px;
+  margin: 9px auto 0 !important;
+  padding: 0 !important;
+  color: #697780 !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+.techanor-alert-actions {
+  width: 100% !important;
+  margin: 22px 0 0 !important;
+}
+
+.techanor-alert-confirm {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 22px;
+  background: #2563eb;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.techanor-alert-confirm:hover {
+  background: #1d56d8;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.26);
+  transform: translateY(-1px);
+}
+
+.techanor-alert-confirm:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.22);
+  outline-offset: 3px;
+}
+
+.techanor-alert-close {
+  top: 12px !important;
+  right: 12px !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  color: #829099 !important;
+  font-size: 24px !important;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.techanor-alert-close:hover {
+  background: #f1f5f7 !important;
+  color: #0a2733 !important;
+}
+
+.techanor-alert-card.swal2-show {
+  animation: techanor-alert-in 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes techanor-alert-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 520px) {
+  .techanor-alert-card {
+    padding: 26px 20px 21px !important;
+  }
+
+  .techanor-alert-title {
+    font-size: 20px !important;
+  }
+}

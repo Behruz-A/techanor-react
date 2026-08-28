@@ -1,12 +1,18 @@
-import { useEffect, useState, SyntheticEvent } from "react";
+import { useEffect, useMemo, useState, SyntheticEvent } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
+import SearchRounded from "@mui/icons-material/SearchRounded";
+import CalendarTodayOutlined from "@mui/icons-material/CalendarTodayOutlined";
 import LocationOnOutlined from "@mui/icons-material/LocationOnOutlined";
+import EmailOutlined from "@mui/icons-material/EmailOutlined";
+import PhoneOutlined from "@mui/icons-material/PhoneOutlined";
+import HeadsetMicOutlined from "@mui/icons-material/HeadsetMicOutlined";
 import PausedOrders from "./PausedOrders";
 import ProcessOrders from "./ProcessOrders";
 import FinishedOrders from "./FinishedOrders";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPausedOrders, setProcessOrders, setFinishedOrders } from "./slice";
+import { retrieveFinishedOrders, retrievePausedOrders, retrieveProcessOrders } from "./selector";
 import { OrderInquiry } from "../../../lib/types/order";
 import { OrderStatus } from "../../../lib/enums/order.enum";
 import OrderService from "../../services/OrderService";
@@ -19,7 +25,12 @@ export default function OrdersPage() {
   const dispatch = useDispatch();
   const history = useHistory();
   const { orderBuilder, authMember } = useGlobals();
+  const pausedOrders = useSelector(retrievePausedOrders);
+  const processOrders = useSelector(retrieveProcessOrders);
+  const finishedOrders = useSelector(retrieveFinishedOrders);
   const [value, setValue] = useState("1");
+  const [search, setSearch] = useState("");
+  const [dateRange, setDateRange] = useState("all");
   const [orderInquiry] = useState<OrderInquiry>({ page: 1, limit: 5, orderStatus: OrderStatus.PAUSE });
 
   useEffect(() => {
@@ -29,23 +40,22 @@ export default function OrdersPage() {
     service.getMyOrders({ ...orderInquiry, orderStatus: OrderStatus.FINISH }).then((data) => dispatch(setFinishedOrders(Array.isArray(data) ? data : []))).catch(console.log);
   }, [dispatch, orderBuilder, orderInquiry]);
 
-  if (!authMember) history.push("/");
+  useEffect(() => { if (!authMember) history.replace("/"); }, [authMember, history]);
+
+  const counts = useMemo(() => ({ paused: pausedOrders?.length || 0, process: processOrders?.length || 0, finished: finishedOrders?.length || 0 }), [pausedOrders, processOrders, finishedOrders]);
   const handleChange = (_event: SyntheticEvent, newValue: string) => setValue(newValue);
   const avatar = authMember?.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg";
 
-  return <main className="order-page">
-    <section className="order-journey-hero"><div className="order-journey-inner">
-      <span className="order-journey-eyebrow">TECHANOR ORDER CENTER</span><h1>TRACK EVERY <em>MOMENT.</em></h1>
-      <p>One clear place to manage purchases and follow each product to your door.</p>
-    </div></section>
-
-    <section className="burak-orders-shell"><div className="burak-orders-main">
-      <TabContext value={value}><Box className="burak-order-tabs"><Tabs value={value} onChange={handleChange} aria-label="Order status">
-        <Tab label="AWAITING PAYMENT" value="1"/><Tab label="IN PROGRESS" value="2"/><Tab label="ORDER HISTORY" value="3"/>
-      </Tabs></Box><PausedOrders setValue={setValue}/><ProcessOrders setValue={setValue}/><FinishedOrders/></TabContext>
-    </div><aside className="burak-orders-aside">
-      <div className="burak-profile-card"><img src={avatar} alt={authMember?.memberNick || "Account"}/><h2>{authMember?.memberNick}</h2><span>{authMember?.memberType}</span><div><LocationOnOutlined/>{authMember?.memberAddress || "Do not exist"}</div></div>
-      <div className="burak-payment-card"><input placeholder="Card number : **** 4090 2002 7495"/><div><input placeholder="07 / 24"/><input placeholder="CVV : 010"/></div><input placeholder="Justin Robertson"/><figure><img src="/icons/western-card.svg" alt="Western Union"/><img src="/icons/master-card.svg" alt="Mastercard"/><img src="/icons/paypal-card.svg" alt="PayPal"/><img src="/icons/visa-card.svg" alt="Visa"/></figure></div>
-    </aside></section>
-  </main>;
+  return <main className="order-page"><section className="orders-dashboard">
+    <header className="orders-dashboard-header"><div><h1>My Orders</h1><p>Track and manage all your orders in one place.</p></div><div className="orders-toolbar">
+      <label className="orders-search"><SearchRounded/><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search orders" aria-label="Search orders"/></label>
+      <label className="orders-date-filter"><CalendarTodayOutlined/><select value={dateRange} onChange={(e) => setDateRange(e.target.value)} aria-label="Filter orders by date"><option value="all">All dates</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></label>
+    </div></header>
+    <div className="orders-dashboard-grid"><div className="burak-orders-main"><TabContext value={value}><Box className="burak-order-tabs"><Tabs value={value} onChange={handleChange} aria-label="Order status">
+      <Tab label={<span>Awaiting Payment <b>{counts.paused}</b></span>} value="1"/><Tab label={<span>In Progress <b>{counts.process}</b></span>} value="2"/><Tab label={<span>Completed <b>{counts.finished}</b></span>} value="3"/>
+    </Tabs></Box><PausedOrders setValue={setValue} search={search} dateRange={dateRange}/><ProcessOrders setValue={setValue} search={search} dateRange={dateRange}/><FinishedOrders search={search} dateRange={dateRange}/></TabContext></div>
+    <aside className="burak-orders-aside"><div className="burak-profile-card"><img src={avatar} alt={authMember?.memberNick || "Account"}/><h2>{authMember?.memberNick}</h2><span>{authMember?.memberType}</span><div className="profile-details"><p>{authMember?.memberEmail ? <EmailOutlined/> : <PhoneOutlined/>}{authMember?.memberEmail || authMember?.memberPhone}</p><p><LocationOnOutlined/>{authMember?.memberAddress || "Address not added"}</p></div></div>
+      <div className="orders-support-card"><HeadsetMicOutlined/><div><strong>Need help?</strong><p>Contact our support team about your order.</p><a href="/help">Contact Support →</a></div></div>
+    </aside></div>
+  </section></main>;
 }

@@ -1,11 +1,4 @@
-.order-page { min-height: 760px; background: #f8f8ff; color: #1d1f24; }
-.order-journey-hero { overflow:hidden; background:#f7f5f2; border-bottom:1px solid #ebe7e1; }
-.order-journey-inner { width:min(1300px,calc(100% - 48px)); margin:0 auto; padding:58px 0 60px; text-align:center; }
-.order-journey-eyebrow { display:flex; align-items:center; justify-content:center; gap:11px; color:#667085; font-size:9px; font-weight:800; letter-spacing:2.4px; }
-.order-journey-eyebrow:before { content:""; width:32px; height:2px; background:#2563eb; }
-.order-journey-inner h1 { margin:10px 0 8px; color:#181b22; font-size:clamp(38px,4vw,58px); font-weight:650; letter-spacing:-2.5px; line-height:1; }
-.order-journey-inner h1 em { color:#2563eb; font-style:normal; font-weight:500; }
-.order-journey-inner > p { margin:0 auto; max-width:520px; color:#737985; font-size:12px; line-height:1.6; }
+.order-page { background: #f8f8ff; color: #1d1f24; }
 .burak-orders-shell { width:min(1300px,calc(100% - 48px)); margin:0 auto; padding:48px 0 85px; display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:30px; align-items:start; }
 .burak-orders-main { min-width:0; }
 .burak-order-tabs { padding:6px; border:1px solid #e4e8ef; border-radius:12px; background:#fff; }
@@ -80,4 +73,42 @@
 .orders-empty { min-height: 380px; padding: 50px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px dashed #d9dce1; border-radius: 15px; background: #fff; text-align: center; }
 .orders-empty > span { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 50%; background: #eef3ff; color: #2563eb; }.orders-empty h3 { margin: 18px 0 7px; font-size: 19px; }.orders-empty p { margin: 0; color: #858991; font-size: 12px; }.orders-empty a { margin-top: 19px; color: #2563eb; font-size: 11px; font-weight: 750; text-decoration: none; }
 @media (max-width: 920px) { .orders-layout { grid-template-columns: 1fr; }.orders-aside { position: static; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }.orders-heading { align-items: flex-start; flex-direction: column; gap: 14px; }.burak-orders-shell{grid-template-columns:1fr}.burak-orders-aside{display:grid;grid-template-columns:1fr 1fr} }
-@media (max-width: 620px) { .orders-shell { width: calc(100% - 28px); padding: 42px 0 65px; }.orders-aside { grid-template-columns: 1fr; }.modern-order-header { align-items: flex-start; }.modern-order-header > div { align-items: flex-start; flex-direction: column; gap: 5px; }.modern-order-header div:first-child > span { padding: 0; border: 0; }.order-progress { grid-template-columns: repeat(2,1fr); }.modern-order-footer { padding: 12px 16px; align-items: flex-start; flex-direction: column; }.modern-order-footer > div { width: 100%; }.order-action { flex: 1; }.orders-tabs .MuiTab-root { min-width: 0; padding: 0 5px; font-size: 10px; }.order-journey-inner{width:calc(100% - 28px);padding:42px 0}.burak-orders-shell{width:calc(100% - 28px);padding-top:30px}.burak-orders-aside{grid-template-columns:1fr}.burak-order-tabs .MuiTab-root{min-width:0;padding:0 5px;font-size:9px} }
+@media (max-width: 620px) { .orders-shell { width: calc(100% - 28px); padding: 42px 0 65px; }.orders-aside { grid-template-columns: 1fr; }.modern-order-header { align-items: flex-start; }.modern-order-header > div { align-items: flex-start; flex-direction: column; gap: 5px; }.modern-order-header div:first-child > span { padding: 0; border: 0; }.order-progress { grid-template-columns: repeat(2,1fr); }.modern-order-footer { padding: 12px 16px; align-items: flex-start; flex-direction: column; }.modern-order-footer > div { width: 100%; }.order-action { flex: 1; }.orders-tabs .MuiTab-root { min-width: 0; padding: 0 5px; font-size: 10px; }.burak-orders-shell{width:calc(100% - 28px);padding-top:30px}.burak-orders-aside{grid-template-columns:1fr}.burak-order-tabs .MuiTab-root{min-width:0;padding:0 5px;font-size:9px} }
+
+/* Orders dashboard */
+.orders-dashboard { width:min(1400px,calc(100% - 64px)); margin:0 auto; padding:34px 0 52px; }
+.orders-dashboard-header { margin-bottom:28px; display:flex; align-items:flex-end; justify-content:space-between; gap:32px; }
+.orders-dashboard-header h1 { margin:0 0 7px; color:#11182c; font-size:32px; line-height:1.1; letter-spacing:-.8px; }
+.orders-dashboard-header p { margin:0; color:#727b8e; font-size:14px; }
+.orders-toolbar { display:flex; align-items:center; gap:12px; }
+.orders-search,.orders-date-filter { height:46px; display:flex; align-items:center; gap:10px; box-sizing:border-box; border:1px solid #dfe3eb; border-radius:10px; background:#fff; color:#667085; }
+.orders-search { width:300px; padding:0 14px; }.orders-search svg,.orders-date-filter svg { width:19px; height:19px; color:#26344f; }
+.orders-search input { width:100%; border:0; outline:0; background:transparent; color:#172033; font:inherit; font-size:13px; }
+.orders-date-filter { padding:0 12px; }.orders-date-filter select { border:0; outline:0; background:#fff; color:#253047; font:inherit; font-size:13px; cursor:pointer; }
+.orders-dashboard-grid { display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:22px; align-items:start; }
+.orders-dashboard .burak-order-tabs { padding:0 18px; border-radius:12px; }
+.orders-dashboard .burak-order-tabs .MuiTabs-flexContainer { gap:12px; }
+.orders-dashboard .burak-order-tabs .MuiTab-root { min-height:60px; flex:1; border-radius:0; font-size:13px; letter-spacing:0; text-transform:none; }
+.orders-dashboard .burak-order-tabs .MuiTab-root.Mui-selected { background:#fff; color:#4f46f5; }
+.orders-dashboard .burak-order-tabs .MuiTabs-indicator { display:block; height:3px; border-radius:3px 3px 0 0; background:#5b5cf6; }
+.burak-order-tabs .MuiTab-root span { display:flex; align-items:center; justify-content:center; gap:12px; }
+.burak-order-tabs .MuiTab-root b { min-width:25px; height:25px; padding:0 7px; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; border-radius:999px; background:#f1f2f6; color:#596174; font-size:11px; }
+.orders-dashboard .burak-orders-aside { position:sticky; top:90px; gap:18px; }
+.orders-dashboard .burak-profile-card,.orders-support-card { border:1px solid #e1e5ed; border-radius:13px; box-shadow:0 8px 28px rgba(36,45,75,.04); }
+.orders-dashboard .burak-profile-card { padding:20px; }
+.orders-dashboard .burak-profile-card > img { width:68px; height:68px; padding:4px; box-sizing:border-box; border:2px solid #6d63ff; }
+.orders-dashboard .burak-profile-card h2 { margin-top:14px; color:#151c2e; }
+.profile-details { width:100%; margin-top:18px; padding-top:11px; border-top:1px solid #e3e6ec; }
+.orders-dashboard .burak-profile-card .profile-details { display:block; }
+.profile-details p { margin:8px 0; display:flex; align-items:center; gap:10px; color:#60697b; font-size:12px; }
+.profile-details p svg { width:17px; height:17px; color:#47536a; }
+.orders-support-card { padding:20px; display:flex; align-items:flex-start; gap:13px; background:#fff; }
+.orders-support-card > svg { padding:9px; box-sizing:content-box; border-radius:50%; background:#f0efff; color:#5b5cf6; }
+.orders-support-card strong { font-size:13px; }.orders-support-card p { margin:7px 0 12px; color:#778095; font-size:11px; line-height:1.55; }.orders-support-card a { color:#514cf2; font-size:11px; font-weight:750; text-decoration:none; }
+.orders-dashboard .orders-tab-panel { padding-top:16px!important; }
+.orders-dashboard .modern-order-card { box-shadow:none; }
+.orders-dashboard .orders-empty { min-height:220px; padding:30px 24px; border-style:solid; border-color:#e4e7ee; box-shadow:0 8px 28px rgba(36,45,75,.025); }
+.orders-dashboard .orders-empty > span { width:52px; height:52px; }
+.orders-dashboard .orders-empty h3 { margin-top:15px; font-size:17px; }
+@media (max-width:980px) { .orders-dashboard-grid{grid-template-columns:1fr}.orders-dashboard .burak-orders-aside{position:static;display:grid;grid-template-columns:repeat(3,1fr)}.orders-dashboard-header{align-items:flex-start;flex-direction:column}.orders-toolbar{width:100%}.orders-search{flex:1} }
+@media (max-width:720px) { .orders-dashboard{width:calc(100% - 28px);padding-top:28px}.orders-toolbar{align-items:stretch;flex-direction:column}.orders-search{width:100%;flex:none}.orders-dashboard .burak-orders-aside{grid-template-columns:1fr}.orders-dashboard .burak-order-tabs{padding:0 4px}.orders-dashboard .burak-order-tabs .MuiTab-root{padding:0 4px;font-size:10px}.burak-order-tabs .MuiTab-root span{gap:5px}.orders-dashboard-header h1{font-size:28px} }

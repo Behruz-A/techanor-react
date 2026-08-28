@@ -1,13 +1,15 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import { ProductCategory } from "../../../constants/enums";
 
 const categories = [
-  { name: "Laptops", image: "/img/mackboooook.jpg", tone: "ice", productId: "demo-macbook" },
-  { name: "Smartphones", image: "/img/samsunggalaxy.jpg", tone: "lilac", productId: "demo-galaxy" },
-  { name: "Audio", image: "/img/testheadphone.avif", tone: "sky", productId: "demo-headphones" },
-  { name: "Gaming", image: "/img/image2.jpg", tone: "slate", productId: "demo-gaming" },
-  { name: "Cameras", image: "/img/camerabanner.jpg", tone: "mist", productId: "demo-camera" },
-  { name: "Wearables", image: "/img/watchhomenavbar.jpg", tone: "blue", productId: "demo-gaming" },
+  { name: "Laptops", value: ProductCategory.LAPTOP, image: "/img/mackboooook.jpg", tone: "ice" },
+  { name: "Smartphones", value: ProductCategory.SMARTPHONE, image: "/img/iphone17silver.jpg", tone: "lilac" },
+  { name: "TV", value: ProductCategory.TV, image: "/img/Samsung TV 50.jpg", tone: "sky" },
+  { name: "Gaming", value: ProductCategory.GAMING, image: "/img/gamingimg.jpg", tone: "slate" },
+  { name: "Audio", value: ProductCategory.AUDIO, image: "/img/testheadphone.avif", tone: "mist" },
+  { name: "Cases", value: ProductCategory.CASES, image: "/img/iphone17img3.jpg", tone: "blue" },
+  { name: "Wearables", value: ProductCategory.WEARABLES, image: "/img/iwatch.jpg", tone: "wearables" },
+  { name: "Others", value: ProductCategory.OTHERS, image: "/img/cameraimg.jpg", tone: "pearl" },
 ];
 
 export default function ShopCategories() {
@@ -26,7 +28,7 @@ export default function ShopCategories() {
           {categories.map((category) => (
             <Link
               className={`category-tile category-tile--${category.tone}`}
-              to={`/products/${category.productId}`}
+              to={`/products?category=${category.value}#product-catalog`}
               key={category.name}
             >
               <div className="category-tile__media">

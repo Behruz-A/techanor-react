@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Pagination } from "@mui/material";
-import { ChevronLeftRounded, ChevronRightRounded, FavoriteBorderRounded, SearchRounded, ShoppingBagOutlined, SortRounded } from "@mui/icons-material";
+import { ChevronLeftRounded, ChevronRightRounded, FavoriteBorderRounded, SearchRounded, SortRounded } from "@mui/icons-material";
 import { createSelector } from "reselect";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { setProducts } from "./slice";
 import { retrieveProducts } from "./selector";
@@ -38,21 +38,42 @@ const customerReviews = [
 const imageUrl = (path: string) => path.startsWith("/") ? path : `${serverApi}/${path}`;
 
 export default function Products() {
+  const [addedProductId, setAddedProductId] = useState<string | null>(null);
+  const addedResetTimer = useRef<number | null>(null);
   const { basket: { onAdd } } = useGlobals();
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const { products } = useSelector(productsRetriever);
   const [searchText, setSearchText] = useState("");
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
-  const [productSearch, setProductSearch] = useState<ProductInquiry>({ page: 1, limit: 9, order: "createdAt" });
+  const categoryFromUrl = new URLSearchParams(location.search).get("category");
+  const initialCategory = Object.values(ProductCategory).includes(categoryFromUrl as ProductCategory)
+    ? categoryFromUrl as ProductCategory
+    : undefined;
+  const [productSearch, setProductSearch] = useState<ProductInquiry>({ page: 1, limit: 9, order: "createdAt", productCategory: initialCategory });
   const reviewsTrackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => () => {
+    if (addedResetTimer.current !== null) window.clearTimeout(addedResetTimer.current);
+  }, []);
 
   useEffect(() => {
     new ProductService().getProducts(productSearch)
       .then((data) => dispatch(setProducts(Array.isArray(data) ? data : [])))
       .catch(() => dispatch(setProducts([])));
   }, [dispatch, productSearch]);
+
+  useEffect(() => {
+    const category = new URLSearchParams(location.search).get("category");
+    const validCategory = Object.values(ProductCategory).includes(category as ProductCategory)
+      ? category as ProductCategory
+      : undefined;
+    setProductSearch((current) => current.productCategory === validCategory
+      ? current
+      : { ...current, page: 1, productCategory: validCategory });
+  }, [location.search]);
 
   const sourceProducts = products.length ? products : showcaseProducts;
   const visibleProducts = useMemo(() => {
@@ -79,6 +100,7 @@ export default function Products() {
 
   const selectCategory = (value?: ProductCategory) => {
     setProductSearch((current) => ({ ...current, page: 1, productCategory: value }));
+    history.replace(value ? `/products?category=${value}` : "/products");
   };
 
   const activeFilterCount = [productSearch.productCategory, productSearch.productCondition, productSearch.productBrand, submittedSearch].filter(Boolean).length;
@@ -86,22 +108,29 @@ export default function Products() {
     setSearchText("");
     setSubmittedSearch("");
     setProductSearch((current) => ({ ...current, page: 1, search: "", productCategory: undefined, productCondition: undefined, productBrand: undefined }));
+    history.replace("/products");
   };
 
-  const addToBasket = (product: Product) => onAdd({ _id: product._id, quantity: 1, name: product.productName, price: product.productPrice, image: product.productImages[0] });
+  const addToBasket = (product: Product) => {
+    onAdd({ _id: product._id, quantity: 1, name: product.productName, price: product.productPrice, image: product.productImages[0] });
+    setAddedProductId(product._id);
+    if (addedResetTimer.current !== null) window.clearTimeout(addedResetTimer.current);
+    addedResetTimer.current = window.setTimeout(() => setAddedProductId(null), 1800);
+  };
   const scrollReviews = (direction: number) => reviewsTrackRef.current?.scrollBy({ left: direction * 330, behavior: "smooth" });
 
   return (
     <div className="products">
-      <section className="products-hero" aria-labelledby="products-hero-title">
+      <section className="products-hero products-hero-campaign" aria-labelledby="products-hero-title">
         <div className="products-hero-content">
           <div className="products-hero-copy">
-            <span className="products-hero-eyebrow">TECHANOR COLLECTION</span>
-            <h1 id="products-hero-title">TECHNOLOGY FOR<br /><em>EVERYDAY MOMENTS.</em></h1>
-            <p>Thoughtfully selected devices for work, creativity, entertainment and everyday life.</p>
-            <a className="products-hero-cta" href="#product-catalog">Explore Products <span aria-hidden="true">→</span></a>
+            <h1 id="products-hero-title">Find your<br /><em>next device.</em></h1>
+            <p>Discover technology made for everyday life.</p>
+            <div className="products-hero-actions">
+              <a className="products-hero-cta" href="#product-catalog">Explore products</a>
+            </div>
           </div>
-          <div className="products-hero-visual" aria-hidden="true"><img src="/img/productspagehero.png" alt="" /></div>
+          <div className="products-hero-visual" aria-hidden="true"><img src="/img/banner5.png" alt="" /></div>
         </div>
       </section>
 
@@ -144,7 +173,7 @@ export default function Products() {
                   <div className="catalog-card-body">
                     <h3>{product.productName}</h3>
                     <p>{product.productDesc || "Premium technology selected for everyday performance."}</p>
-                    <div className="catalog-card-footer"><div><strong>${product.productPrice.toLocaleString()}</strong><del>${Math.round(product.productPrice * 1.12).toLocaleString()}</del></div><button type="button" onClick={() => addToBasket(product)}><ShoppingBagOutlined /> Add to cart</button></div>
+                    <div className="catalog-card-footer"><div><strong>${product.productPrice.toLocaleString()}</strong><del>${Math.round(product.productPrice * 1.12).toLocaleString()}</del></div><button className={addedProductId === product._id ? "is-added" : ""} type="button" onClick={() => addToBasket(product)} disabled={addedProductId === product._id} aria-live="polite">{addedProductId === product._id ? "Added ✓" : "Add to cart"}</button></div>
                   </div>
                 </article>
               ))}

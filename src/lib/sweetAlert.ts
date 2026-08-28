@@ -13,14 +13,31 @@ const techanorAlertClasses = {
   closeButton: "techanor-alert-close",
 };
 
+const getErrorMessage = (err: any): string => {
+  const apiMessage = err?.response?.data?.message;
+
+  if (typeof apiMessage === "string" && apiMessage.trim()) {
+    return apiMessage;
+  }
+
+  const message = err?.message;
+  if (message === "Network Error" || err?.code === "ERR_NETWORK") {
+    return "We couldn't connect to the server. Check your connection and try again.";
+  }
+
+  if (typeof message === "string" && message.trim()) {
+    return message;
+  }
+
+  return Messages.error1;
+};
+
 export const sweetErrorHandling = async (err: any) => {
-  const error = err.response?.data ?? err;
-  const message = error?.message ?? Messages.error1;
   await Swal.fire({
     icon: "error",
-    title: "Unable to complete request",
-    text: message,
-    confirmButtonText: "Close",
+    title: "Something went wrong",
+    text: getErrorMessage(err),
+    confirmButtonText: "Got it",
     showCloseButton: true,
     buttonsStyling: false,
     customClass: techanorAlertClasses,
@@ -65,7 +82,7 @@ export const sweetFailureProvider = (
 ) => {
   Swal.fire({
     icon: "error",
-    title: "Unable to complete request",
+    title: "Something went wrong",
     text: msg,
     showConfirmButton: show_button,
     showCloseButton: true,

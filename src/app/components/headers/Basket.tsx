@@ -36,6 +36,7 @@ export default function Basket(props: BasketProps) {
   );
 
   const [open, setOpen] = React.useState(false);
+  const [isCheckingOut, setIsCheckingOut] = React.useState(false);
 
   /** HANDLERS **/
 
@@ -47,20 +48,24 @@ export default function Basket(props: BasketProps) {
   };
 
   const ProceedOrderHandler = async () => {
+    if (isCheckingOut || cartItems.length === 0) return;
+
     try {
-      handleClose();
       if (!authMember) throw new Error(Messages.error2);
 
-      const order = new OrderService();
-      await order.createOrder(cartItems);
+      setIsCheckingOut(true);
+
+      const createdOrder = await new OrderService().createOrder(cartItems);
+      if (!createdOrder?._id) throw new Error("Order could not be created. Please try again.");
 
       onDeleteAll();
-
       setOrderBuilder(new Date());
-      history.push("/orders");
+      handleClose();
+      history.push({ pathname: "/orders", state: { createdOrderId: createdOrder._id } });
     } catch (err) {
-      console.log(err);
       sweetErrorHandling(err).then();
+    } finally {
+      setIsCheckingOut(false);
     }
   };
 
@@ -120,7 +125,7 @@ export default function Basket(props: BasketProps) {
               <div className="basket-summary-row"><span>Subtotal</span><strong>${itemsPrice.toFixed(2)}</strong></div>
               <div className="basket-summary-row"><span>Delivery</span><strong>{shippingCost ? `$${shippingCost.toFixed(2)}` : "Free"}</strong></div>
               <div className="basket-summary-total"><span>Total</span><strong>${totalPrice.toFixed(2)}</strong></div>
-              <Button onClick={ProceedOrderHandler} variant="contained">Checkout</Button>
+              <Button type="button" onClick={ProceedOrderHandler} variant="contained" disabled={isCheckingOut || cartItems.length === 0}>{isCheckingOut ? "Creating order..." : "Checkout"}</Button>
               <button type="button" onClick={continueShopping}>Continue shopping</button>
             </footer>
           </>}

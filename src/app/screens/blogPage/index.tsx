@@ -25,22 +25,16 @@ export default function BlogPage() {
   const [category, setCategory] = useState<BlogPostCategory | "ALL">("ALL");
   const [search, setSearch] = useState("");
   const filtered = useMemo(() => publishedPosts.filter((post) => (category === "ALL" || post.category === category) && `${post.title} ${post.excerpt}`.toLowerCase().includes(search.toLowerCase())), [category, search]);
-  const featured = publishedPosts.find((post) => post.featured)!;
 
   return <main className="blog-page">
-    <section className="blog-hero"><div><span>TECHANOR JOURNAL</span><h1>Ideas for a <em>smarter everyday.</em></h1><p>Guides, reviews and thoughtful perspectives on the technology that shapes modern life.</p></div></section>
-    <div className="blog-shell">
-      {category === "ALL" && !search && <article className="blog-featured">
-        <Link className="blog-image-link" to={`/blog/${featured.id}`}><img src={featured.image} alt={featured.title}/></Link><div className="blog-featured-copy"><span>{BLOG_CATEGORY_LABELS[featured.category]}</span><Link className="blog-title-link" to={`/blog/${featured.id}`}><h2>{featured.title}</h2></Link><p>{featured.excerpt}</p><div className="blog-meta"><span>{featured.date}</span><span><AccessTimeRounded/>{featured.readTime}</span></div><Link className="blog-read-button" to={`/blog/${featured.id}`}>Read article <ArrowForwardRounded/></Link></div>
-      </article>}
-      <div className="blog-layout"><section className="blog-content">
-        <header><div><span>THE LATEST</span><h2>{category === "ALL" ? "Latest stories" : BLOG_CATEGORY_LABELS[category]}</h2></div><p>{filtered.length} articles</p></header>
-        <div className="blog-grid">{filtered.map((post) => <article className="blog-card" key={post.id}><Link className="blog-card-image" to={`/blog/${post.id}`}><img src={post.image} alt={post.title}/></Link><div><span className="blog-category">{BLOG_CATEGORY_LABELS[post.category]}</span><Link className="blog-title-link" to={`/blog/${post.id}`}><h3>{post.title}</h3></Link><p>{post.excerpt}</p><div className="blog-meta"><span>{post.date}</span><span><AccessTimeRounded/>{post.readTime}</span></div><footer><b>By Techanor Store</b><Link className="blog-card-read-more" to={`/blog/${post.id}`} aria-label={`Read ${post.title}`}>Read more <ArrowForwardRounded/></Link></footer></div></article>)}</div>
+    <div className="blog-shell blog-shell-index">
+      <header className="blog-index-intro"><span><Link to="/">Home</Link><b>›</b> TECHANOR Journal</span><h1>Ideas for a <em>smarter everyday.</em></h1></header>
+      <section className="blog-content">
+        <header className="blog-latest-header"><div><span>THE LATEST</span><h2>{category === "ALL" ? "Latest stories" : BLOG_CATEGORY_LABELS[category]}</h2></div><label className="blog-search"><SearchRounded/><input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Search stories"/></label></header>
+        <div className="blog-categories" aria-label="Filter stories by category"><button className={category === "ALL" ? "active" : ""} onClick={()=>setCategory("ALL")}>All</button>{categories.map((item)=><button className={category === item ? "active" : ""} onClick={()=>setCategory(item)} key={item}>{BLOG_CATEGORY_LABELS[item]}</button>)}</div>
+        <div className="blog-grid">{filtered.map((post) => <article className="blog-card" data-category={post.category} key={post.id}><Link className="blog-card-image" to={`/blog/${post.id}`}><img src={post.image} alt={post.title}/></Link><div><span className="blog-category">{BLOG_CATEGORY_LABELS[post.category]}</span><Link className="blog-title-link" to={`/blog/${post.id}`}><h3>{post.title}</h3></Link><p>{post.excerpt}</p><div className="blog-meta"><span>{post.date}</span><span><AccessTimeRounded/>{post.readTime}</span></div><Link className="blog-card-read-more" to={`/blog/${post.id}`} aria-label={`Read ${post.title}`}>Read article <ArrowForwardRounded/></Link></div></article>)}</div>
         {filtered.length === 0 && <div className="blog-empty"><h3>No stories found</h3><p>Try another category or search phrase.</p></div>}
-      </section><aside className="blog-sidebar">
-        <label className="blog-search"><SearchRounded/><input value={search} onChange={(e)=>setSearch(e.target.value)} placeholder="Search stories"/></label>
-        <div className="blog-categories"><h3>Categories</h3><button className={category === "ALL" ? "active" : ""} onClick={()=>setCategory("ALL")}><span>All Posts</span><b>{publishedPosts.length}</b></button>{categories.map((item)=><button className={category === item ? "active" : ""} onClick={()=>setCategory(item)} key={item}><span>{BLOG_CATEGORY_LABELS[item]}</span><b>{publishedPosts.filter((post)=>post.category===item).length}</b></button>)}</div>
-      </aside></div>
+      </section>
     </div>
   </main>;
 }

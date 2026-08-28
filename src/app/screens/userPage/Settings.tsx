@@ -115,7 +115,7 @@ export function Settings() {
         </Button>
         <div className={"media-change-box"}>
           <span>Profile photo</span>
-          <p>Personalize your account with a clear JPG or PNG image.</p>
+          <p>JPG or PNG. Recommended square image.</p>
           <div className={"up-del-box"}>
             <Button component="label" onChange={handleImageViewer} disabled={!isEditing}>
               <CloudDownloadIcon /><span>Change photo</span>
@@ -130,8 +130,8 @@ export function Settings() {
           <input
             className={"spec-input mb-nick"}
             type="text"
-            placeholder={authMember?.memberNick}
-            value={memberUpdateInput.memberNick}
+            placeholder="Add your display name"
+            value={memberUpdateInput.memberNick ?? ""}
             name="memberNick"
             onChange={memberNickHandler}
             disabled={!isEditing}
@@ -144,26 +144,26 @@ export function Settings() {
           <input
             className={"spec-input mb-phone"}
             type="text"
-            placeholder={authMember?.memberPhone ?? "no phone"}
-            value={memberUpdateInput.memberPhone}
+            placeholder="Add your phone number"
+            value={memberUpdateInput.memberPhone ?? ""}
             name="memberPhone"
             onChange={memberPhoneHandler}
             disabled={!isEditing}
           />
-          <small className="field-helper">Use an international format, for example +82 10-1234-5678.</small>
+          <small className="field-helper">Use international format, e.g. +82 10-1234-5678.</small>
         </div>
         <div className={"short-input"}>
           <label className={"spec-label"}>Address</label>
           <input
             className={"spec-input  mb-address"}
             type="text"
-            placeholder={authMember?.memberAddress || "no address"}
-            value={memberUpdateInput.memberAddress}
+            placeholder="Add your address"
+            value={memberUpdateInput.memberAddress ?? ""}
             name="memberAddress"
             onChange={memberAddressHandler}
             disabled={!isEditing}
           />
-          <small className="field-helper">This address will be selected by default during checkout.</small>
+          <small className="field-helper">Used as your default checkout address.</small>
         </div>
       </Box>
       <Box className={"input-frame"}>
@@ -171,20 +171,18 @@ export function Settings() {
           <label className={"spec-label"}>About you</label>
           <textarea
             className={"spec-textarea mb-description"}
-            placeholder={
-              authMember?.memberDesc ? authMember.memberDesc : "no description"
-            }
-            value={memberUpdateInput.memberDesc}
+            placeholder="Tell us a little about yourself"
+            value={memberUpdateInput.memberDesc ?? ""}
             name="memberDesc"
             onChange={memberDescriptionHandler}
             disabled={!isEditing}
             rows={3}
           />
-          <small className="field-helper">Add a short introduction that appears on your profile.</small>
+          <small className="field-helper">A short introduction shown on your profile.</small>
         </div>
       </Box>
       {isEditing && <Box className={"save-box"}>
-        <Button className="discard-button" onClick={handleDiscardChanges}>Discard changes</Button>
+        <Button className="discard-button" onClick={handleDiscardChanges}>Cancel</Button>
         <Button variant={"contained"} onClick={handleSubmitButton}>
           Save changes
         </Button>

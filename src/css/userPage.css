@@ -135,3 +135,122 @@
 
 /* Premium Techanor identity card */
 .member-page-burak-card{position:relative;overflow:hidden;padding:22px;border:1px solid #e2e6ec;border-radius:18px;background:linear-gradient(180deg,#fbfcfe 0%,#fff 58%);box-shadow:0 14px 36px rgba(24,32,45,.065);transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}.member-page-burak-card:before{content:"ACCOUNT";width:100%;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #e9edf2;color:#7c8592;font-size:8px;font-weight:800;letter-spacing:1.65px;text-align:left}.member-page-burak-card>img{width:96px;height:96px;border:4px solid #fff;background:#eef3fb;box-shadow:0 0 0 1px #cbd7ea,0 10px 24px rgba(37,99,235,.1)}.member-page-burak-card h2{margin:16px 0 7px;color:#191d24;font-size:21px;font-weight:700;letter-spacing:-.45px}.member-page-burak-card>span{padding:5px 10px;background:#edf3ff;color:#2563eb;font-size:8px;font-weight:800;letter-spacing:1.2px}.member-page-burak-card>div{margin-top:24px;padding:14px;border:0;border-radius:11px;background:#f5f7fa;align-items:center;gap:10px}.member-page-burak-card>div>svg{width:17px;height:17px;color:#2563eb}.member-page-burak-card>div>p{color:#59616d;font-size:11px;font-weight:500}.member-page-burak-card:hover{border-color:#cfd8e6;box-shadow:0 18px 42px rgba(24,32,45,.085);transform:translateY(-2px)}
+
+/* Banner-free account workspace */
+.user-page {
+  min-height: calc(100vh - 72px);
+  background: #f6f8fb;
+}
+
+.user-page .account-container {
+  width: min(1300px, calc(100% - 48px));
+}
+
+.account-page-header {
+  padding-top: 44px;
+}
+
+.account-page-header h1 {
+  margin: 0;
+  color: #16202d;
+  font-size: clamp(28px, 2.4vw, 32px);
+  font-weight: 680;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.account-page-header p {
+  margin: 8px 0 0;
+  color: #737c88;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.user-page .my-page-frame {
+  grid-template-columns: minmax(0, 74fr) minmax(300px, 26fr);
+  gap: 24px;
+  padding: 30px 0 82px;
+}
+
+.my-page-left > div {
+  border-color: #e1e6ed;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(24, 32, 45, .035);
+}
+
+.my-page-left .menu-name {
+  padding: 24px 30px 20px;
+  background: #fff;
+}
+
+.my-page-left .menu-name h2 {
+  font-size: 21px;
+  line-height: 1.2;
+}
+
+.my-page-left .menu-name p {
+  max-width: 560px;
+  margin-top: 6px;
+}
+
+.user-page .settings .edit-profile-row {
+  background: #fafbfd;
+}
+
+.user-page .settings .member-media-frame {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.user-page .settings .avatar-upload,
+.user-page .settings .avatar-upload .mb-image {
+  min-width: 78px;
+  width: 78px;
+  height: 78px;
+}
+
+.user-page .settings .spec-input,
+.user-page .settings .spec-textarea {
+  border-color: #dce2ea;
+  border-radius: 9px;
+}
+
+.member-page-burak-card {
+  position: sticky;
+  top: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(24, 32, 45, .04);
+}
+
+.member-page-burak-card:hover {
+  border-color: #e1e5eb;
+  box-shadow: 0 8px 24px rgba(24, 32, 45, .04);
+  transform: none;
+}
+
+@media (max-width: 760px) {
+  .user-page .account-container {
+    width: calc(100% - 28px);
+  }
+
+  .user-page .my-page-frame {
+    gap: 18px;
+    padding: 22px 0 58px;
+  }
+
+  .account-page-header {
+    padding-top: 30px;
+  }
+
+  .account-page-header p {
+    font-size: 13px;
+  }
+
+  .member-page-burak-card {
+    position: static;
+  }
+
+  .my-page-left .menu-name {
+    padding: 21px 18px 18px;
+  }
+}
