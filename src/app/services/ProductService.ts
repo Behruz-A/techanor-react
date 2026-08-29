@@ -23,9 +23,9 @@ class ProductService {
       if (input.productScreenSize) params.set("productScreenSize", input.productScreenSize);
       if (input.search) params.set("search", input.search);
 
-      const url = `${this.path}/admin/product/all?${params.toString()}`;
+      const url = `${this.path}/product/all?${params.toString()}`;
 
-      const result = await axios.get(url, { withCredentials: true });
+      const result = await axios.get(url);
       console.log("getProducts", result);
 
       return result.data;

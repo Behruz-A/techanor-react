@@ -5,8 +5,13 @@ import { Order } from "./order";
 import { Product } from "./product";
 
 export interface AppRootState {
+  homePage: HomePageState;
   productsPage: ProductsPageState;
   ordersPage: OrdersPageState;
+}
+/**HOME PAGE */
+export interface HomePageState {
+  trendingDeals: Product[];
 }
 /**PRODUCTS PAGE */
 export interface ProductsPageState {
