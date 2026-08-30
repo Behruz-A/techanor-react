@@ -1,37 +1,78 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-const releases = [
-  { id: "demo-galaxy", brand: "Samsung", name: "Galaxy Z Fold8", tagline: "A new dimension unfolds.", image: "/img/newsamsungphone.jpg", theme: "fold" },
-  { id: "demo-macbook-pro", brand: "Apple", name: "MacBook Pro", tagline: "Power at the speed of ideas.", image: "/img/newmackbook.jpg", theme: "mac" },
-  { id: "demo-premium-headphones", brand: "Premium Audio", name: "Spatial Headphones", tagline: "Quiet never sounded this good.", image: "/img/newsonyimg.png", theme: "audio" },
-  { id: "demo-lg-oled", brand: "LG", name: "OLED evo G6", tagline: "Every colour comes alive.", image: "/img/newgoled.jpg", theme: "oled" },
+const showcaseImages = [
+  { id: "watch", image: "/img/iwatch.jpg", alt: "Premium silver smartwatch", shift: 90 },
+  { id: "speaker", image: "/img/headphonenew.jpg", alt: "Premium silver wireless headphones", shift: -122 },
+  { id: "future", image: "/img/futuristicimg.png", alt: "Person exploring virtual reality technology", shift: 0, focal: true },
+  { id: "laptop", image: "/img/mackboooook.jpg", alt: "Premium silver laptop", shift: 90 },
+  { id: "phone", image: "/img/newsamsungphone.jpg", alt: "Latest silver foldable smartphone", shift: -150 },
 ];
 
 export default function NewReleases() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let animationFrame = 0;
+
+    const updateGallery = () => {
+      animationFrame = 0;
+      const gallery = section.querySelector<HTMLElement>(".release-editorial");
+      if (!gallery) return;
+
+      const galleryRect = gallery.getBoundingClientRect();
+      const animationStart = window.innerHeight * 0.52;
+      const scrollRange = window.innerHeight * 0.44;
+      const progress = Math.min(1, Math.max(0, (animationStart - galleryRect.top) / scrollRange));
+
+      section.querySelectorAll<HTMLElement>("[data-release-shift]").forEach((card) => {
+        const shift = Number(card.dataset.releaseShift || 0);
+        card.style.setProperty("--release-scroll-y", reducedMotion.matches ? "0px" : `${shift * progress}px`);
+      });
+    };
+
+    const requestUpdate = () => {
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(updateGallery);
+    };
+
+    updateGallery();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    reducedMotion.addEventListener("change", requestUpdate);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      reducedMotion.removeEventListener("change", requestUpdate);
+    };
+  }, []);
+
   return (
-    <section className="new-releases new-releases--showcase" aria-labelledby="new-releases-title">
-      <div className="new-releases__container">
-        <header className="new-releases__heading">
-          <div><span>Four brands · Just landed</span><h2 id="new-releases-title">New Releases</h2></div>
-          <Link to="/products">View all products <span aria-hidden="true">→</span></Link>
+    <section ref={sectionRef} className="new-releases new-releases--editorial" aria-labelledby="new-releases-title">
+      <div className="new-releases__editorial-container">
+        <header className="new-releases__editorial-heading">
+          <span>DISCOVER THE LATEST</span>
+          <h2 id="new-releases-title">Explore What’s New</h2>
+          <p>Discover the latest technology designed to upgrade how you work, play, and connect.</p>
+          <Link to="/products">Explore New Arrivals <span aria-hidden="true">→</span></Link>
         </header>
 
-        <div className="release-showcase">
-          {releases.map((product) => (
-            <article className={`release-showcase__item release-showcase__item--${product.theme}`} key={product.id}>
-              <div className="release-showcase__copy">
-                <span>{product.brand}</span>
-                <h3>{product.name}</h3>
-                <p>{product.tagline}</p>
-                <div className="release-showcase__actions">
-                  <Link to="/products">Learn more</Link>
-                  <Link to="/products" className="release-showcase__buy">Buy</Link>
-                </div>
-              </div>
-              <Link className="release-showcase__media" to="/products" aria-label={`Browse products like ${product.name}`}>
-                <img src={product.image} alt="" loading="lazy" />
-              </Link>
-            </article>
+        <div className="release-editorial" aria-label="Latest technology showcase">
+          {showcaseImages.map(({ id, image, alt, shift, focal }) => (
+            <Link
+              className={`release-editorial__card release-editorial__card--${id}${focal ? " release-editorial__card--focal" : ""}`}
+              data-release-shift={shift}
+              to="/products"
+              aria-label={`Explore new arrivals: ${alt}`}
+              key={id}
+            >
+              <img src={image} alt={alt} loading={focal ? "eager" : "lazy"} />
+            </Link>
           ))}
         </div>
       </div>
