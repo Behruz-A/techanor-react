@@ -34,6 +34,7 @@
 .home-signup-button:hover { background: var(--color-primary-hover); }
 .home-avatar-button { width: 46px; height: 46px; padding: 2px; overflow: hidden; border-radius: 50%; background: var(--color-primary-light); }
 .home-avatar-button img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+.home-avatar-button svg,.other-avatar-button svg{font-size:22px}
 .home-hero { width: min(1300px, calc(100% - 48px)); height: 560px; margin: 16px auto 0; display: grid; grid-template-columns: minmax(430px,.78fr) minmax(0,1.22fr); overflow: hidden; border: 1px solid var(--color-border); border-radius: 24px; background: #f3f0e9; box-shadow: 0 12px 34px rgba(23,23,23,.055); }
 .home-slide-image-wrap { height: 560px; overflow: hidden; display: grid; place-items: center; background: #f3f0e9; }
 .home-slide-image-wrap.iphone, .home-slide-image-wrap.galaxy { background: #f3f0e9; }

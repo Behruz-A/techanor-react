@@ -33,7 +33,7 @@ These routes currently exist in the Techanor backend `src/router.ts`.
 
 | Method | Path | Auth | Request | Success response | Frontend status |
 | --- | --- | --- | --- | --- | --- |
-| `POST` | `/signup` | No | `MemberInput` JSON | `{ member: Member }` | Service exists |
+| `POST` | `/signup` | No | Public signup JSON | `{ member: Member }` | Connected; creates session |
 | `POST` | `/login` | No | `LoginInput` JSON | `{ member: Member }` | Service exists |
 | `GET` | `/member/me` | Session | Session cookie | `{ member: Member }` | Connected; restores login |
 | `POST` | `/logout` | Session | None | `{ logout: true }` | Connected |
@@ -97,11 +97,13 @@ Techanor backend contract first, then connect its frontend service.
 
 ## Authentication status
 
-Techanor uses an HTTP-only Express session stored in MongoDB. Login writes the
-authenticated member to the server session, `/member/me` restores and validates
-that session after a browser refresh, and logout destroys it. The frontend sends
-credentials for these calls. `memberData` in localStorage is only a display
-cache; it is never accepted as proof of authentication.
+Techanor uses an HTTP-only Express session stored in MongoDB. Signup and login
+write the authenticated member to the server session, `/member/me` restores and
+validates that session after a browser refresh, and logout destroys it. Public
+signup always creates an `ACTIVE` `USER`; client-provided role/status fields are
+ignored. The frontend sends credentials for these calls. `memberData` in
+localStorage is only a display cache; it is never accepted as proof of
+authentication.
 
 ## Redux Toolkit standard
 

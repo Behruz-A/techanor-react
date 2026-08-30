@@ -50,9 +50,13 @@ export default function AuthenticationModal({
   const handleSignupRequest = async (event?: FormEvent) => {
     event?.preventDefault();
     try {
-      if (!memberNick.trim() || !memberPhone.trim() || !memberPassword) throw new Error(Messages.error3);
+      const normalizedNick = memberNick.trim();
+      const normalizedPhone = memberPhone.replace(/[\s()-]/g, "");
+      if (!/^[A-Za-z0-9_]{2,30}$/.test(normalizedNick)) throw new Error("Username must be 2 to 30 characters and use only letters, numbers, or underscores.");
+      if (!/^\+?\d{7,15}$/.test(normalizedPhone)) throw new Error("Enter a valid phone number containing 7 to 15 digits.");
+      if (memberPassword.length < 6 || memberPassword.length > 72) throw new Error("Password must be between 6 and 72 characters.");
       setLoading(true);
-      const input: MemberInput = { memberNick: memberNick.trim(), memberPhone: memberPhone.trim(), memberPassword };
+      const input: MemberInput = { memberNick: normalizedNick, memberPhone: normalizedPhone, memberPassword };
       const member = await new MemberService().signup(input);
       setAuthMember(member);
       closeSignup();
@@ -90,7 +94,7 @@ export default function AuthenticationModal({
   const passwordField = (
     <label className="auth-field">
       <span>Password</span>
-      <input type={showPassword ? "text" : "password"} value={memberPassword} onChange={(e) => setMemberPassword(e.target.value)} placeholder="Enter your password" autoComplete={signupOpen ? "new-password" : "current-password"} />
+      <input type={showPassword ? "text" : "password"} value={memberPassword} onChange={(e) => setMemberPassword(e.target.value)} placeholder="Enter your password" autoComplete={signupOpen ? "new-password" : "current-password"} minLength={signupOpen ? 6 : undefined} maxLength={72} required />
       <button type="button" aria-label={showPassword ? "Hide password" : "Show password"} onClick={() => setShowPassword((shown) => !shown)}>{showPassword ? <VisibilityOffRounded /> : <VisibilityRounded />}</button>
     </label>
   );
@@ -122,8 +126,8 @@ export default function AuthenticationModal({
               <button className="auth-close" type="button" onClick={closeSignup} aria-label="Close signup"><CloseRounded /></button>
               <div className="auth-heading"><span>CREATE ACCOUNT</span><h2>Join Techanor</h2><p>Create your profile and keep every order in one place.</p></div>
               <form className="auth-form" onSubmit={handleSignupRequest}>
-                <label className="auth-field"><span>Username</span><input value={memberNick} onChange={(e) => setMemberNick(e.target.value)} placeholder="Choose a username" autoComplete="username" autoFocus /></label>
-                <label className="auth-field"><span>Phone number</span><input value={memberPhone} onChange={(e) => setMemberPhone(e.target.value)} placeholder="Enter your phone number" autoComplete="tel" /></label>
+                <label className="auth-field"><span>Username</span><input value={memberNick} onChange={(e) => setMemberNick(e.target.value)} placeholder="Choose a username" autoComplete="username" minLength={2} maxLength={30} pattern="[A-Za-z0-9_]+" required autoFocus /></label>
+                <label className="auth-field"><span>Phone number</span><input type="tel" value={memberPhone} onChange={(e) => setMemberPhone(e.target.value)} placeholder="Enter your phone number" autoComplete="tel" required /></label>
                 {passwordField}
                 <button className="auth-submit" type="submit" disabled={loading}>{loading ? "Creating account…" : "Create account"}<span>→</span></button>
               </form>
