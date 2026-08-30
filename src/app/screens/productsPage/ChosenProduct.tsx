@@ -93,15 +93,14 @@ export default function ChosenProduct() {
     .filter((product) => product._id !== chosenProduct._id && product.productCategory !== chosenProduct.productCategory)
     .slice(0, 4);
   const addToBasket = () => {
-    for (let index = 0; index < quantity; index += 1) {
-      onAdd({
-        _id: chosenProduct._id,
-        quantity: 1,
-        name: chosenProduct.productName,
-        price: chosenProduct.productPrice,
-        image: chosenProduct.productImages?.[0] || "",
-      });
-    }
+    onAdd({
+      _id: chosenProduct._id,
+      quantity,
+      maxQuantity: chosenProduct.productLeftCount,
+      name: chosenProduct.productName,
+      price: chosenProduct.productPrice,
+      image: chosenProduct.productImages?.[0] || "",
+    });
   };
 
   return (
@@ -169,7 +168,7 @@ export default function ChosenProduct() {
               </div>
             </div>
 
-            <button className="product-add-button" onClick={addToBasket}><ShoppingBagOutlinedIcon /> Add to cart</button>
+            <button className="product-add-button" onClick={addToBasket} disabled={chosenProduct.productLeftCount <= 0}><ShoppingBagOutlinedIcon /> {chosenProduct.productLeftCount > 0 ? "Add to cart" : "Out of stock"}</button>
             <p className="product-stock-note">
               {chosenProduct.productLeftCount > 0 ? `${chosenProduct.productLeftCount} items available` : "Currently out of stock"}
             </p>

@@ -114,7 +114,7 @@ export default function Products() {
   };
 
   const addToBasket = (product: Product) => {
-    onAdd({ _id: product._id, quantity: 1, name: product.productName, price: product.productPrice, image: product.productImages[0] });
+    onAdd({ _id: product._id, quantity: 1, maxQuantity: product.productLeftCount, name: product.productName, price: product.productPrice, image: product.productImages[0] });
     setAddedProductId(product._id);
     if (addedResetTimer.current !== null) window.clearTimeout(addedResetTimer.current);
     addedResetTimer.current = window.setTimeout(() => setAddedProductId(null), 1800);
@@ -175,7 +175,7 @@ export default function Products() {
                   <div className="catalog-card-body">
                     <h3>{product.productName}</h3>
                     <p>{product.productDesc || "Premium technology selected for everyday performance."}</p>
-                    <div className="catalog-card-footer"><div><strong>${product.productPrice.toLocaleString()}</strong><del>${Math.round(product.productPrice * 1.12).toLocaleString()}</del></div><button className={addedProductId === product._id ? "is-added" : ""} type="button" onClick={() => addToBasket(product)} disabled={addedProductId === product._id} aria-live="polite">{addedProductId === product._id ? "Added ✓" : "Add to cart"}</button></div>
+                    <div className="catalog-card-footer"><div><strong>${product.productPrice.toLocaleString()}</strong><del>${Math.round(product.productPrice * 1.12).toLocaleString()}</del></div><button className={addedProductId === product._id ? "is-added" : ""} type="button" onClick={() => addToBasket(product)} disabled={addedProductId === product._id || product.productLeftCount <= 0} aria-live="polite">{product.productLeftCount <= 0 ? "Out of stock" : addedProductId === product._id ? "Added ✓" : "Add to cart"}</button></div>
                   </div>
                 </article>
               ))}

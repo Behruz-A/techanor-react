@@ -3,6 +3,7 @@ import { Badge, Drawer, IconButton } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useHistory } from "react-router-dom";
 import { serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
@@ -16,7 +17,16 @@ const imageUrl = (path?: string) => {
 export default function Wishlist() {
   const [open, setOpen] = useState(false);
   const history = useHistory();
-  const { wishlist: { items, remove, clear } } = useGlobals();
+  const { basket: { onAdd }, wishlist: { items, remove, clear } } = useGlobals();
+
+  const addToBasket = (product: typeof items[number]) => onAdd({
+    _id: product._id,
+    quantity: 1,
+    maxQuantity: product.productLeftCount,
+    name: product.productName,
+    price: product.productPrice,
+    image: product.productImages?.[0] || "",
+  });
 
   const openProduct = (productId: string) => {
     setOpen(false);
@@ -50,6 +60,9 @@ export default function Wishlist() {
                     <button className="wishlist-product" type="button" onClick={() => openProduct(product._id)}>
                       <img src={imageUrl(product.productImages?.[0])} alt="" />
                       <span><strong>{product.productName}</strong><small>${product.productPrice.toLocaleString()}</small></span>
+                    </button>
+                    <button className="wishlist-add" type="button" onClick={() => addToBasket(product)} disabled={product.productLeftCount <= 0}>
+                      <ShoppingBagOutlinedIcon /> {product.productLeftCount > 0 ? "Add to cart" : "Out of stock"}
                     </button>
                     <button className="wishlist-remove" type="button" onClick={() => remove(product._id)} aria-label={`Remove ${product.productName}`}><DeleteOutlineRoundedIcon /></button>
                   </article>

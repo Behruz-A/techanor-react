@@ -13,31 +13,59 @@ const techanorAlertClasses = {
   closeButton: "techanor-alert-close",
 };
 
-const getErrorMessage = (err: any): string => {
-  const apiMessage = err?.response?.data?.message;
+interface ErrorFeedback {
+  title: string;
+  message: string;
+  confirmText: string;
+}
 
-  if (typeof apiMessage === "string" && apiMessage.trim()) {
-    return apiMessage;
+const getErrorFeedback = (err: unknown): ErrorFeedback => {
+  if (typeof err === "string" && err.trim()) {
+    return { title: "We couldn't complete that", message: err, confirmText: "Try again" };
   }
 
-  const message = err?.message;
-  if (message === "Network Error" || err?.code === "ERR_NETWORK") {
-    return "We couldn't connect to the server. Check your connection and try again.";
+  const error = err as {
+    code?: string;
+    message?: string;
+    response?: { status?: number; data?: { message?: string } };
+  } | null;
+  const status = error?.response?.status;
+  const apiMessage = error?.response?.data?.message;
+
+  if (error?.message === Messages.error2) {
+    return { title: "Sign in required", message: "Please sign in to continue with this action.", confirmText: "Got it" };
+  }
+  if (error?.message === "Network Error" || error?.code === "ERR_NETWORK") {
+    return { title: "Connection unavailable", message: "We couldn't reach the server. Check your connection and try again.", confirmText: "Try again" };
   }
 
-  if (typeof message === "string" && message.trim()) {
-    return message;
+  const statusFeedback: Record<number, ErrorFeedback> = {
+    400: { title: "Check your information", message: "Some information is missing or invalid. Please review it and try again.", confirmText: "Review" },
+    401: { title: "Session expired", message: "Please sign in again to continue securely.", confirmText: "Got it" },
+    403: { title: "Action not available", message: "You don't have permission to complete this action.", confirmText: "Close" },
+    404: { title: "Service unavailable", message: "The requested service or information isn't available right now. Please try again later.", confirmText: "Got it" },
+    409: { title: "Unable to update", message: "The information has changed. Refresh the page and try again.", confirmText: "Got it" },
+    429: { title: "Too many attempts", message: "Please wait a moment before trying again.", confirmText: "Got it" },
+    500: { title: "Server issue", message: "Something went wrong on our side. Please try again shortly.", confirmText: "Try again" },
+  };
+  const statusMatch = status ? statusFeedback[status] : undefined;
+  if (statusMatch) {
+    return { ...statusMatch, message: typeof apiMessage === "string" && apiMessage.trim() ? apiMessage : statusMatch.message };
   }
 
-  return Messages.error1;
+  const message = typeof apiMessage === "string" && apiMessage.trim()
+    ? apiMessage
+    : typeof error?.message === "string" && error.message.trim() ? error.message : Messages.error1;
+  return { title: "We couldn't complete that", message, confirmText: "Try again" };
 };
 
-export const sweetErrorHandling = async (err: any) => {
+export const sweetErrorHandling = async (err: unknown) => {
+  const feedback = getErrorFeedback(err);
   await Swal.fire({
     icon: "error",
-    title: "Something went wrong",
-    text: getErrorMessage(err),
-    confirmButtonText: "Got it",
+    title: feedback.title,
+    text: feedback.message,
+    confirmButtonText: feedback.confirmText,
     showCloseButton: true,
     buttonsStyling: false,
     customClass: techanorAlertClasses,

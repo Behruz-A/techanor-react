@@ -857,6 +857,9 @@
 .basket-quantity button{width:27px;height:25px;display:grid;place-items:center}
 .basket-quantity button svg{font-size:14px}
 .basket-quantity span{min-width:23px;font-size:10px}
+.basket-quantity button:disabled{background:#f4f5f7;color:#b7bdc6;cursor:not-allowed}
+.basket-stock-limit{display:block;margin-top:5px;color:#7c8490;font-size:9px;font-weight:600}
+.basket-stock-limit.reached{color:#d14c52}
 .basket-drawer-item-actions{height:100%;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between}
 .basket-drawer-item-actions button{width:27px;height:27px;display:grid;place-items:center;padding:0;border:0;background:transparent;color:#a0a6ae;cursor:pointer}
 .basket-drawer-item-actions button:hover{color:#dc3545}
@@ -1013,6 +1016,10 @@
 .wishlist-product span{min-width:0;display:flex;flex-direction:column;gap:8px}
 .wishlist-product strong{overflow:hidden;color:#242931;font-size:13px;text-overflow:ellipsis;white-space:nowrap}
 .wishlist-product small{color:#2563eb;font-size:12px;font-weight:750}
+.wishlist-add{min-height:32px;margin:10px 0 0 92px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;border:1px solid #d7e2f5;border-radius:7px;background:#eef4ff;color:#1d4ed8;font:inherit;font-size:10px;font-weight:700;cursor:pointer}
+.wishlist-add:hover{border-color:#b9cdf1;background:#dfeaff}
+.wishlist-add:disabled{border-color:#e3e6ea;background:#f4f5f6;color:#9ca3ad;cursor:not-allowed}
+.wishlist-add svg{font-size:15px}
 .wishlist-remove{position:absolute;top:22px;right:0;width:30px;height:30px;padding:0;display:grid;place-items:center;border:0;background:transparent;color:#a0a6ae;cursor:pointer}
 .wishlist-remove:hover{color:#dc3545}
 .wishlist-remove svg{font-size:18px}

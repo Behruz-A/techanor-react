@@ -20,6 +20,7 @@ code {
 }
 
 .techanor-alert-card {
+  overflow: hidden !important;
   width: min(410px, calc(100vw - 32px)) !important;
   padding: 28px 28px 24px !important;
   border: 1px solid rgba(13, 42, 54, 0.1) !important;
@@ -28,13 +29,22 @@ code {
   box-shadow: 0 24px 70px rgba(6, 25, 34, 0.2) !important;
 }
 
+.techanor-alert-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, #0a2733, #2563eb);
+}
+
 .techanor-alert-icon {
   width: 48px !important;
   height: 48px !important;
   margin: 0 auto 18px !important;
   border: 0 !important;
   border-radius: 14px !important;
-  background: #fff1f1 !important;
+  background: linear-gradient(145deg, #fff5f5, #ffe8e9) !important;
+  box-shadow: 0 8px 20px rgba(226, 85, 90, 0.12) !important;
 }
 
 .techanor-alert-icon.swal2-error [class^="swal2-x-mark-line"] {
@@ -82,20 +92,20 @@ code {
   min-height: 44px;
   padding: 0 20px;
   border: 0;
-  border-radius: 22px;
-  background: #2563eb;
+  border-radius: 11px;
+  background: #0a2733;
   color: #fff;
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 8px 20px rgba(10, 39, 51, 0.18);
   transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .techanor-alert-confirm:hover {
-  background: #1d56d8;
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.26);
+  background: #123b4b;
+  box-shadow: 0 10px 24px rgba(10, 39, 51, 0.24);
   transform: translateY(-1px);
 }
 

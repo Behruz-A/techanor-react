@@ -16,24 +16,18 @@ import OrderService from "../../services/OrderService";
 
 interface BasketProps {}
 
+const FREE_SHIPPING_THRESHOLD = 79;
+const STANDARD_SHIPPING_COST = 5;
+
 export default function Basket(props: BasketProps) {
   const {
     authMember,
     setOrderBuilder,
-    basket: { cartItems, onAdd, onRemove, onDelete, onDeleteAll },
+    basket: { cartItems, itemCount, subtotal, onAdd, onRemove, onDelete, onDeleteAll },
   } = useGlobals();
   const history = useHistory();
-  const itemsPrice: number = cartItems.reduce(
-    (a: number, c: CartItem) => a + c.quantity * c.price,
-    0,
-  );
-
-  const shippingCost: number = itemsPrice < 100 ? 5 : 0;
-  const totalPrice = itemsPrice + shippingCost;
-  const itemCount = cartItems.reduce(
-    (total: number, item: CartItem) => total + item.quantity,
-    0,
-  );
+  const shippingCost: number = subtotal > FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_COST;
+  const totalPrice = subtotal + shippingCost;
 
   const [open, setOpen] = React.useState(false);
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
@@ -100,17 +94,18 @@ export default function Basket(props: BasketProps) {
             <div className="basket-drawer-tools"><span>{itemCount} {itemCount === 1 ? "item" : "items"} in your bag</span><button type="button" onClick={onDeleteAll}><DeleteOutlineRounded/>Clear all</button></div>
             <div className="basket-drawer-items">
               {cartItems.map((item: CartItem) => {
-                const imagePath = item.image.startsWith("/") ? item.image : `${serverApi}/${item.image}`;
+                const imagePath = item.image.startsWith("/") || item.image.startsWith("http") ? item.image : `${serverApi}/${item.image}`;
                 return (
                   <article className="basket-drawer-item" key={item._id}>
                     <div className="basket-drawer-media"><img src={imagePath} alt={item.name} /></div>
                     <div className="basket-drawer-item-copy">
                       <h3>{item.name}</h3>
                       <p>${item.price.toLocaleString()} each</p>
+                      <small className={item.quantity >= item.maxQuantity ? "basket-stock-limit reached" : "basket-stock-limit"}>{item.quantity >= item.maxQuantity ? "Maximum stock reached" : `${item.maxQuantity} available`}</small>
                       <div className="basket-quantity">
                         <button type="button" onClick={() => onRemove(item)} aria-label={`Decrease ${item.name} quantity`}><RemoveRoundedIcon /></button>
                         <span>{item.quantity}</span>
-                        <button type="button" onClick={() => onAdd(item)} aria-label={`Increase ${item.name} quantity`}><AddRoundedIcon /></button>
+                        <button type="button" onClick={() => onAdd({ ...item, quantity: 1 })} disabled={item.quantity >= item.maxQuantity} aria-label={`Increase ${item.name} quantity`}><AddRoundedIcon /></button>
                       </div>
                     </div>
                     <div className="basket-drawer-item-actions">
@@ -122,7 +117,7 @@ export default function Basket(props: BasketProps) {
               })}
             </div>
             <footer className="basket-drawer-footer">
-              <div className="basket-summary-row"><span>Subtotal</span><strong>${itemsPrice.toFixed(2)}</strong></div>
+              <div className="basket-summary-row"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
               <div className="basket-summary-row"><span>Delivery</span><strong>{shippingCost ? `$${shippingCost.toFixed(2)}` : "Free"}</strong></div>
               <div className="basket-summary-total"><span>Total</span><strong>${totalPrice.toFixed(2)}</strong></div>
               <Button type="button" onClick={ProceedOrderHandler} variant="contained" disabled={isCheckingOut || cartItems.length === 0}>{isCheckingOut ? "Creating order..." : "Checkout"}</Button>
