@@ -1484,7 +1484,7 @@
 }
 .new-releases__editorial-heading {
   max-width: 720px;
-  margin: 0 auto 88px;
+  margin: 0 auto 48px;
   text-align: center;
 }
 .new-releases__editorial-heading > span {
@@ -1570,15 +1570,18 @@
 .release-editorial__card--speaker img,
 .release-editorial__card--laptop img,
 .release-editorial__card--phone img {
-  object-fit: contain;
-  padding: 14px;
-  box-sizing: border-box;
-  background: #f0f2f3;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: block;
+  object-fit: cover;
+  object-position: center;
 }
+.release-editorial__card--laptop img { object-position: 48% center; }
 
 @media (max-width: 1080px) {
   .new-releases--editorial { min-height: clamp(980px, 115vh, 1120px); padding: 82px 0 120px; }
-  .new-releases__editorial-heading { margin-bottom: 64px; }
+  .new-releases__editorial-heading { margin-bottom: 42px; }
   .release-editorial {
     height: 510px;
     grid-template-columns: 0.78fr 0.9fr 1.4fr 0.9fr 0.78fr;
@@ -1595,7 +1598,7 @@
 @media (max-width: 720px) {
   .new-releases--editorial { min-height: 0; padding: 68px 0 76px; }
   .new-releases__editorial-container { width: 100%; }
-  .new-releases__editorial-heading { margin: 0 auto 44px; padding: 0 22px; }
+  .new-releases__editorial-heading { margin: 0 auto 36px; padding: 0 22px; }
   .new-releases__editorial-heading h2 { font-size: clamp(38px, 12vw, 52px); letter-spacing: -2px; }
   .new-releases__editorial-heading p { font-size: 15px; }
   .release-editorial {

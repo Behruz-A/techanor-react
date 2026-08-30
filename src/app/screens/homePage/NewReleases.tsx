@@ -2,11 +2,11 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 const showcaseImages = [
-  { id: "watch", image: "/img/iwatch.jpg", alt: "Premium silver smartwatch", shift: 90 },
-  { id: "speaker", image: "/img/headphonenew.jpg", alt: "Premium silver wireless headphones", shift: -122 },
+  { id: "watch", image: "/img/newapplewatchforreleases.png", alt: "Premium Apple Watch", shift: 90 },
+  { id: "speaker", image: "/img/headphone1.png", alt: "Premium wireless headphones", shift: -122 },
   { id: "future", image: "/img/futuristicimg.png", alt: "Person exploring virtual reality technology", shift: 0, focal: true },
-  { id: "laptop", image: "/img/mackboooook.jpg", alt: "Premium silver laptop", shift: 90 },
-  { id: "phone", image: "/img/newsamsungphone.jpg", alt: "Latest silver foldable smartphone", shift: -150 },
+  { id: "laptop", image: "/img/newlaptop1.png", alt: "Premium laptop", shift: 90 },
+  { id: "phone", image: "/img/newphone1.png", alt: "Latest premium smartphone", shift: -150 },
 ];
 
 export default function NewReleases() {
