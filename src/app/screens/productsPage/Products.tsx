@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Pagination } from "@mui/material";
-import { ChevronLeftRounded, ChevronRightRounded, FavoriteBorderRounded, SearchRounded, SortRounded } from "@mui/icons-material";
+import { ChevronLeftRounded, ChevronRightRounded, Favorite, FavoriteBorderRounded, SearchRounded, SortRounded } from "@mui/icons-material";
 import { createSelector } from "reselect";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
@@ -19,7 +19,6 @@ import {
 } from "../../../constants/enums";
 import { serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
-import { showcaseProducts } from "./showcaseProducts";
 
 const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
@@ -40,19 +39,21 @@ const imageUrl = (path: string) => path.startsWith("/") ? path : `${serverApi}/$
 export default function Products() {
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
   const addedResetTimer = useRef<number | null>(null);
-  const { basket: { onAdd } } = useGlobals();
+  const { basket: { onAdd }, wishlist } = useGlobals();
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
   const { products } = useSelector(productsRetriever);
-  const [searchText, setSearchText] = useState("");
-  const [submittedSearch, setSubmittedSearch] = useState("");
+  const initialParams = new URLSearchParams(location.search);
+  const searchFromUrl = initialParams.get("search") || "";
+  const [searchText, setSearchText] = useState(searchFromUrl);
+  const [submittedSearch, setSubmittedSearch] = useState(searchFromUrl);
   const [priceFilter, setPriceFilter] = useState("all");
-  const categoryFromUrl = new URLSearchParams(location.search).get("category");
+  const categoryFromUrl = initialParams.get("category");
   const initialCategory = Object.values(ProductCategory).includes(categoryFromUrl as ProductCategory)
     ? categoryFromUrl as ProductCategory
     : undefined;
-  const [productSearch, setProductSearch] = useState<ProductInquiry>({ page: 1, limit: 9, order: "createdAt", productCategory: initialCategory });
+  const [productSearch, setProductSearch] = useState<ProductInquiry>({ page: 1, limit: 9, order: "createdAt", productCategory: initialCategory, search: searchFromUrl });
   const reviewsTrackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => () => {
@@ -66,18 +67,19 @@ export default function Products() {
   }, [dispatch, productSearch]);
 
   useEffect(() => {
-    const category = new URLSearchParams(location.search).get("category");
+    const params = new URLSearchParams(location.search);
+    const category = params.get("category");
+    const search = params.get("search") || "";
     const validCategory = Object.values(ProductCategory).includes(category as ProductCategory)
       ? category as ProductCategory
       : undefined;
-    setProductSearch((current) => current.productCategory === validCategory
-      ? current
-      : { ...current, page: 1, productCategory: validCategory });
+    setSearchText(search);
+    setSubmittedSearch(search);
+    setProductSearch((current) => ({ ...current, page: 1, productCategory: validCategory, search }));
   }, [location.search]);
 
-  const sourceProducts = products.length ? products : showcaseProducts;
   const visibleProducts = useMemo(() => {
-    const filteredProducts = sourceProducts.filter((product) => {
+    const filteredProducts = products.filter((product) => {
       const categoryMatches = !productSearch.productCategory || product.productCategory === productSearch.productCategory;
       const searchMatches = !submittedSearch || `${product.productName} ${product.productDesc || ""}`.toLowerCase().includes(submittedSearch.toLowerCase());
       const conditionMatches = !productSearch.productCondition || product.productCondition === productSearch.productCondition;
@@ -90,7 +92,7 @@ export default function Products() {
       if (productSearch.order === "productViews") return (second.productViews || 0) - (first.productViews || 0);
       return new Date(second.createdAt).getTime() - new Date(first.createdAt).getTime();
     });
-  }, [sourceProducts, productSearch.productCategory, productSearch.productCondition, productSearch.productBrand, productSearch.order, submittedSearch]);
+  }, [products, productSearch.productCategory, productSearch.productCondition, productSearch.productBrand, productSearch.order, submittedSearch]);
 
   const submitSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -167,7 +169,7 @@ export default function Products() {
               {visibleProducts.map((product) => (
                 <article className="catalog-card" key={product._id}>
                   <div className="catalog-card-media" onClick={() => history.push(`/products/${product._id}`)}>
-                    <button className="catalog-wishlist" type="button" aria-label={`Save ${product.productName}`}><FavoriteBorderRounded /></button>
+                    <button className={wishlist.has(product._id) ? "catalog-wishlist active" : "catalog-wishlist"} type="button" aria-label={`${wishlist.has(product._id) ? "Remove" : "Save"} ${product.productName}`} onClick={(event) => { event.stopPropagation(); wishlist.toggle(product); }}>{wishlist.has(product._id) ? <Favorite /> : <FavoriteBorderRounded />}</button>
                     <img src={imageUrl(product.productImages[0])} alt={product.productName} />
                   </div>
                   <div className="catalog-card-body">

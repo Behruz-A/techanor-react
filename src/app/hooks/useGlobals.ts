@@ -1,11 +1,13 @@
 import { createContext, useContext } from "react";
 import { Member } from "../../lib/types/member";
 import useBasket from "./useBasket";
+import useWishlist from "./useWishlist";
 
 interface GlobalInterface {
   authMember: Member | null;
   setAuthMember: (member: Member | null) => void;
   basket: ReturnType<typeof useBasket>;
+  wishlist: ReturnType<typeof useWishlist>;
   orderBuilder: Date;
   setOrderBuilder: (input: Date) => void;
 }

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { createSelector } from "reselect";
+import { Link, useParams } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
@@ -16,11 +14,7 @@ import ProductService from "../../services/ProductService";
 import { serverApi } from "../../../lib/config";
 import { Product } from "../../../lib/types/product";
 import { findShowcaseProduct, showcaseProducts } from "./showcaseProducts";
-
-const productPageRetriever = createSelector(
-  retrieveChosenProduct,
-  (chosenProduct) => ({ chosenProduct }),
-);
+import { useAppDispatch, useAppSelector } from "../../hooks";
 
 const resolveImage = (image?: string) => {
   if (!image) return "";
@@ -35,9 +29,11 @@ const formatLabel = (value?: string) =>
 export default function ChosenProduct() {
   const { basket: { onAdd } } = useGlobals();
   const { productId } = useParams<{ productId: string }>();
-  const dispatch = useDispatch();
-  const { chosenProduct } = useSelector(productPageRetriever);
+  const dispatch = useAppDispatch();
+  const chosenProduct = useAppSelector(retrieveChosenProduct);
   const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<"related" | "reviews" | "other">("related");
@@ -45,15 +41,24 @@ export default function ChosenProduct() {
   useEffect(() => {
     const service = new ProductService();
     const showcaseProduct = findShowcaseProduct(productId);
+    dispatch(setChosenProduct(null));
+    setIsLoading(true);
+    setHasError(false);
+
     if (showcaseProduct) {
       dispatch(setChosenProduct(showcaseProduct));
       setCatalogProducts(showcaseProducts);
+      setIsLoading(false);
       return;
     }
     service
       .getProduct(productId)
       .then((data) => dispatch(setChosenProduct(data)))
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log("Error, chosen product:", err);
+        setHasError(true);
+      })
+      .finally(() => setIsLoading(false));
     service
       .getProducts({ page: 1, limit: 12, order: "createdAt" })
       .then((data) => setCatalogProducts(Array.isArray(data) ? data : []))
@@ -65,7 +70,19 @@ export default function ChosenProduct() {
     setActiveImage(0);
   }, [productId]);
 
-  if (!chosenProduct) return null;
+  if (isLoading) {
+    return <main className="product-detail-status">Loading product...</main>;
+  }
+
+  if (hasError || !chosenProduct) {
+    return (
+      <main className="product-detail-status">
+        <h1>Product unavailable</h1>
+        <p>This product could not be loaded or no longer exists.</p>
+        <Link to="/products">Back to products</Link>
+      </main>
+    );
+  }
 
   const sourceImages = chosenProduct.productImages?.length ? chosenProduct.productImages : [""];
   const images = sourceImages.length === 1 ? [sourceImages[0], sourceImages[0]] : sourceImages;

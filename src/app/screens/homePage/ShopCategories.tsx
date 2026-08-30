@@ -1,15 +1,22 @@
 import { Link } from "react-router-dom";
-import { ProductCategory } from "../../../constants/enums";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import { PRODUCT_CATEGORY_LABELS, ProductCategory } from "../../../constants/enums";
 
-const categories = [
-  { name: "Laptops", value: ProductCategory.LAPTOP, image: "/img/mackboooook.jpg", tone: "ice" },
-  { name: "Smartphones", value: ProductCategory.SMARTPHONE, image: "/img/iphone17silver.jpg", tone: "lilac" },
-  { name: "TV", value: ProductCategory.TV, image: "/img/Samsung TV 50.jpg", tone: "sky" },
-  { name: "Gaming", value: ProductCategory.GAMING, image: "/img/gamingimg.jpg", tone: "slate" },
-  { name: "Audio", value: ProductCategory.AUDIO, image: "/img/testheadphone.avif", tone: "mist" },
-  { name: "Cases", value: ProductCategory.CASES, image: "/img/iphone17img3.jpg", tone: "blue" },
-  { name: "Wearables", value: ProductCategory.WEARABLES, image: "/img/iwatch.jpg", tone: "wearables" },
-  { name: "Others", value: ProductCategory.OTHERS, image: "/img/cameraimg.jpg", tone: "pearl" },
+interface CategoryCard {
+  value: ProductCategory;
+  image: string;
+  tone: string;
+}
+
+const categories: CategoryCard[] = [
+  { value: ProductCategory.LAPTOP, image: "/img/mackboooook.jpg", tone: "ice" },
+  { value: ProductCategory.SMARTPHONE, image: "/img/iphone17silver.jpg", tone: "lilac" },
+  { value: ProductCategory.TV, image: "/img/Samsung TV 50.jpg", tone: "sky" },
+  { value: ProductCategory.GAMING, image: "/img/gamingimg.jpg", tone: "slate" },
+  { value: ProductCategory.AUDIO, image: "/img/testheadphone.avif", tone: "mist" },
+  { value: ProductCategory.CASES, image: "/img/iphone17img3.jpg", tone: "blue" },
+  { value: ProductCategory.WEARABLES, image: "/img/iwatch.jpg", tone: "wearables" },
+  { value: ProductCategory.OTHERS, image: "/img/cameraimg.jpg", tone: "pearl" },
 ];
 
 export default function ShopCategories() {
@@ -29,14 +36,15 @@ export default function ShopCategories() {
             <Link
               className={`category-tile category-tile--${category.tone}`}
               to={`/products?category=${category.value}#product-catalog`}
-              key={category.name}
+              key={category.value}
+              aria-label={`Shop ${PRODUCT_CATEGORY_LABELS[category.value]}`}
             >
               <div className="category-tile__media">
                 <img src={category.image} alt="" loading="lazy" />
               </div>
               <div className="category-tile__copy">
-                <h3>{category.name}</h3>
-                <span aria-hidden="true">→</span>
+                <h3>{PRODUCT_CATEGORY_LABELS[category.value]}</h3>
+                <span aria-hidden="true"><ArrowForwardRoundedIcon /></span>
               </div>
             </Link>
           ))}

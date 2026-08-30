@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import HomePage from "./screens/homePage";
 import ProductsPage from "./screens/productsPage";
@@ -26,6 +26,18 @@ function App() {
   const [signupOpen, setSignupOpen] = useState<boolean>(false);
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (location.hash) {
+      const targetId = decodeURIComponent(location.hash.slice(1));
+      const frameId = window.requestAnimationFrame(() => {
+        document.getElementById(targetId)?.scrollIntoView({ block: "start" });
+      });
+      return () => window.cancelAnimationFrame(frameId);
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname, location.search, location.hash]);
 
   /**HANDLERS */
   const handleSignupClose = () => setSignupOpen(false);

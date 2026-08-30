@@ -1,11 +1,13 @@
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
-import { Logout } from "@mui/icons-material";
-import { Link, NavLink } from "react-router-dom";
+import { AccountCircleOutlined, LoginRounded, Logout, PersonAddAltRounded, PersonOutlineRounded, ReceiptLongOutlined } from "@mui/icons-material";
+import { Link, NavLink, useHistory } from "react-router-dom";
 
 import { useGlobals } from "../../hooks/useGlobals";
 import { serverApi } from "../../../lib/config";
 import Basket from "./Basket";
 import BrandLogo from "../BrandLogo";
+import NavbarSearch from "./NavbarSearch";
+import Wishlist from "./Wishlist";
 
 interface HomeNavbarProps {
   setSignupOpen: (isOpen: boolean) => void;
@@ -25,43 +27,49 @@ export default function HomeNavbar({
   handleLogoutRequest,
 }: HomeNavbarProps) {
   const { authMember } = useGlobals();
+  const history = useHistory();
+
+  const goTo = (path: string) => {
+    handleCloseLogout();
+    history.push(path);
+  };
 
   return (
     <header className="home-navbar">
       <nav className="home-nav" aria-label="Main navigation">
-        <Link className="home-brand" to="/" aria-label="Techanor home">
-          <BrandLogo />
-        </Link>
+        <div className="home-nav-left">
+          <Link className="home-brand" to="/" aria-label="Techanor home">
+            <BrandLogo />
+          </Link>
+          <NavbarSearch />
+        </div>
 
         <div className="home-nav-links">
           <NavLink exact to="/" activeClassName="active">Home</NavLink>
           <NavLink to="/products" activeClassName="active">Products</NavLink>
           <NavLink to="/blog" activeClassName="active">Blog</NavLink>
-          {authMember && <NavLink to="/member-page" activeClassName="active">My Page</NavLink>}
-          {authMember && <NavLink to="/orders" activeClassName="active">Orders</NavLink>}
+          <NavLink to="/help" activeClassName="active">Help</NavLink>
         </div>
 
         <div className="home-nav-actions">
+          <Wishlist />
           <div className="home-nav-basket">
             <Basket />
           </div>
-          {!authMember ? (
-            <>
-              <button className="home-login-button" type="button" onClick={() => setLoginOpen(true)}>Log in</button>
-              <button className="home-signup-button" type="button" onClick={() => setSignupOpen(true)}>Sign Up</button>
-            </>
-          ) : (
-            <button className="home-avatar-button" type="button" aria-label="Open account menu" aria-haspopup="true" onClick={handleLogoutClick}>
-              <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" />
-            </button>
-          )}
+          <button className={authMember ? "home-avatar-button" : "navbar-account-button"} type="button" aria-label="Open account menu" aria-haspopup="true" aria-expanded={Boolean(anchorEl)} onClick={handleLogoutClick}>
+            {authMember ? <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" /> : <PersonOutlineRounded />}
+          </button>
         </div>
 
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseLogout} onClick={handleCloseLogout} transformOrigin={{ horizontal: "right", vertical: "top" }} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
-          <MenuItem onClick={handleLogoutRequest}>
-            <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
-            Logout
-          </MenuItem>
+        <Menu className="account-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseLogout} transformOrigin={{ horizontal: "right", vertical: "top" }} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
+          {!authMember ? [
+            <MenuItem key="login" onClick={() => { handleCloseLogout(); setLoginOpen(true); }}><ListItemIcon><LoginRounded fontSize="small" /></ListItemIcon>Log in</MenuItem>,
+            <MenuItem className="account-menu-primary" key="signup" onClick={() => { handleCloseLogout(); setSignupOpen(true); }}><ListItemIcon><PersonAddAltRounded fontSize="small" /></ListItemIcon>Create account</MenuItem>,
+          ] : [
+            <MenuItem key="profile" onClick={() => goTo("/member-page")}><ListItemIcon><AccountCircleOutlined fontSize="small" /></ListItemIcon>My profile</MenuItem>,
+            <MenuItem key="orders" onClick={() => goTo("/orders")}><ListItemIcon><ReceiptLongOutlined fontSize="small" /></ListItemIcon>My orders</MenuItem>,
+            <MenuItem key="logout" onClick={() => { handleCloseLogout(); handleLogoutRequest(); }}><ListItemIcon><Logout fontSize="small" /></ListItemIcon>Logout</MenuItem>,
+          ]}
         </Menu>
       </nav>
 

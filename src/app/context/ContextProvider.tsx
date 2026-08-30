@@ -2,6 +2,7 @@ import React, { ReactNode, useState } from "react";
 import { Member } from "../../lib/types/member";
 import { GlobalContext } from "../hooks/useGlobals";
 import useBasket from "../hooks/useBasket";
+import useWishlist from "../hooks/useWishlist";
 
 const readStoredMember = (): Member | null => {
   try {
@@ -19,6 +20,7 @@ const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [orderBuilder, setOrderBuilder] = useState<Date>(new Date());
 
   const basket = useBasket();
+  const wishlist = useWishlist();
 
   return (
     <GlobalContext.Provider
@@ -26,6 +28,7 @@ const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         authMember,
         setAuthMember,
         basket,
+        wishlist,
         orderBuilder,
         setOrderBuilder,
       }}

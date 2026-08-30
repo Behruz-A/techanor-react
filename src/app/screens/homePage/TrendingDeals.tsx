@@ -12,6 +12,9 @@ export default function TrendingDeals() {
   const dispatch = useAppDispatch();
   const trendingDeals = useAppSelector(retrieveTrendingDeals);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
   const [canScroll, setCanScroll] = useState({ previous: false, next: true });
 
   const updateScrollControls = useCallback(() => {
@@ -33,17 +36,46 @@ export default function TrendingDeals() {
 
   useEffect(() => {
     const productService = new ProductService();
-    productService
-      .getProducts({ page: 1, limit: 8, order: "productViews" })
-      .then((data) => dispatch(setTrendingDeals(data)))
-      .catch((err) => console.log("Error, trending deals:", err));
-  }, [dispatch]);
+    let isCancelled = false;
+    setIsLoading(true);
+    setHasError(false);
+
+    const loadTrendingDeals = async () => {
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        try {
+          const data = await productService.getProducts({ page: 1, limit: 4, order: "productViews" });
+          if (!isCancelled) dispatch(setTrendingDeals(data));
+          return;
+        } catch (err) {
+          console.log(`Error, trending deals (attempt ${attempt + 1}):`, err);
+          if (attempt === 0) {
+            await new Promise((resolve) => window.setTimeout(resolve, 800));
+          }
+        }
+      }
+
+      if (!isCancelled) setHasError(true);
+    };
+
+    loadTrendingDeals().finally(() => {
+      if (!isCancelled) setIsLoading(false);
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [dispatch, retryKey]);
 
   useEffect(() => {
     updateScrollControls();
     window.addEventListener("resize", updateScrollControls);
     return () => window.removeEventListener("resize", updateScrollControls);
   }, [updateScrollControls]);
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(updateScrollControls);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [trendingDeals.length, updateScrollControls]);
 
   return (
     <section className="trending-deals" aria-labelledby="trending-deals-title">
@@ -56,7 +88,15 @@ export default function TrendingDeals() {
         <div className="trending-deals__carousel">
           <button className="trending-deals__arrow trending-deals__arrow--previous" type="button" onClick={() => scrollCarousel(-1)} disabled={!canScroll.previous} aria-label="Show previous trending products"><ChevronLeftRoundedIcon /></button>
           <div className="trending-deals__grid" ref={carouselRef} onScroll={updateScrollControls}>
-            {trendingDeals.map((product) => (
+            {isLoading && <p className="trending-deals__empty">Loading trending products...</p>}
+            {!isLoading && hasError && (
+              <div className="trending-deals__empty">
+                <span>Trending products are temporarily unavailable.</span>
+                <button type="button" onClick={() => setRetryKey((value) => value + 1)}>Try again</button>
+              </div>
+            )}
+            {!isLoading && !hasError && trendingDeals.length === 0 && <p className="trending-deals__empty">No trending products yet.</p>}
+            {!isLoading && !hasError && trendingDeals.map((product) => (
               <article className="trending-card" key={product._id}>
                 <h3 title={product.productName}>{product.productName}</h3>
                 <Link className="trending-card__media" to={`/products/${product._id}`} aria-label={`View ${product.productName}`}>

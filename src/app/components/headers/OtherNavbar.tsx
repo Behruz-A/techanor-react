@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
-import { CloseRounded, Logout, MenuRounded } from "@mui/icons-material";
-import { Link, NavLink } from "react-router-dom";
+import { AccountCircleOutlined, CloseRounded, LoginRounded, Logout, MenuRounded, PersonAddAltRounded, PersonOutlineRounded, ReceiptLongOutlined } from "@mui/icons-material";
+import { Link, NavLink, useHistory } from "react-router-dom";
 import Basket from "./Basket";
 import { useGlobals } from "../../hooks/useGlobals";
 import { serverApi } from "../../../lib/config";
 import BrandLogo from "../BrandLogo";
+import NavbarSearch from "./NavbarSearch";
+import Wishlist from "./Wishlist";
 
 interface OtherNavbarProps {
   setSignupOpen: (isOpen: boolean) => void;
@@ -21,8 +23,13 @@ export default function OtherNavbar({
   handleCloseLogout, handleLogoutRequest,
 }: OtherNavbarProps) {
   const { authMember } = useGlobals();
+  const history = useHistory();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const closeMobileMenu = () => setMobileMenuOpen(false);
+  const goTo = (path: string) => {
+    handleCloseLogout();
+    history.push(path);
+  };
 
   return (
     <header className="other-navbar">
@@ -30,6 +37,7 @@ export default function OtherNavbar({
         <Link className="other-brand" to="/" aria-label="Techanor home">
           <BrandLogo tone="dark" />
         </Link>
+        <NavbarSearch />
         <button className="other-menu-toggle" type="button" aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
           {mobileMenuOpen ? <CloseRounded /> : <MenuRounded />}
         </button>
@@ -37,27 +45,24 @@ export default function OtherNavbar({
           <NavLink exact to="/" activeClassName="active" onClick={closeMobileMenu}>Home</NavLink>
           <NavLink to="/products" activeClassName="active" onClick={closeMobileMenu}>Products</NavLink>
           <NavLink to="/blog" activeClassName="active" onClick={closeMobileMenu}>Blog</NavLink>
-          {authMember && <NavLink to="/member-page" activeClassName="active" onClick={closeMobileMenu}>My Page</NavLink>}
-          {authMember && <NavLink to="/orders" activeClassName="active" onClick={closeMobileMenu}>Orders</NavLink>}
+          <NavLink to="/help" activeClassName="active" onClick={closeMobileMenu}>Help</NavLink>
         </div>
         <div className="other-nav-actions">
-          {authMember && <div className="other-nav-basket"><Basket /></div>}
-          {!authMember ? (
-            <>
-              <button className="other-login-button" type="button" onClick={() => setLoginOpen(true)}>Log in</button>
-              <button className="other-signup-button" type="button" onClick={() => setSignupOpen(true)}>Sign Up</button>
-            </>
-          ) : (
-            <button className="other-avatar-button" type="button" aria-label="Open account menu" onClick={handleLogoutClick}>
-              <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" />
-            </button>
-          )}
+          <Wishlist />
+          <div className="other-nav-basket"><Basket /></div>
+          <button className={authMember ? "other-avatar-button" : "navbar-account-button"} type="button" aria-label="Open account menu" aria-haspopup="true" aria-expanded={Boolean(anchorEl)} onClick={handleLogoutClick}>
+            {authMember ? <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" /> : <PersonOutlineRounded />}
+          </button>
         </div>
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseLogout} onClick={handleCloseLogout} transformOrigin={{ horizontal: "right", vertical: "top" }} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
-          <MenuItem onClick={handleLogoutRequest}>
-            <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
-            Logout
-          </MenuItem>
+        <Menu className="account-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseLogout} transformOrigin={{ horizontal: "right", vertical: "top" }} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
+          {!authMember ? [
+            <MenuItem key="login" onClick={() => { handleCloseLogout(); setLoginOpen(true); }}><ListItemIcon><LoginRounded fontSize="small" /></ListItemIcon>Log in</MenuItem>,
+            <MenuItem className="account-menu-primary" key="signup" onClick={() => { handleCloseLogout(); setSignupOpen(true); }}><ListItemIcon><PersonAddAltRounded fontSize="small" /></ListItemIcon>Create account</MenuItem>,
+          ] : [
+            <MenuItem key="profile" onClick={() => goTo("/member-page")}><ListItemIcon><AccountCircleOutlined fontSize="small" /></ListItemIcon>My profile</MenuItem>,
+            <MenuItem key="orders" onClick={() => goTo("/orders")}><ListItemIcon><ReceiptLongOutlined fontSize="small" /></ListItemIcon>My orders</MenuItem>,
+            <MenuItem key="logout" onClick={() => { handleCloseLogout(); handleLogoutRequest(); }}><ListItemIcon><Logout fontSize="small" /></ListItemIcon>Logout</MenuItem>,
+          ]}
         </Menu>
       </nav>
     </header>
