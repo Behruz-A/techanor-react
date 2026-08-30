@@ -47,6 +47,7 @@ export default function OtherNavbar({
           <NavLink to="/products" activeClassName="active" onClick={closeMobileMenu}>Products</NavLink>
           <NavLink to="/blog" activeClassName="active" onClick={closeMobileMenu}>Blog</NavLink>
           <NavLink to="/help" activeClassName="active" onClick={closeMobileMenu}>Help</NavLink>
+          <NavLink to="/contact" activeClassName="active" onClick={closeMobileMenu}>Contact</NavLink>
         </div>
         <div className="other-nav-actions">
           <Wishlist />

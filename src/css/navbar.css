@@ -1070,7 +1070,7 @@
     justify-self:start;
   }
   .home-nav-left .home-brand{margin:0;flex:0 0 auto}
-  .home-nav-left .navbar-search{width:280px;height:42px;box-sizing:border-box;flex:0 0 280px}
+  .home-nav-left .navbar-search{width:242px;height:42px;box-sizing:border-box;flex:0 0 242px;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.13)}
   .home-nav-links{
     justify-self:center;
     gap:40px;

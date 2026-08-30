@@ -6,6 +6,7 @@ interface CategoryCard {
   value: ProductCategory;
   image: string;
   tone: string;
+  label?: string;
 }
 
 const categories: CategoryCard[] = [
@@ -14,9 +15,9 @@ const categories: CategoryCard[] = [
   { value: ProductCategory.TV, image: "/img/Samsung TV 50.jpg", tone: "sky" },
   { value: ProductCategory.GAMING, image: "/img/gamingimg.jpg", tone: "slate" },
   { value: ProductCategory.AUDIO, image: "/img/testheadphone.avif", tone: "mist" },
-  { value: ProductCategory.CASES, image: "/img/iphone17img3.jpg", tone: "blue" },
+  { value: ProductCategory.CASES, image: "/img/iphone17img3.jpg", tone: "blue", label: "Accessories" },
   { value: ProductCategory.WEARABLES, image: "/img/iwatch.jpg", tone: "wearables" },
-  { value: ProductCategory.OTHERS, image: "/img/cameraimg.jpg", tone: "pearl" },
+  { value: ProductCategory.OTHERS, image: "/img/cameraimg.jpg", tone: "pearl", label: "Cameras" },
 ];
 
 export default function ShopCategories() {
@@ -27,8 +28,8 @@ export default function ShopCategories() {
           <div>
             <span>Find your technology</span>
             <h2 id="categories-title">Shop by Category</h2>
+            <p>Everything you need, organized around the way you live.</p>
           </div>
-          <p>Everything you need, organized around the way you live.</p>
         </header>
 
         <div className="shop-categories__grid">
@@ -37,13 +38,13 @@ export default function ShopCategories() {
               className={`category-tile category-tile--${category.tone}`}
               to={`/products?category=${category.value}#product-catalog`}
               key={category.value}
-              aria-label={`Shop ${PRODUCT_CATEGORY_LABELS[category.value]}`}
+              aria-label={`Shop ${category.label || PRODUCT_CATEGORY_LABELS[category.value]}`}
             >
               <div className="category-tile__media">
                 <img src={category.image} alt="" loading="lazy" />
               </div>
               <div className="category-tile__copy">
-                <h3>{PRODUCT_CATEGORY_LABELS[category.value]}</h3>
+                <h3>{category.label || PRODUCT_CATEGORY_LABELS[category.value]}</h3>
                 <span aria-hidden="true"><ArrowForwardRoundedIcon /></span>
               </div>
             </Link>

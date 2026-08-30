@@ -50,6 +50,7 @@ export default function HomeNavbar({
           <NavLink to="/products" activeClassName="active">Products</NavLink>
           <NavLink to="/blog" activeClassName="active">Blog</NavLink>
           <NavLink to="/help" activeClassName="active">Help</NavLink>
+          <NavLink to="/contact" activeClassName="active">Contact</NavLink>
         </div>
 
         <div className="home-nav-actions">

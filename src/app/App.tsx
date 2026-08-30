@@ -11,6 +11,7 @@ import HelpPage from "./screens/helpPage";
 import CheckoutPage from "./screens/checkoutPage";
 import BlogPage from "./screens/blogPage";
 import BlogDetail from "./screens/blogPage/BlogDetail";
+import ContactPage from "./screens/contactPage";
 import AuthenticationModal from "./components/auth";
 import { sweetErrorHandling, sweetTopSuccessAlert } from "../lib/sweetAlert";
 import { Messages } from "../lib/config";
@@ -97,6 +98,9 @@ function App() {
         </Route>
         <Route path="/help">
           <HelpPage />
+        </Route>
+        <Route path="/contact">
+          <ContactPage />
         </Route>
         <Route path="/">
           <HomePage />
