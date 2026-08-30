@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { CartItem } from "../../lib/types/search";
+import { isMongoObjectId } from "../../lib/utils/objectId";
 
 const CART_STORAGE_KEY = "cartData";
 const CART_SCHEMA_KEY = "cartDataSchema";
@@ -15,7 +16,7 @@ const normalizeCartItem = (value: unknown, isLegacyCart: boolean): CartItem | nu
     ? storedMaximum
     : Math.max(quantity, LEGACY_CART_STOCK_FALLBACK);
 
-  if (typeof item._id !== "string" || !item._id || typeof item.name !== "string" ||
+  if (typeof item._id !== "string" || !isMongoObjectId(item._id) || typeof item.name !== "string" ||
     typeof item.image !== "string" || !Number.isFinite(Number(item.price)) || Number(item.price) < 0) return null;
 
   return { _id: item._id, name: item.name, image: item.image, price: Number(item.price),
@@ -58,6 +59,7 @@ const useBasket = () => {
   };
 
   const onAdd = (input: CartItem) => updateCart((current) => {
+    if (!isMongoObjectId(input._id)) return current;
     const maxQuantity = Math.max(0, Math.floor(Number(input.maxQuantity) || 0));
     if (maxQuantity === 0) return current;
     const requestedQuantity = Math.max(1, Math.floor(Number(input.quantity) || 1));

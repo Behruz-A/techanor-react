@@ -3,7 +3,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
 import Button from "@mui/material/Button";
 import { useGlobals } from "../../hooks/useGlobals";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MemberUpdateInput } from "../../../lib/types/member";
 import { T } from "../../../lib/types/common";
 import {
@@ -31,7 +31,14 @@ export function Settings() {
     },
   );
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [selectedImageName, setSelectedImageName] = useState("");
+  const previewUrlRef = useRef<string | null>(null);
   const originalImage = authMember?.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg";
+
+  useEffect(() => () => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+  }, []);
 
   /**HANDLERS */
   const memberNickHandler = (e: T) => {
@@ -56,12 +63,12 @@ export function Settings() {
 
   const handleSubmitButton = async () => {
     try {
+      if (isSaving) return;
+      setIsSaving(true);
       if (!authMember) throw new Error(Messages.error2);
       if (
         memberUpdateInput.memberNick === "" ||
-        memberUpdateInput.memberPhone === "" ||
-        memberUpdateInput.memberAddress === "" ||
-        memberUpdateInput.memberDesc === ""
+        memberUpdateInput.memberPhone === ""
       ) {
         throw new Error(Messages.error3);
       }
@@ -72,35 +79,49 @@ export function Settings() {
       const member = new MemberService();
       const result = await member.updateMember(memberUpdateInput);
       setAuthMember(result);
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
+      setMemberImage(result.memberImage ? `${serverApi}/${result.memberImage}` : "/icons/default-user.svg");
+      setMemberUpdateInput({ ...memberUpdateInput, memberImage: result.memberImage });
+      setSelectedImageName("");
       setIsEditing(false);
 
       await sweetTopSmallSuccessAlert("Modified successfully!", 700);
     } catch (err) {
       console.log(err);
       sweetErrorHandling(err).then();
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDiscardChanges = () => {
     setMemberUpdateInput({ memberNick: authMember?.memberNick, memberPhone: authMember?.memberPhone, memberPassword: authMember?.memberPassword, memberAddress: authMember?.memberAddress, memberDesc: authMember?.memberDesc, memberImage: authMember?.memberImage });
     setMemberImage(originalImage);
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    previewUrlRef.current = null;
+    setSelectedImageName("");
     setIsEditing(false);
   };
 
   const handleImageViewer = (e: T) => {
     const file = e.target.files[0];
     if (!file) return;
-    const fileType = file.type,
-      validateImageTypes = ["image/jpg", "image/jpeg", "image/png"];
+    const validateImageTypes = ["image/jpeg", "image/png", "image/webp"];
 
-    if (!validateImageTypes.includes(fileType)) {
-      sweetErrorHandling(Messages.error5).then();
+    if (!validateImageTypes.includes(file.type)) {
+      sweetErrorHandling("Choose a JPG, PNG or WebP image.").then();
+      e.target.value = "";
+    } else if (file.size > 5 * 1024 * 1024) {
+      sweetErrorHandling("Profile image must be smaller than 5 MB.").then();
+      e.target.value = "";
     } else {
-      if (file) {
-        memberUpdateInput.memberImage = file;
-        setMemberUpdateInput({ ...memberUpdateInput });
-        setMemberImage(URL.createObjectURL(file));
-      }
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+      const previewUrl = URL.createObjectURL(file);
+      previewUrlRef.current = previewUrl;
+      setMemberUpdateInput({ ...memberUpdateInput, memberImage: file });
+      setMemberImage(previewUrl);
+      setSelectedImageName(file.name);
     }
   };
 
@@ -111,15 +132,16 @@ export function Settings() {
         <Button className="avatar-upload" component="label" onChange={handleImageViewer} aria-label="Change profile picture" disabled={!isEditing}>
           <img src={memberImage} className={"mb-image"} alt="Profile" />
           <span className="avatar-camera"><PhotoCameraOutlinedIcon /></span>
-          <input type="file" accept="image/jpeg,image/png" hidden />
+          <input type="file" accept="image/jpeg,image/png,image/webp" hidden />
         </Button>
         <div className={"media-change-box"}>
           <span>Profile photo</span>
-          <p>JPG or PNG. Recommended square image.</p>
+          <p>JPG, PNG or WebP up to 5 MB. Square images work best.</p>
+          {selectedImageName && <small className="avatar-file-ready">Ready to upload · {selectedImageName}</small>}
           <div className={"up-del-box"}>
             <Button component="label" onChange={handleImageViewer} disabled={!isEditing}>
               <CloudDownloadIcon /><span>Change photo</span>
-              <input type="file" accept="image/jpeg,image/png" hidden />
+              <input type="file" accept="image/jpeg,image/png,image/webp" hidden />
             </Button>
           </div>
         </div>
@@ -183,8 +205,8 @@ export function Settings() {
       </Box>
       {isEditing && <Box className={"save-box"}>
         <Button className="discard-button" onClick={handleDiscardChanges}>Cancel</Button>
-        <Button variant={"contained"} onClick={handleSubmitButton}>
-          Save changes
+        <Button variant={"contained"} onClick={handleSubmitButton} disabled={isSaving}>
+          {isSaving ? "Saving..." : "Save changes"}
         </Button>
       </Box>}
     </Box>

@@ -8,6 +8,7 @@ import HomeNavbar from "./components/headers/HomeNavbar";
 import OtherNavbar from "./components/headers/OtherNavbar";
 import Footer from "./components/footer";
 import HelpPage from "./screens/helpPage";
+import CheckoutPage from "./screens/checkoutPage";
 import BlogPage from "./screens/blogPage";
 import BlogDetail from "./screens/blogPage/BlogDetail";
 import AuthenticationModal from "./components/auth";
@@ -82,6 +83,7 @@ function App() {
         />
       )}
       <Switch>
+        <Route exact path="/checkout"><CheckoutPage /></Route>
         <Route path="/blog/:postId"><BlogDetail /></Route>
         <Route exact path="/blog"><BlogPage /></Route>
         <Route path="/products">

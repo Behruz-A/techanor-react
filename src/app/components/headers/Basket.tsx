@@ -3,8 +3,6 @@ import { Box, Button, Drawer } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import CloseRounded from "@mui/icons-material/CloseRounded";
-import DeleteOutlineRounded from "@mui/icons-material/DeleteOutlineRounded";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { useHistory } from "react-router-dom";
@@ -12,7 +10,9 @@ import { CartItem } from "../../../lib/types/search";
 import { Messages, serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
 import { sweetErrorHandling } from "../../../lib/sweetAlert";
-import OrderService from "../../services/OrderService";
+import { isMongoObjectId } from "../../../lib/utils/objectId";
+import ShoppingCartIcon from "../icons/ShoppingCartIcon";
+import { TrashIcon } from "../icons/TechanorIcons";
 
 interface BasketProps {}
 
@@ -22,7 +22,6 @@ const STANDARD_SHIPPING_COST = 5;
 export default function Basket(props: BasketProps) {
   const {
     authMember,
-    setOrderBuilder,
     basket: { cartItems, itemCount, subtotal, onAdd, onRemove, onDelete, onDeleteAll },
   } = useGlobals();
   const history = useHistory();
@@ -46,16 +45,15 @@ export default function Basket(props: BasketProps) {
 
     try {
       if (!authMember) throw new Error(Messages.error2);
+      const purchasableItems = cartItems.filter((item) => isMongoObjectId(item._id));
+      if (purchasableItems.length === 0) {
+        onDeleteAll();
+        throw new Error("Promotional preview items cannot be ordered. They were removed from your basket; please add a product from the catalog.");
+      }
 
       setIsCheckingOut(true);
-
-      const createdOrder = await new OrderService().createOrder(cartItems);
-      if (!createdOrder?._id) throw new Error("Order could not be created. Please try again.");
-
-      onDeleteAll();
-      setOrderBuilder(new Date());
       handleClose();
-      history.push({ pathname: "/orders", state: { createdOrderId: createdOrder._id } });
+      history.push("/checkout");
     } catch (err) {
       sweetErrorHandling(err).then();
     } finally {
@@ -74,7 +72,7 @@ export default function Basket(props: BasketProps) {
         onClick={handleClick}
       >
         <Badge badgeContent={itemCount} color="secondary">
-          <img src={"/icons/shopping-cart.svg"} alt="" />
+          <ShoppingCartIcon />
         </Badge>
       </IconButton>
       <Drawer
@@ -90,8 +88,8 @@ export default function Basket(props: BasketProps) {
             <IconButton onClick={handleClose} aria-label="Close shopping bag"><CloseRounded /></IconButton>
           </header>
 
-          {cartItems.length === 0 ? <div className="basket-drawer-empty"><ShoppingCartIcon/><h3>Your bag is empty</h3><p>Explore our collection and add something you love.</p><button type="button" onClick={continueShopping}>Explore products</button></div> : <>
-            <div className="basket-drawer-tools"><span>{itemCount} {itemCount === 1 ? "item" : "items"} in your bag</span><button type="button" onClick={onDeleteAll}><DeleteOutlineRounded/>Clear all</button></div>
+          {cartItems.length === 0 ? <div className="basket-drawer-empty"><ShoppingCartIcon /><h3>Your bag is empty</h3><p>Explore our collection and add something you love.</p><button type="button" onClick={continueShopping}>Explore products</button></div> : <>
+            <div className="basket-drawer-tools"><span>{itemCount} {itemCount === 1 ? "item" : "items"} in your bag</span><button type="button" onClick={onDeleteAll}><TrashIcon />Clear all</button></div>
             <div className="basket-drawer-items">
               {cartItems.map((item: CartItem) => {
                 const imagePath = item.image.startsWith("/") || item.image.startsWith("http") ? item.image : `${serverApi}/${item.image}`;
@@ -109,7 +107,7 @@ export default function Basket(props: BasketProps) {
                       </div>
                     </div>
                     <div className="basket-drawer-item-actions">
-                      <button type="button" onClick={() => onDelete(item)} aria-label={`Remove ${item.name}`}><DeleteOutlineRounded /></button>
+                      <button type="button" onClick={() => onDelete(item)} aria-label={`Remove ${item.name}`}><TrashIcon /></button>
                       <strong>${(item.price * item.quantity).toLocaleString()}</strong>
                     </div>
                   </article>

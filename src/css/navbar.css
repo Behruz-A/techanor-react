@@ -874,8 +874,10 @@
 .basket-drawer-footer .basket-summary-total span{color:#20242b;font-size:12px;font-weight:700}
 .basket-drawer-footer .basket-summary-total strong{font-size:19px;letter-spacing:-.35px}
 .basket-drawer-footer .MuiButton-root{min-height:46px;border-radius:8px;background:#171719}
-.basket-drawer-footer .MuiButton-root:hover{background:#2563eb}
+.basket-drawer-footer .MuiButton-root:hover{background:#0a2733}
 .basket-drawer-empty>svg{box-sizing:content-box}
+.basket-drawer-empty button,.wishlist-empty button{background:#0a2733}
+.basket-drawer-empty button:hover,.wishlist-empty button:hover{background:#123b4c}
 @media(max-width:520px){.basket-drawer-header{padding:19px 18px}.basket-drawer-tools,.basket-drawer-items{padding-left:18px;padding-right:18px}.basket-drawer-item{grid-template-columns:72px minmax(0,1fr) 58px}.basket-drawer-media{width:72px;height:80px}.basket-drawer-footer{padding:18px}.basket-drawer-item-actions strong{position:static}}
 
 /* Static editorial banner */

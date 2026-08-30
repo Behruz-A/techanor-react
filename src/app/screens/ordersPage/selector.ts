@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
-import { AppRootState } from "../../../lib/types/screen";
+import { RootState } from "../../store";
 
-const selectOrdersPage = (state: AppRootState) => state.ordersPage;
+const selectOrdersPage = (state: RootState) => state.ordersPage;
 
 export const retrievePausedOrders = createSelector(
   selectOrdersPage,
@@ -16,4 +16,9 @@ export const retrieveProcessOrders = createSelector(
 export const retrieveFinishedOrders = createSelector(
   selectOrdersPage,
   (OrdersPage) => OrdersPage.finishedOrders,
+);
+
+export const retrieveCancelledOrders = createSelector(
+  selectOrdersPage,
+  (OrdersPage) => OrdersPage.cancelledOrders,
 );

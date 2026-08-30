@@ -10,6 +10,7 @@ const techanorAlertClasses = {
   htmlContainer: "techanor-alert-message",
   actions: "techanor-alert-actions",
   confirmButton: "techanor-alert-confirm",
+  cancelButton: "techanor-alert-cancel",
   closeButton: "techanor-alert-close",
 };
 
@@ -83,6 +84,26 @@ export const sweetTopSuccessAlert = async (
     showConfirmButton: false,
     timer: duration,
   });
+};
+
+export const sweetConfirm = async (title: string, message: string, confirmText: string, variant: "default" | "danger" = "default"): Promise<boolean> => {
+  const customClass = variant === "danger" ? {
+    ...techanorAlertClasses,
+    popup: `${techanorAlertClasses.popup} techanor-alert-danger`,
+    confirmButton: `${techanorAlertClasses.confirmButton} techanor-alert-confirm-danger`,
+  } : techanorAlertClasses;
+  const result = await Swal.fire({
+    icon: "question",
+    title,
+    text: message,
+    confirmButtonText: confirmText,
+    cancelButtonText: "Go back",
+    showCancelButton: true,
+    buttonsStyling: false,
+    customClass,
+    reverseButtons: true,
+  });
+  return result.isConfirmed;
 };
 
 export const sweetTopSmallSuccessAlert = async (

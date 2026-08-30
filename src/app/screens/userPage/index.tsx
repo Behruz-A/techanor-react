@@ -3,7 +3,8 @@ import { Settings } from "./Settings";
 import { Redirect } from "react-router-dom";
 import { useGlobals } from "../../hooks/useGlobals";
 import { serverApi } from "../../../lib/config";
-import LocationOnOutlined from "@mui/icons-material/LocationOnOutlined";
+import { MapPinIcon } from "../../components/icons/TechanorIcons";
+import PhoneOutlined from "@mui/icons-material/PhoneOutlined";
 import "../../../css/userPage.css";
 
 export default function UserPage() {
@@ -25,7 +26,8 @@ export default function UserPage() {
           <img src={authMember?.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt={authMember?.memberNick || "Profile"}/>
           <h2>{authMember.memberNick}</h2>
           <span>{authMember.memberType}</span>
-          <div><LocationOnOutlined/><p>{authMember?.memberAddress || "Address not provided"}</p></div>
+          <div><PhoneOutlined/><p>{authMember.memberPhone || "Phone not provided"}</p></div>
+          <div><MapPinIcon /><p>{authMember?.memberAddress || "Address not provided"}</p></div>
         </aside>
       </Stack>
     </Container>

@@ -3,7 +3,7 @@ import { Pagination } from "@mui/material";
 import { ChevronLeftRounded, ChevronRightRounded, Favorite, FavoriteBorderRounded, SearchRounded, SortRounded } from "@mui/icons-material";
 import { createSelector } from "reselect";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 import { setProducts } from "./slice";
 import { retrieveProducts } from "./selector";
@@ -19,6 +19,7 @@ import {
 } from "../../../constants/enums";
 import { serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
+import ShoppingCartIcon from "../../components/icons/ShoppingCartIcon";
 
 const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 
@@ -126,13 +127,11 @@ export default function Products() {
       <section className="products-hero products-hero-campaign" aria-labelledby="products-hero-title">
         <div className="products-hero-content">
           <div className="products-hero-copy">
-            <h1 id="products-hero-title">Find your<br /><em>next device.</em></h1>
-            <p>Discover technology made for everyday life.</p>
-            <div className="products-hero-actions">
-              <a className="products-hero-cta" href="#product-catalog">Explore products</a>
-            </div>
+            <span className="products-page-eyebrow">TECHANOR COLLECTION</span>
+            <h1 id="products-hero-title">Technology, carefully selected.</h1>
+            <p>Explore devices and accessories chosen for work, creativity and everyday life.</p>
+            <nav className="products-breadcrumb" aria-label="Breadcrumb"><Link to="/">Home</Link><span>›</span><strong>Products</strong></nav>
           </div>
-          <div className="products-hero-visual" aria-hidden="true"><img src="/img/banner5.png" alt="" /></div>
         </div>
       </section>
 
@@ -175,7 +174,7 @@ export default function Products() {
                   <div className="catalog-card-body">
                     <h3>{product.productName}</h3>
                     <p>{product.productDesc || "Premium technology selected for everyday performance."}</p>
-                    <div className="catalog-card-footer"><div><strong>${product.productPrice.toLocaleString()}</strong><del>${Math.round(product.productPrice * 1.12).toLocaleString()}</del></div><button className={addedProductId === product._id ? "is-added" : ""} type="button" onClick={() => addToBasket(product)} disabled={addedProductId === product._id || product.productLeftCount <= 0} aria-live="polite">{product.productLeftCount <= 0 ? "Out of stock" : addedProductId === product._id ? "Added ✓" : "Add to cart"}</button></div>
+                    <div className="catalog-card-footer"><div><strong>${product.productPrice.toLocaleString()}</strong><del>${Math.round(product.productPrice * 1.12).toLocaleString()}</del></div><button className={addedProductId === product._id ? "is-added" : ""} type="button" onClick={() => addToBasket(product)} disabled={addedProductId === product._id || product.productLeftCount <= 0} aria-live="polite">{product.productLeftCount <= 0 ? "Out of stock" : addedProductId === product._id ? "Added ✓" : <><ShoppingCartIcon /> Add to cart</>}</button></div>
                   </div>
                 </article>
               ))}

@@ -1346,3 +1346,15 @@
   color: #fff;
   text-decoration: none;
 }
+
+/* Premium catalog page introduction */
+.products-page .products .products-hero.products-hero-campaign{height:auto;min-height:238px;border-bottom:1px solid #e0e7eb;background:linear-gradient(135deg,#f8fafb 0%,#f2f7fa 58%,#edf4f7 100%)}
+.products-page .products .products-hero-campaign .products-hero-content{width:min(1300px,calc(100% - 48px));height:auto;min-height:238px;margin:0 auto;padding:42px 0;display:flex;align-items:center;overflow:visible;background:transparent}
+.products-page .products .products-hero-campaign .products-hero-copy{width:100%;max-width:780px;padding:0}
+.products-page-eyebrow{display:inline-flex;align-items:center;gap:10px;color:#2563eb;font-size:9px;font-weight:850;letter-spacing:1.9px}
+.products-page-eyebrow::before{content:"";width:24px;height:1px;background:#2563eb}
+.products-page .products .products-hero-campaign .products-hero-content h1{max-width:760px;margin:12px 0 0;color:#0a2733;font-size:clamp(34px,3.25vw,46px);font-weight:680;line-height:1.04;letter-spacing:-1.8px}
+.products-page .products .products-hero-campaign .products-hero-copy>p{max-width:590px;margin:15px 0 0;color:#667680;font-size:13px;line-height:1.65}
+.products-breadcrumb{margin-top:22px;display:flex;align-items:center;gap:10px;color:#8a969e;font-size:10px}.products-breadcrumb a{color:#52636d;text-decoration:none;transition:color .18s ease}.products-breadcrumb a:hover{color:#2563eb}.products-breadcrumb span{color:#aab3b9;font-size:15px}.products-breadcrumb strong{color:#2563eb;font-weight:750}
+.products-page .catalog-shell{padding-top:42px}
+@media(max-width:760px){.products-page .products .products-hero.products-hero-campaign{min-height:218px}.products-page .products .products-hero-campaign .products-hero-content{width:calc(100% - 34px);min-height:218px;padding:36px 0}.products-page .products .products-hero-campaign .products-hero-content h1{font-size:34px;letter-spacing:-1.35px}.products-page .products .products-hero-campaign .products-hero-copy>p{font-size:12px}.products-page .catalog-shell{padding-top:34px}}

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Badge, Drawer, IconButton } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useHistory } from "react-router-dom";
 import { serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
+import ShoppingCartIcon from "../icons/ShoppingCartIcon";
+import { TrashIcon } from "../icons/TechanorIcons";
 
 const imageUrl = (path?: string) => {
   if (!path) return "/icons/noimage-list.svg";
@@ -62,9 +62,9 @@ export default function Wishlist() {
                       <span><strong>{product.productName}</strong><small>${product.productPrice.toLocaleString()}</small></span>
                     </button>
                     <button className="wishlist-add" type="button" onClick={() => addToBasket(product)} disabled={product.productLeftCount <= 0}>
-                      <ShoppingBagOutlinedIcon /> {product.productLeftCount > 0 ? "Add to cart" : "Out of stock"}
+                      <ShoppingCartIcon /> {product.productLeftCount > 0 ? "Add to cart" : "Out of stock"}
                     </button>
-                    <button className="wishlist-remove" type="button" onClick={() => remove(product._id)} aria-label={`Remove ${product.productName}`}><DeleteOutlineRoundedIcon /></button>
+                    <button className="wishlist-remove" type="button" onClick={() => remove(product._id)} aria-label={`Remove ${product.productName}`}><TrashIcon /></button>
                   </article>
                 ))}
               </div>

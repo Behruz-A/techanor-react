@@ -78,6 +78,7 @@
 .user-page .settings .member-media-frame .mb-image{width:84px;height:84px;border:1px solid #dce2ea;box-shadow:none}
 .user-page .settings .media-change-box{margin:0;justify-content:center}.user-page .settings .media-change-box span{color:#262a31;font-size:13px;font-weight:700}.user-page .settings .media-change-box p{margin:5px 0 10px;color:#8a9099;font-size:10px}
 .user-page .settings .up-del-box{width:auto;height:auto;background:transparent}.user-page .settings .up-del-box .MuiButton-root{width:auto;min-width:0;padding:7px 11px;display:flex;gap:7px;border:1px solid #dce2ea;border-radius:7px;background:#fff;color:#2563eb;text-transform:none}.user-page .settings .up-del-box .MuiButton-root span{color:#2563eb;font-size:10px;font-weight:700}
+.user-page .settings .avatar-file-ready{max-width:360px;margin:0 0 10px;display:block;overflow:hidden;color:#148052;font-size:9px;font-weight:700;text-overflow:ellipsis;white-space:nowrap}
 .user-page .settings .input-frame{gap:18px}.user-page .settings .short-input{width:50%}
 .user-page .settings .spec-label{margin:0 0 6px;color:#363b44;font-family:inherit;font-size:9px;font-weight:700;line-height:1.4}
 .user-page .settings .spec-input{height:44px;margin:0 0 18px;padding:0 13px;border:1px solid #d9dee6;border-radius:7px;background:#fff;box-shadow:none;color:#343941;font-size:12px}

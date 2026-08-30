@@ -1,5 +1,5 @@
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
-import { AccountCircleOutlined, LoginRounded, Logout, PersonAddAltRounded, PersonOutlineRounded, ReceiptLongOutlined } from "@mui/icons-material";
+import { LoginRounded, Logout, PersonAddAltRounded, ReceiptLongOutlined } from "@mui/icons-material";
 import { Link, NavLink, useHistory } from "react-router-dom";
 
 import { useGlobals } from "../../hooks/useGlobals";
@@ -8,6 +8,7 @@ import Basket from "./Basket";
 import BrandLogo from "../BrandLogo";
 import NavbarSearch from "./NavbarSearch";
 import Wishlist from "./Wishlist";
+import { UserIcon } from "../icons/TechanorIcons";
 
 interface HomeNavbarProps {
   setSignupOpen: (isOpen: boolean) => void;
@@ -57,7 +58,7 @@ export default function HomeNavbar({
             <Basket />
           </div>
           <button className={authMember ? "home-avatar-button" : "navbar-account-button"} type="button" aria-label="Open account menu" aria-haspopup="true" aria-expanded={Boolean(anchorEl)} onClick={handleLogoutClick}>
-            {authMember ? <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" /> : <PersonOutlineRounded />}
+            {authMember ? <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" /> : <UserIcon />}
           </button>
         </div>
 
@@ -66,7 +67,7 @@ export default function HomeNavbar({
             <MenuItem key="login" onClick={() => { handleCloseLogout(); setLoginOpen(true); }}><ListItemIcon><LoginRounded fontSize="small" /></ListItemIcon>Log in</MenuItem>,
             <MenuItem className="account-menu-primary" key="signup" onClick={() => { handleCloseLogout(); setSignupOpen(true); }}><ListItemIcon><PersonAddAltRounded fontSize="small" /></ListItemIcon>Create account</MenuItem>,
           ] : [
-            <MenuItem key="profile" onClick={() => goTo("/member-page")}><ListItemIcon><AccountCircleOutlined fontSize="small" /></ListItemIcon>My profile</MenuItem>,
+            <MenuItem key="profile" onClick={() => goTo("/member-page")}><ListItemIcon><UserIcon /></ListItemIcon>My profile</MenuItem>,
             <MenuItem key="orders" onClick={() => goTo("/orders")}><ListItemIcon><ReceiptLongOutlined fontSize="small" /></ListItemIcon>My orders</MenuItem>,
             <MenuItem key="logout" onClick={() => { handleCloseLogout(); handleLogoutRequest(); }}><ListItemIcon><Logout fontSize="small" /></ListItemIcon>Logout</MenuItem>,
           ]}

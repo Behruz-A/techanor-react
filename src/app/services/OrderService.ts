@@ -3,6 +3,8 @@ import { serverApi } from "../../lib/config";
 import { CartItem } from "../../lib/types/search";
 import {
   Order,
+  DeliveryAddress,
+  DeliveryMethod,
   OrderInquiry,
   OrderItemInput,
   OrderUpdateInput,
@@ -15,18 +17,17 @@ class OrderService {
     this.path = serverApi;
   }
 
-  public async createOrder(input: CartItem[]): Promise<Order> {
+  public async createOrder(input: CartItem[], deliveryAddress: DeliveryAddress, deliveryMethod: DeliveryMethod): Promise<Order> {
     try {
       const orderItems: OrderItemInput[] = input.map((cartItem: CartItem) => {
         return {
           itemQuantity: cartItem.quantity,
-          itemPrice: cartItem.price,
           productId: cartItem._id,
         };
       });
 
       const url = `${this.path}/order/create`;
-      const result = await axios.post(url, orderItems, {
+      const result = await axios.post(url, { items: orderItems, deliveryAddress, deliveryMethod }, {
         withCredentials: true,
       });
 
@@ -42,9 +43,13 @@ class OrderService {
     try {
       // axios.defaults.withCredentials = true;
       const url = `${this.path}/order/all`;
-      const query = `?page=${input.page}&limit=${input.limit}&orderStatus=${input.orderStatus}`;
+      const query = new URLSearchParams({
+        page: String(input.page),
+        limit: String(input.limit),
+        orderStatus: input.orderStatus,
+      });
 
-      const result = await axios.get(url + query, { withCredentials: true });
+      const result = await axios.get(`${url}?${query.toString()}`, { withCredentials: true });
       console.log("getMyOrders:", result);
 
       return result.data;

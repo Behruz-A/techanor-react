@@ -37,6 +37,27 @@ code {
   background: linear-gradient(90deg, #0a2733, #2563eb);
 }
 
+.techanor-alert-card.techanor-alert-danger::before {
+  display: none;
+}
+
+.techanor-alert-danger .techanor-alert-icon.swal2-question {
+  border-color: #fecaca !important;
+  background: #fff1f2 !important;
+  color: #dc3f49 !important;
+  box-shadow: 0 8px 20px rgba(220, 63, 73, 0.12) !important;
+}
+
+.techanor-alert-confirm.techanor-alert-confirm-danger {
+  background: #d9414b;
+  box-shadow: 0 8px 20px rgba(217, 65, 75, 0.2);
+}
+
+.techanor-alert-confirm.techanor-alert-confirm-danger:hover {
+  background: #c7353f;
+  box-shadow: 0 10px 24px rgba(217, 65, 75, 0.26);
+}
+
 .techanor-alert-icon {
   width: 48px !important;
   height: 48px !important;
@@ -60,6 +81,13 @@ code {
 
 .techanor-alert-icon.swal2-error .swal2-x-mark-line-right {
   right: 12px !important;
+}
+
+.techanor-alert-icon.swal2-question {
+  border: 2px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12) !important;
 }
 
 .techanor-alert-title {
@@ -99,19 +127,38 @@ code {
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(10, 39, 51, 0.18);
+  box-shadow: 0 8px 20px rgba(10, 39, 51, 0.2);
   transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .techanor-alert-confirm:hover {
-  background: #123b4b;
-  box-shadow: 0 10px 24px rgba(10, 39, 51, 0.24);
+  background: #123b4c;
+  box-shadow: 0 10px 24px rgba(10, 39, 51, 0.27);
   transform: translateY(-1px);
 }
 
 .techanor-alert-confirm:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.22);
   outline-offset: 3px;
+}
+
+.techanor-alert-cancel {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid #d6dee3;
+  border-radius: 11px;
+  background: #fff;
+  color: #40515b;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.techanor-alert-actions:has(.techanor-alert-cancel) {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .techanor-alert-close {

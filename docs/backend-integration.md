@@ -39,6 +39,9 @@ These routes currently exist in the Techanor backend `src/router.ts`.
 | `POST` | `/logout` | Session | None | `{ logout: true }` | Connected |
 | `GET` | `/product/all` | No | Query parameters | `Product[]` | Connected |
 | `GET` | `/product/:id` | No | Product ID path parameter | `Product` | Connected; increments `productViews` |
+| `POST` | `/order/create` | Session | `OrderItemInput[]` | `Order` | Connected; backend validates price and stock |
+| `GET` | `/order/all` | Session | `page`, `limit`, `orderStatus` query | `Order[]` | Connected |
+| `POST` | `/order/update` | Session | `OrderUpdateInput` | `Order` | Connected; validates status transition |
 
 ### Product list query
 
@@ -87,9 +90,6 @@ working integrations:
 | `POST /member/update` | Missing |
 | `GET /member/top-users` | Missing |
 | `GET /member/restaurant` | Missing and not a Techanor domain concept |
-| `POST /order/create` | Missing |
-| `GET /order/all` | Missing |
-| `POST /order/update` | Missing |
 | Public blog list/detail API | Missing; blog routes are admin SSR only |
 
 Do not work around a missing backend endpoint with fake production data. Add the

@@ -6,7 +6,6 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import ReplayOutlinedIcon from "@mui/icons-material/ReplayOutlined";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useGlobals } from "../../hooks/useGlobals";
 import { setChosenProduct } from "./slice";
 import { retrieveChosenProduct } from "./selector";
@@ -15,6 +14,8 @@ import { serverApi } from "../../../lib/config";
 import { Product } from "../../../lib/types/product";
 import { findShowcaseProduct, showcaseProducts } from "./showcaseProducts";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import { isMongoObjectId } from "../../../lib/utils/objectId";
+import ShoppingCartIcon from "../../components/icons/ShoppingCartIcon";
 
 const resolveImage = (image?: string) => {
   if (!image) return "";
@@ -93,6 +94,7 @@ export default function ChosenProduct() {
     .filter((product) => product._id !== chosenProduct._id && product.productCategory !== chosenProduct.productCategory)
     .slice(0, 4);
   const addToBasket = () => {
+    if (!isMongoObjectId(chosenProduct._id)) return;
     onAdd({
       _id: chosenProduct._id,
       quantity,
@@ -168,7 +170,7 @@ export default function ChosenProduct() {
               </div>
             </div>
 
-            <button className="product-add-button" onClick={addToBasket} disabled={chosenProduct.productLeftCount <= 0}><ShoppingBagOutlinedIcon /> {chosenProduct.productLeftCount > 0 ? "Add to cart" : "Out of stock"}</button>
+            <button className="product-add-button" onClick={addToBasket} disabled={chosenProduct.productLeftCount <= 0 || !isMongoObjectId(chosenProduct._id)}><ShoppingCartIcon /> {!isMongoObjectId(chosenProduct._id) ? "Preview only" : chosenProduct.productLeftCount > 0 ? "Add to cart" : "Out of stock"}</button>
             <p className="product-stock-note">
               {chosenProduct.productLeftCount > 0 ? `${chosenProduct.productLeftCount} items available` : "Currently out of stock"}
             </p>
