@@ -35,6 +35,8 @@ These routes currently exist in the Techanor backend `src/router.ts`.
 | --- | --- | --- | --- | --- | --- |
 | `POST` | `/signup` | No | `MemberInput` JSON | `{ member: Member }` | Service exists |
 | `POST` | `/login` | No | `LoginInput` JSON | `{ member: Member }` | Service exists |
+| `GET` | `/member/me` | Session | Session cookie | `{ member: Member }` | Connected; restores login |
+| `POST` | `/logout` | Session | None | `{ logout: true }` | Connected |
 | `GET` | `/product/all` | No | Query parameters | `Product[]` | Connected |
 | `GET` | `/product/:id` | No | Product ID path parameter | `Product` | Connected; increments `productViews` |
 
@@ -88,7 +90,6 @@ working integrations:
 | `POST /order/create` | Missing |
 | `GET /order/all` | Missing |
 | `POST /order/update` | Missing |
-| Logout/session verification | Missing |
 | Public blog list/detail API | Missing; blog routes are admin SSR only |
 
 Do not work around a missing backend endpoint with fake production data. Add the
@@ -96,16 +97,11 @@ Techanor backend contract first, then connect its frontend service.
 
 ## Authentication status
 
-Techanor signup and login currently return `{ member }`, but the controller has
-a token-authentication TODO and does not establish the Burak session-auth flow.
-Therefore:
-
-- localStorage data is only client persistence, not proof of authentication;
-- protected requests cannot be considered integrated yet;
-- `withCredentials: true` becomes meaningful only after the backend implements
-  and documents its cookie/session behavior;
-- logout must eventually invalidate the backend session/token as well as clear
-  client state.
+Techanor uses an HTTP-only Express session stored in MongoDB. Login writes the
+authenticated member to the server session, `/member/me` restores and validates
+that session after a browser refresh, and logout destroys it. The frontend sends
+credentials for these calls. `memberData` in localStorage is only a display
+cache; it is never accepted as proof of authentication.
 
 ## Redux Toolkit standard
 

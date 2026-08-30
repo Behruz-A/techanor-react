@@ -105,7 +105,7 @@ export default function AuthenticationModal({
               <button className="auth-close" type="button" onClick={closeLogin} aria-label="Close login"><CloseRounded /></button>
               <div className="auth-heading"><span>WELCOME BACK</span><h2>Log in to Techanor</h2><p>Access your orders, saved products and account.</p></div>
               <form className="auth-form" onSubmit={handleLoginRequest}>
-                <label className="auth-field"><span>Username</span><input value={memberNick} onChange={(e) => setMemberNick(e.target.value)} placeholder="Enter your username" autoComplete="username" autoFocus /></label>
+                <label className="auth-field"><span>Username</span><input value={memberNick} onChange={(e) => setMemberNick(e.target.value)} placeholder="Enter your username" autoComplete="username" minLength={2} required autoFocus /></label>
                 {passwordField}
                 <button className="auth-submit" type="submit" disabled={loading}>{loading ? "Signing in…" : "Log in securely"}<span>→</span></button>
               </form>

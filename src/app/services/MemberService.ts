@@ -76,8 +76,20 @@ class MemberService {
     }
   }
 
+  public async getCurrentMember(): Promise<Member> {
+    const url = this.path + "/member/me";
+    const result = await axios.get(url, { withCredentials: true });
+    const member: Member = result.data.member;
+    localStorage.setItem("memberData", JSON.stringify(member));
+    return member;
+  }
+
   public async logout(): Promise<void> {
-    localStorage.removeItem("memberData");
+    try {
+      await axios.post(this.path + "/logout", undefined, { withCredentials: true });
+    } finally {
+      localStorage.removeItem("memberData");
+    }
   }
 
   public async updateMember(input: MemberUpdateInput): Promise<Member> {
