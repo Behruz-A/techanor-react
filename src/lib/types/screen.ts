@@ -3,11 +3,13 @@
 import { Member } from "./member";
 import { Order } from "./order";
 import { Product } from "./product";
+import { BlogPost } from "./blog";
 
 export interface AppRootState {
   homePage: HomePageState;
   productsPage: ProductsPageState;
   ordersPage: OrdersPageState;
+  blogPage: BlogPageState;
 }
 /**HOME PAGE */
 export interface HomePageState {
@@ -25,4 +27,10 @@ export interface OrdersPageState {
   processOrders: Order[];
   finishedOrders: Order[];
   cancelledOrders: Order[];
+}
+
+/**BLOG PAGE */
+export interface BlogPageState {
+  blogs: BlogPost[];
+  chosenBlog: BlogPost | null;
 }

@@ -1,6 +1,6 @@
 # Techanor backend integration contract
 
-Last verified: 2026-08-30
+Last verified: 2026-09-01
 
 ## Runtime
 
@@ -39,6 +39,8 @@ These routes currently exist in the Techanor backend `src/router.ts`.
 | `POST` | `/logout` | Session | None | `{ logout: true }` | Connected |
 | `GET` | `/product/all` | No | Query parameters | `Product[]` | Connected |
 | `GET` | `/product/:id` | No | Product ID path parameter | `Product` | Connected; increments `productViews` |
+| `GET` | `/blog/all` | No | `page`, `limit`, optional category/search query | `BlogPost[]` | Connected; published posts only |
+| `GET` | `/blog/:id` | No | Blog post ID path parameter | `BlogPost` | Connected; published posts only, increments views |
 | `POST` | `/order/create` | Session | `OrderItemInput[]` | `Order` | Connected; backend validates price and stock |
 | `GET` | `/order/all` | Session | `page`, `limit`, `orderStatus` query | `Order[]` | Connected |
 | `POST` | `/order/update` | Session | `OrderUpdateInput` | `Order` | Connected; validates status transition |
@@ -68,6 +70,18 @@ not fall back to showcase/fake products.
 Price sorts ascending. Other supported fields sort descending. The backend only
 returns products whose status is `PROCESS`.
 
+### Public blog query
+
+`GET /blog/all` accepts one-based `page`, a `limit` capped at 50, optional
+`blogPostCategory`, and optional case-insensitive `search` across title and
+content. Only `PUBLISHED` posts are returned, newest first. Blog media paths are
+backend-relative uploads and must be normalized through `serverApi` in the SPA.
+
+`GET /blog/:id` accepts a MongoDB blog ID, returns only a published article and
+increments `blogPostViews`. The Blog list and detail screens store these server
+responses in the `blogPage` Redux feature; no static production fallback is
+used.
+
 Trending Deals currently requests:
 
 ```text
@@ -90,7 +104,6 @@ working integrations:
 | `POST /member/update` | Missing |
 | `GET /member/top-users` | Missing |
 | `GET /member/restaurant` | Missing and not a Techanor domain concept |
-| Public blog list/detail API | Missing; blog routes are admin SSR only |
 
 Do not work around a missing backend endpoint with fake production data. Add the
 Techanor backend contract first, then connect its frontend service.
