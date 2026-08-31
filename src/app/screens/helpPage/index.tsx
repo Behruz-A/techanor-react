@@ -1,20 +1,32 @@
-import React from "react";
-import { Box, Container, Stack, Tabs } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import React, { useEffect } from "react";
+import { Box, Container, Tabs } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Button from "@mui/material/Button";
 import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
+import { useLocation } from "react-router-dom";
 import "../../../css/help.css";
 import { faq } from "../../../lib/data/faq";
 import { terms } from "../../../lib/data/terms";
+import ContactPage from "../contactPage";
+
+const helpTabFromSearch = (search: string) => {
+  const tab = new URLSearchParams(search).get("tab");
+  if (tab === "faq") return "2";
+  if (tab === "contact") return "3";
+  return "1";
+};
 
 export default function HelpPage() {
-  const [value, setValue] = React.useState("1");
+  const location = useLocation();
+  const [value, setValue] = React.useState(() => helpTabFromSearch(location.search));
+
+  useEffect(() => {
+    setValue(helpTabFromSearch(location.search));
+  }, [location.search]);
 
   /** HANDLERS **/
   
@@ -25,9 +37,14 @@ export default function HelpPage() {
   return (
     <div className={"help-page"}>
       <Container className={"help-container"}>
+        <header className="help-heading">
+          <span>TECHANOR SUPPORT</span>
+          <h1>How can we help?</h1>
+          <p>Find clear answers about shopping, orders and delivery, or get in touch with our support team.</p>
+        </header>
         <TabContext value={value}>
           <Box className={"help-menu"}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Box className="help-tabs-border">
               <Tabs
                 value={value}
                 onChange={handleChange}
@@ -40,87 +57,42 @@ export default function HelpPage() {
               </Tabs>
             </Box>
           </Box>
-          <Stack>
-            <Stack className={"help-main-content"}>
-              <TabPanel value={"1"}>
-                <Stack className={"rules-box"}>
-                  <Box className={"rules-frame"}>
-                    {terms.map((value, number) => {
-                      return <p key={number}>{value}</p>;
-                    })}
-                  </Box>
-                </Stack>
+          <div className={"help-main-content"}>
+              <TabPanel className="help-tab-panel" value={"1"}>
+                <div className={"rules-box"}>
+                  {terms.map((term, number) => (
+                    <article className="help-term-card" key={term.title}>
+                      <span>{String(number + 1).padStart(2, "0")}</span>
+                      <div><h2>{term.title}</h2><p>{term.body}</p></div>
+                    </article>
+                  ))}
+                </div>
               </TabPanel>
-              <TabPanel value={"2"}>
-                <Stack className={"accordion-menu"}>
+              <TabPanel className="help-tab-panel" value={"2"}>
+                <div className={"accordion-menu"}>
                   {faq.map((value, number) => {
                     return (
-                      <Accordion key={number}>
+                      <Accordion disableGutters elevation={0} key={value.question}>
                         <AccordionSummary
                           expandIcon={<ExpandMoreIcon />}
-                          aria-controls="panel1a-content"
-                          id="panel1a-header"
+                          aria-controls={`faq-${number}-content`}
+                          id={`faq-${number}-header`}
                         >
-                          <Typography>{value.question}</Typography>
+                          <span className="faq-number">{String(number + 1).padStart(2, "0")}</span>
+                          <h2>{value.question}</h2>
                         </AccordionSummary>
-                        <AccordionDetails>
-                          <Typography>{value.answer}</Typography>
+                        <AccordionDetails id={`faq-${number}-content`}>
+                          <p>{value.answer}</p>
                         </AccordionDetails>
                       </Accordion>
                     );
                   })}
-                </Stack>
+                </div>
               </TabPanel>
-              <TabPanel value={"3"}>
-                <Stack className={"admin-letter-box"}>
-                  <Stack className={"admin-letter-container"}>
-                    <Box className={"admin-letter-frame"}>
-                      <span>Contact us!</span>
-                      <p>Fill out below form to send a message!</p>
-                    </Box>
-                    <form
-                      action={"#"}
-                      method={"POST"}
-                      className={"admin-letter-frame"}
-                    >
-                      <div className={"admin-input-box"}>
-                        <label>Your name</label>
-                        <input
-                          type={"text"}
-                          name={"memberNick"}
-                          placeholder={"Type your name here"}
-                        />
-                      </div>
-                      <div className={"admin-input-box"}>
-                        <label>Your email</label>
-                        <input
-                          type={"text"}
-                          name={"memberEmail"}
-                          placeholder={"Type your email here"}
-                        />
-                      </div>
-                      <div className={"admin-input-box"}>
-                        <label>Message</label>
-                        <textarea
-                          name={"memberMsg"}
-                          placeholder={"Your message"}
-                        ></textarea>
-                      </div>
-                      <Box
-                        display={"flex"}
-                        justifyContent={"flex-end"}
-                        sx={{ mt: "30px" }}
-                      >
-                        <Button type={"submit"} variant="contained">
-                          Send
-                        </Button>
-                      </Box>
-                    </form>
-                  </Stack>
-                </Stack>
+              <TabPanel className="help-contact-panel" value={"3"}>
+                <ContactPage embedded />
               </TabPanel>
-            </Stack>
-          </Stack>
+          </div>
         </TabContext>
       </Container>
     </div>

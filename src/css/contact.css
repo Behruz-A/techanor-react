@@ -4,6 +4,14 @@
   background: #f5f5f3;
   color: #0a2733;
 }
+.contact-page--embedded {
+  min-height: 0;
+  padding: 24px 0 48px;
+  background: transparent;
+}
+.contact-page--embedded .contact-shell {
+  width: 100%;
+}
 .contact-shell {
   width: min(1300px, calc(100% - 48px));
   margin: 0 auto;

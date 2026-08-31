@@ -1324,72 +1324,43 @@
 
 .tech-video {
   position: relative;
-  height: clamp(520px, 52vw, 760px);
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+  height: 100svh;
+  min-height: 700px;
+  box-sizing: border-box;
   overflow: hidden;
   background: #05080e;
   color: #fff;
 }
 
-.tech-video__player,
-.tech-video__shade {
+.tech-video__player {
   position: absolute;
   inset: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
-.tech-video__player iframe {
+.tech-video__player video {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100vw;
-  height: 56.25vw;
-  min-width: 177.78vh;
-  min-height: 100%;
-  border: 0;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-}
-
-.tech-video__shade {
-  z-index: 1;
-  background: linear-gradient(0deg, rgba(3, 8, 18, .66) 0%, rgba(3, 8, 18, .08) 46%, transparent 70%);
-  pointer-events: auto;
-  cursor: default;
-}
-
-.tech-video__content {
-  position: relative;
-  z-index: 2;
-  width: min(1300px, calc(100% - 48px));
+  inset: 0;
+  width: 100%;
   height: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding-bottom: 58px;
+  display: block;
+  border: 0;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
 }
 
-.tech-video__content > span {
-  color: #8bb8ff;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
+@media (min-width: 768px) and (max-width: 1199px) {
+  .tech-video { height: 540px; min-height: 0; }
 }
 
-.tech-video__content h2 {
-  margin: 9px 0 0;
-  font-size: clamp(31px, 3.2vw, 46px);
-  font-weight: 650;
-  line-height: 1.05;
-  letter-spacing: -1.8px;
-}
-
-@media (max-width: 600px) {
-  .tech-video { height: 560px; }
-  .tech-video__shade { background: rgba(3, 8, 18, .48); }
-  .tech-video__content { width: calc(100% - 40px); padding-bottom: 38px; }
-  .tech-video__content h2 { font-size: 34px; letter-spacing: -1.4px; }
+@media (max-width: 767px) {
+  .tech-video { height: 410px; min-height: 0; }
 }
 
 /** EVENTS **/

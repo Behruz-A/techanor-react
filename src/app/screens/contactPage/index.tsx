@@ -16,7 +16,11 @@ interface ContactForm {
 
 const initialForm: ContactForm = { firstName: "", lastName: "", email: "", phone: "", subject: "", message: "" };
 
-export default function ContactPage() {
+interface ContactPageProps {
+  embedded?: boolean;
+}
+
+export default function ContactPage({ embedded = false }: ContactPageProps) {
   const [form, setForm] = useState<ContactForm>(initialForm);
 
   const updateField = (field: keyof ContactForm, value: string) => setForm((current) => ({ ...current, [field]: value }));
@@ -28,7 +32,7 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="contact-page">
+    <main className={`contact-page${embedded ? " contact-page--embedded" : ""}`}>
       <section className="contact-shell" aria-labelledby="contact-title">
         <header className="contact-heading">
           <span>TECHANOR SUPPORT</span>

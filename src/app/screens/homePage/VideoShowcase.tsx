@@ -1,19 +1,58 @@
+import { useCallback, useEffect, useRef } from "react";
+
 export default function VideoShowcase() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const resumeVideo = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.ended) video.currentTime = 0;
+    void video.play().catch(() => undefined);
+  }, []);
+
+  const keepVideoLooping = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || document.visibilityState !== "visible") return;
+
+    const isNearEnd = Number.isFinite(video.duration) && video.duration > 0 && video.duration - video.currentTime <= 0.4;
+    if (video.ended || isNearEnd) video.currentTime = 0;
+    if (video.paused || video.ended || isNearEnd) void video.play().catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    const resumeWhenVisible = () => {
+      if (document.visibilityState === "visible") resumeVideo();
+    };
+
+    const playbackWatchdog = window.setInterval(keepVideoLooping, 250);
+    document.addEventListener("visibilitychange", resumeWhenVisible);
+    resumeVideo();
+    return () => {
+      window.clearInterval(playbackWatchdog);
+      document.removeEventListener("visibilitychange", resumeWhenVisible);
+    };
+  }, [keepVideoLooping, resumeVideo]);
+
   return (
     <section className="tech-video" aria-label="Techanor video showcase">
       <div className="tech-video__player">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/DhT7Ihopxt8?autoplay=1&mute=1&loop=1&playlist=DhT7Ihopxt8&start=0&end=25&controls=0&showinfo=0&autohide=1&rel=0&modestbranding=1&playsinline=1&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0"
-          title="Techanor technology showcase"
-          allow="autoplay"
-          referrerPolicy="strict-origin-when-cross-origin"
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-label="Techanor technology showcase"
           tabIndex={-1}
-        />
-      </div>
-      <div className="tech-video__shade" aria-hidden="true" />
-      <div className="tech-video__content">
-        <span>Techanor film</span>
-        <h2>Technology in motion.</h2>
+          onCanPlay={resumeVideo}
+          onEnded={resumeVideo}
+          onPause={() => {
+            if (document.visibilityState === "visible") resumeVideo();
+          }}
+        >
+          <source src="/video/Odyssey G7 37   Official Introduction   Samsung_(0).mp4" type="video/mp4" />
+        </video>
       </div>
     </section>
   );

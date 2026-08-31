@@ -72,7 +72,7 @@ export default function Basket(props: BasketProps) {
         onClick={handleClick}
       >
         <Badge badgeContent={itemCount} color="secondary">
-          <ShoppingCartIcon />
+          <img src="/icons/shopping-cart.svg" alt="" aria-hidden="true" />
         </Badge>
       </IconButton>
       <Drawer

@@ -42,18 +42,18 @@ export default function HomeNavbar({
           <Link className="home-brand" to="/" aria-label="Techanor home">
             <BrandLogo />
           </Link>
-          <NavbarSearch />
         </div>
 
         <div className="home-nav-links">
           <NavLink exact to="/" activeClassName="active">Home</NavLink>
-          <NavLink to="/products" activeClassName="active">Products</NavLink>
+          <NavLink to="/products" activeClassName="active">Shop</NavLink>
           <NavLink to="/blog" activeClassName="active">Blog</NavLink>
           <NavLink to="/help" activeClassName="active">Help</NavLink>
-          <NavLink to="/contact" activeClassName="active">Contact</NavLink>
+          {authMember && <NavLink to="/orders" activeClassName="active">Orders</NavLink>}
         </div>
 
         <div className="home-nav-actions">
+          <NavbarSearch />
           <Wishlist />
           <div className="home-nav-basket">
             <Basket />

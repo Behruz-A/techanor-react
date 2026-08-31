@@ -19,12 +19,12 @@ const serviceLinks = [
   { label: "Returns & Refunds", to: "/help" },
   { label: "Order Tracking", to: "/orders" },
   { label: "Payment Methods", to: "/help" },
-  { label: "Contact Us", to: "/contact" },
+  { label: "Contact Us", to: "/help?tab=contact" },
 ];
 
 const aboutLinks = [
   { label: "Blog", to: "/blog" },
-  { label: "Contact Us", to: "/contact" },
+  { label: "Contact Us", to: "/help?tab=contact" },
 ];
 
 const brands = ["Apple", "Samsung", "Sony", "LG", "Lenovo", "Dell"];

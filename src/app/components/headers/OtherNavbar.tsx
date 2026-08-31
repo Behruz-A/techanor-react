@@ -38,18 +38,18 @@ export default function OtherNavbar({
         <Link className="other-brand" to="/" aria-label="Techanor home">
           <BrandLogo tone="dark" />
         </Link>
-        <NavbarSearch />
         <button className="other-menu-toggle" type="button" aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((open) => !open)}>
           {mobileMenuOpen ? <CloseRounded /> : <MenuRounded />}
         </button>
         <div className={`other-nav-links${mobileMenuOpen ? " open" : ""}`}>
           <NavLink exact to="/" activeClassName="active" onClick={closeMobileMenu}>Home</NavLink>
-          <NavLink to="/products" activeClassName="active" onClick={closeMobileMenu}>Products</NavLink>
+          <NavLink to="/products" activeClassName="active" onClick={closeMobileMenu}>Shop</NavLink>
           <NavLink to="/blog" activeClassName="active" onClick={closeMobileMenu}>Blog</NavLink>
           <NavLink to="/help" activeClassName="active" onClick={closeMobileMenu}>Help</NavLink>
-          <NavLink to="/contact" activeClassName="active" onClick={closeMobileMenu}>Contact</NavLink>
+          {authMember && <NavLink to="/orders" activeClassName="active" onClick={closeMobileMenu}>Orders</NavLink>}
         </div>
         <div className="other-nav-actions">
+          <NavbarSearch />
           <Wishlist />
           <div className="other-nav-basket"><Basket /></div>
           <button className={authMember ? "other-avatar-button" : "navbar-account-button"} type="button" aria-label="Open account menu" aria-haspopup="true" aria-expanded={Boolean(anchorEl)} onClick={handleLogoutClick}>

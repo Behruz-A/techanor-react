@@ -86,7 +86,7 @@ export default function ChosenProduct() {
   }
 
   const sourceImages = chosenProduct.productImages?.length ? chosenProduct.productImages : [""];
-  const images = sourceImages.length === 1 ? [sourceImages[0], sourceImages[0]] : sourceImages;
+  const images = sourceImages;
   const relatedProducts = catalogProducts
     .filter((product) => product._id !== chosenProduct._id && product.productCategory === chosenProduct.productCategory)
     .slice(0, 4);
@@ -142,8 +142,6 @@ export default function ChosenProduct() {
             <span className="product-category-label">{formatLabel(chosenProduct.productCategory)}</span>
             <h1>{chosenProduct.productName}</h1>
             <div className="product-detail-meta">
-              <span className="product-stars" aria-label="Rated 4.8 out of 5">★★★★★</span>
-              <span>4.8</span><span className="meta-divider" />
               <RemoveRedEyeOutlinedIcon /><span>{chosenProduct.productViews || 0} views</span>
             </div>
 
@@ -163,9 +161,9 @@ export default function ChosenProduct() {
               <div className="product-quantity-block">
                 <span>Quantity</span>
                 <div className="quantity-control">
-                  <button onClick={() => setQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity"><RemoveIcon /></button>
+                  <button onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity <= 1 || chosenProduct.productLeftCount <= 0} aria-label="Decrease quantity"><RemoveIcon /></button>
                   <strong>{quantity}</strong>
-                  <button onClick={() => setQuantity((value) => Math.min(chosenProduct.productLeftCount || 99, value + 1))} aria-label="Increase quantity"><AddIcon /></button>
+                  <button onClick={() => setQuantity((value) => Math.min(chosenProduct.productLeftCount, value + 1))} disabled={chosenProduct.productLeftCount <= 0 || quantity >= chosenProduct.productLeftCount} aria-label="Increase quantity"><AddIcon /></button>
                 </div>
               </div>
             </div>
@@ -194,7 +192,7 @@ export default function ChosenProduct() {
           <div className="related-product-grid">
             {relatedProducts.length ? relatedProducts.map((product: Product) => (
               <article className="related-product-card" key={product._id}>
-                <a href={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0])} alt={product.productName} /></a>
+                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0])} alt={product.productName} loading="lazy" /></Link>
                 <span>{formatLabel(product.productCategory)}</span>
                 <h3>{product.productName}</h3>
                 <strong>${product.productPrice.toLocaleString()}</strong>
@@ -205,17 +203,13 @@ export default function ChosenProduct() {
           </div>
         )}
         {activeTab === "reviews" && (
-          <div className="detail-review-grid">
-            <article><div><strong>Daniel K.</strong><span>★★★★★</span></div><p>Excellent condition and dependable everyday performance. The product arrived carefully packed and exactly as described.</p></article>
-            <article><div><strong>Sophia L.</strong><span>★★★★★</span></div><p>A smooth buying experience from checkout to delivery. The quality feels premium and everything works beautifully.</p></article>
-            <article><div><strong>Noah P.</strong><span>★★★★☆</span></div><p>Very good value and fast delivery. Product details were accurate and setup was simple from the first day.</p></article>
-          </div>
+          <div className="product-tab-message"><strong>No customer reviews yet.</strong><span>Verified reviews will appear here after completed purchases.</span></div>
         )}
         {activeTab === "other" && (
           <div className="related-product-grid">
             {otherProducts.length ? otherProducts.map((product: Product) => (
               <article className="related-product-card" key={product._id}>
-                <a href={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0])} alt={product.productName} /></a>
+                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0])} alt={product.productName} loading="lazy" /></Link>
                 <span>{formatLabel(product.productCategory)}</span>
                 <h3>{product.productName}</h3>
                 <strong>${product.productPrice.toLocaleString()}</strong>

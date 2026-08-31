@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Switch, useLocation } from "react-router-dom";
+import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import HomePage from "./screens/homePage";
 import ProductsPage from "./screens/productsPage";
 import OrdersPage from "./screens/ordersPage";
@@ -11,7 +11,6 @@ import HelpPage from "./screens/helpPage";
 import CheckoutPage from "./screens/checkoutPage";
 import BlogPage from "./screens/blogPage";
 import BlogDetail from "./screens/blogPage/BlogDetail";
-import ContactPage from "./screens/contactPage";
 import AuthenticationModal from "./components/auth";
 import { sweetErrorHandling, sweetTopSuccessAlert } from "../lib/sweetAlert";
 import { Messages } from "../lib/config";
@@ -100,7 +99,7 @@ function App() {
           <HelpPage />
         </Route>
         <Route path="/contact">
-          <ContactPage />
+          <Redirect to="/help?tab=contact" />
         </Route>
         <Route path="/">
           <HomePage />
