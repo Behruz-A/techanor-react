@@ -1,6 +1,6 @@
 # Techanor backend integration contract
 
-Last verified: 2026-09-01
+Last verified: 2026-09-02
 
 ## Runtime
 
@@ -36,6 +36,7 @@ These routes currently exist in the Techanor backend `src/router.ts`.
 | `POST` | `/signup` | No | Public signup JSON | `{ member: Member }` | Connected; creates session |
 | `POST` | `/login` | No | `LoginInput` JSON | `{ member: Member }` | Service exists |
 | `GET` | `/member/me` | Session | Session cookie | `{ member: Member }` | Connected; restores login |
+| `POST` | `/member/update` | Session | `multipart/form-data` member fields and optional image | `Member` | Connected; refreshes session member |
 | `POST` | `/logout` | Session | None | `{ logout: true }` | Connected |
 | `GET` | `/product/all` | No | Query parameters | `Product[]` | Connected |
 | `GET` | `/product/:id` | No | Product ID path parameter | `Product` | Connected; increments `productViews` |
@@ -101,7 +102,6 @@ working integrations:
 
 | Frontend expectation | Current backend status |
 | --- | --- |
-| `POST /member/update` | Missing |
 | `GET /member/top-users` | Missing |
 | `GET /member/restaurant` | Missing and not a Techanor domain concept |
 

@@ -40,5 +40,5 @@ export function OrderCard({ order, stage, status, actions }: OrderCardProps) {
 }
 
 export function EmptyOrders({ title, text }: { title: string; text: string }) {
-  return <div className="orders-empty"><span><Inventory2Outlined/></span><h3>{title}</h3><p>{text}</p><a href="/products">Browse products <b>›</b></a></div>;
+  return <div className="orders-empty"><div className="orders-empty-copy"><span><Inventory2Outlined/></span><h3>{title}</h3><p>{text}</p><a href="/products">Browse products <b>→</b></a></div><div className="orders-empty-steps"><div><b>01</b><strong>Discover</strong><small>Find the right tech for you</small></div><div><b>02</b><strong>Order securely</strong><small>Review and confirm checkout</small></div><div><b>03</b><strong>Track delivery</strong><small>Follow every status update</small></div></div></div>;
 }

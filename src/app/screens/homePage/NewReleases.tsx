@@ -2,10 +2,10 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 const showcaseImages = [
-  { id: "watch", image: "/img/newapplewatchforreleases.png", alt: "Premium Apple Watch", shift: 90 },
+  { id: "watch", image: "/img/watchnew.png", alt: "Premium Apple Watch", shift: 90 },
   { id: "speaker", image: "/img/headphone1.png", alt: "Premium wireless headphones", shift: -122 },
   { id: "future", image: "/img/futuristicimg.png", alt: "Person exploring virtual reality technology", shift: 0, focal: true },
-  { id: "laptop", image: "/img/newlaptop1.png", alt: "Premium laptop", shift: 90 },
+  { id: "laptop", image: "/img/controllernew-transparent.png", alt: "Premium game controller", shift: 90 },
   { id: "phone", image: "/img/newphone1.png", alt: "Latest premium smartphone", shift: -150 },
 ];
 
@@ -17,29 +17,46 @@ export default function NewReleases() {
     if (!section) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const cards = Array.from(section.querySelectorAll<HTMLElement>("[data-release-shift]"));
     let animationFrame = 0;
+    let currentProgress = 0;
+    let targetProgress = 0;
 
-    const updateGallery = () => {
-      animationFrame = 0;
+    const measureProgress = () => {
+      if (reducedMotion.matches || window.innerWidth <= 720) {
+        targetProgress = 0;
+        return;
+      }
+
       const gallery = section.querySelector<HTMLElement>(".release-editorial");
       if (!gallery) return;
-
       const galleryRect = gallery.getBoundingClientRect();
       const animationStart = window.innerHeight * 0.52;
       const scrollRange = window.innerHeight * 0.44;
-      const progress = Math.min(1, Math.max(0, (animationStart - galleryRect.top) / scrollRange));
+      targetProgress = Math.min(1, Math.max(0, (animationStart - galleryRect.top) / scrollRange));
+    };
 
-      section.querySelectorAll<HTMLElement>("[data-release-shift]").forEach((card) => {
+    const renderGallery = () => {
+      const delta = targetProgress - currentProgress;
+      currentProgress += delta * 0.14;
+
+      cards.forEach((card) => {
         const shift = Number(card.dataset.releaseShift || 0);
-        card.style.setProperty("--release-scroll-y", reducedMotion.matches ? "0px" : `${shift * progress}px`);
+        card.style.setProperty("--release-scroll-y", `${shift * currentProgress}px`);
       });
+
+      if (Math.abs(delta) > 0.001) animationFrame = window.requestAnimationFrame(renderGallery);
+      else animationFrame = 0;
     };
 
     const requestUpdate = () => {
-      if (!animationFrame) animationFrame = window.requestAnimationFrame(updateGallery);
+      measureProgress();
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(renderGallery);
     };
 
-    updateGallery();
+    measureProgress();
+    currentProgress = targetProgress;
+    renderGallery();
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
     reducedMotion.addEventListener("change", requestUpdate);

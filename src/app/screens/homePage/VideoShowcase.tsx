@@ -6,50 +6,46 @@ export default function VideoShowcase() {
   const resumeVideo = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
+    video.defaultMuted = true;
+    video.muted = true;
+    video.playbackRate = 1;
     if (video.ended) video.currentTime = 0;
     void video.play().catch(() => undefined);
   }, []);
 
-  const keepVideoLooping = useCallback(() => {
-    const video = videoRef.current;
-    if (!video || document.visibilityState !== "visible") return;
-
-    const isNearEnd = Number.isFinite(video.duration) && video.duration > 0 && video.duration - video.currentTime <= 0.4;
-    if (video.ended || isNearEnd) video.currentTime = 0;
-    if (video.paused || video.ended || isNearEnd) void video.play().catch(() => undefined);
-  }, []);
-
   useEffect(() => {
-    const resumeWhenVisible = () => {
-      if (document.visibilityState === "visible") resumeVideo();
-    };
+    const video = videoRef.current;
+    if (!video) return;
+    let isInView = false;
 
-    const playbackWatchdog = window.setInterval(keepVideoLooping, 250);
+    const resumeWhenVisible = () => {
+      if (document.visibilityState === "visible" && isInView) resumeVideo();
+      else video.pause();
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      isInView = entry.isIntersecting;
+      resumeWhenVisible();
+    }, { rootMargin: "120px 0px", threshold: 0.05 });
+    observer.observe(video);
     document.addEventListener("visibilitychange", resumeWhenVisible);
-    resumeVideo();
     return () => {
-      window.clearInterval(playbackWatchdog);
+      observer.disconnect();
       document.removeEventListener("visibilitychange", resumeWhenVisible);
     };
-  }, [keepVideoLooping, resumeVideo]);
+  }, [resumeVideo]);
 
   return (
     <section className="tech-video" aria-label="Techanor video showcase">
       <div className="tech-video__player">
         <video
           ref={videoRef}
-          autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
+          disablePictureInPicture
           aria-label="Techanor technology showcase"
           tabIndex={-1}
-          onCanPlay={resumeVideo}
-          onEnded={resumeVideo}
-          onPause={() => {
-            if (document.visibilityState === "visible") resumeVideo();
-          }}
         >
           <source src="/video/Odyssey G7 37   Official Introduction   Samsung_(0).mp4" type="video/mp4" />
         </video>

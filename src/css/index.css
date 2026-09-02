@@ -30,11 +30,7 @@ code {
 }
 
 .techanor-alert-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 4px;
-  background: linear-gradient(90deg, #0a2733, #2563eb);
+  display: none;
 }
 
 .techanor-alert-card.techanor-alert-danger::before {
@@ -56,6 +52,31 @@ code {
 .techanor-alert-confirm.techanor-alert-confirm-danger:hover {
   background: #c7353f;
   box-shadow: 0 10px 24px rgba(217, 65, 75, 0.26);
+}
+
+.techanor-alert-success .techanor-alert-icon.swal2-success {
+  border: 2px solid #bbf7d0 !important;
+  background: #f0fdf4 !important;
+  color: #16a34a !important;
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.12) !important;
+}
+
+.techanor-alert-success .swal2-success-ring {
+  border-color: transparent !important;
+}
+
+.techanor-alert-success [class^="swal2-success-line"] {
+  background-color: #16a34a !important;
+}
+
+.techanor-alert-confirm.techanor-alert-confirm-success {
+  background: #15803d;
+  box-shadow: 0 8px 20px rgba(21, 128, 61, 0.2);
+}
+
+.techanor-alert-confirm.techanor-alert-confirm-success:hover {
+  background: #166534;
+  box-shadow: 0 10px 24px rgba(21, 128, 61, 0.26);
 }
 
 .techanor-alert-icon {

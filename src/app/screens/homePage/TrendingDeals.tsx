@@ -8,6 +8,8 @@ import { setTrendingDeals } from "./slice";
 import { retrieveTrendingDeals } from "./selector";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 
+const resolveProductImage = (path?: string) => !path ? "" : path.startsWith("/") || path.startsWith("http") ? path : `${serverApi}/${path}`;
+
 export default function TrendingDeals() {
   const dispatch = useAppDispatch();
   const trendingDeals = useAppSelector(retrieveTrendingDeals);
@@ -46,8 +48,7 @@ export default function TrendingDeals() {
           const data = await productService.getProducts({ page: 1, limit: 4, order: "productViews" });
           if (!isCancelled) dispatch(setTrendingDeals(data));
           return;
-        } catch (err) {
-          console.log(`Error, trending deals (attempt ${attempt + 1}):`, err);
+        } catch {
           if (attempt === 0) {
             await new Promise((resolve) => window.setTimeout(resolve, 800));
           }
@@ -100,7 +101,7 @@ export default function TrendingDeals() {
               <article className="trending-card" key={product._id}>
                 <h3 title={product.productName}>{product.productName}</h3>
                 <Link className="trending-card__media" to={`/products/${product._id}`} aria-label={`View ${product.productName}`}>
-                  <img src={`${serverApi}/${product.productImages[0]}`} alt={product.productName} loading="lazy" />
+                  {resolveProductImage(product.productImages?.[0]) ? <img src={resolveProductImage(product.productImages[0])} alt={product.productName} loading="lazy" /> : <span className="catalog-image-placeholder">Image unavailable</span>}
                 </Link>
                 <Link className="trending-card__buy" to={`/products/${product._id}`}>Browse</Link>
               </article>

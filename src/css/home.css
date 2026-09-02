@@ -420,7 +420,7 @@
 /** SHOP BY CATEGORY **/
 
 .shop-categories {
-  padding: 82px 0 90px;
+  padding: 82px 0 48px;
   background: #f5f5f7;
   color: #1d1d1f;
 }
@@ -567,7 +567,7 @@
 }
 
 @media (max-width: 600px) {
-  .shop-categories { padding: 66px 0 72px; }
+  .shop-categories { padding: 66px 0 48px; }
   .shop-categories__container { width: 100%; }
   .shop-categories__heading { padding: 0 20px; margin-bottom: 30px; display: block; }
   .shop-categories__heading > div > p { margin-top: 13px; }
@@ -1453,8 +1453,8 @@
 /* Scroll-led editorial New Releases */
 .new-releases--editorial {
   position: relative;
-  min-height: clamp(1120px, 125vh, 1380px);
-  padding: 90px 0 140px;
+  min-height: 0;
+  padding: 56px 0 72px;
   overflow: visible;
   background: #f5f5f7;
   color: #0a2733;
@@ -1508,7 +1508,7 @@
 .release-editorial {
   height: 560px;
   display: grid;
-  grid-template-columns: 190px 230px minmax(360px, 380px) 230px 190px;
+  grid-template-columns: 0.5fr 0.62fr 1fr 0.62fr 0.5fr;
   justify-content: center;
   align-items: center;
   gap: 20px;
@@ -1523,7 +1523,6 @@
   background: #e9edef;
   box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
   transform: translate3d(0, var(--release-scroll-y), 0);
-  transition: transform 90ms cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
 }
 .release-editorial__card img {
@@ -1559,10 +1558,20 @@
   object-fit: cover;
   object-position: center;
 }
-.release-editorial__card--laptop img { object-position: 48% center; }
+.release-editorial__card--watch img {
+  object-position: center;
+  transform: scale(1.3);
+}
+.release-editorial__card--watch:hover img { transform: scale(1.34); }
+.release-editorial__card--laptop img {
+  object-fit: contain;
+  object-position: center;
+  transform: scale(1.05);
+}
+.release-editorial__card--laptop:hover img { transform: scale(1.08); }
 
 @media (max-width: 1080px) {
-  .new-releases--editorial { min-height: clamp(980px, 115vh, 1120px); padding: 82px 0 120px; }
+  .new-releases--editorial { min-height: 0; padding: 56px 0 88px; }
   .new-releases__editorial-heading { margin-bottom: 42px; }
   .release-editorial {
     height: 510px;
@@ -1578,7 +1587,7 @@
 }
 
 @media (max-width: 720px) {
-  .new-releases--editorial { min-height: 0; padding: 68px 0 76px; }
+  .new-releases--editorial { min-height: 0; padding: 56px 0 76px; }
   .new-releases__editorial-container { width: 100%; }
   .new-releases__editorial-heading { margin: 0 auto 36px; padding: 0 22px; }
   .new-releases__editorial-heading h2 { font-size: clamp(38px, 12vw, 52px); letter-spacing: -2px; }

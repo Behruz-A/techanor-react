@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import HomePage from "./screens/homePage";
 import ProductsPage from "./screens/productsPage";
-import OrdersPage from "./screens/ordersPage";
 import UserPage from "./screens/userPage";
 import HomeNavbar from "./components/headers/HomeNavbar";
 import OtherNavbar from "./components/headers/OtherNavbar";
@@ -43,6 +42,14 @@ function App() {
   /**HANDLERS */
   const handleSignupClose = () => setSignupOpen(false);
   const handleLoginClose = () => setLoginOpen(false);
+  const showSignup = () => {
+    setLoginOpen(false);
+    setSignupOpen(true);
+  };
+  const showLogin = () => {
+    setSignupOpen(false);
+    setLoginOpen(true);
+  };
 
   const handleLogoutClick = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
@@ -57,7 +64,6 @@ function App() {
       await sweetTopSuccessAlert("success", 700);
       setAuthMember(null);
     } catch (err) {
-      console.log(err);
       sweetErrorHandling(Messages.error1);
     }
   };
@@ -83,15 +89,13 @@ function App() {
         />
       )}
       <Switch>
-        <Route exact path="/checkout"><CheckoutPage /></Route>
+        <Route exact path="/checkout"><Redirect to="/orders/address" /></Route>
         <Route path="/blog/:postId"><BlogDetail /></Route>
         <Route exact path="/blog"><BlogPage /></Route>
         <Route path="/products">
           <ProductsPage />
         </Route>
-        <Route path="/orders">
-          <OrdersPage />
-        </Route>
+        <Route path="/orders"><CheckoutPage /></Route>
         <Route path="/member-page">
           <UserPage />
         </Route>
@@ -112,6 +116,8 @@ function App() {
         loginOpen={loginOpen}
         handleLoginClose={handleLoginClose}
         handleSignupClose={handleSignupClose}
+        showSignup={showSignup}
+        showLogin={showLogin}
       />
     </>
   );
