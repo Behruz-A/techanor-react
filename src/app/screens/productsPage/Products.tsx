@@ -1,8 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Pagination } from "@mui/material";
-import { CableRounded, CloseRounded, DevicesRounded, Favorite, FavoriteBorderRounded, HeadphonesRounded, LaptopMacRounded, PhoneIphoneRounded, SearchRounded, SortRounded, SportsEsportsRounded, TuneRounded, TvRounded, WatchRounded } from "@mui/icons-material";
+import { CloseRounded, Favorite, FavoriteBorderRounded, SearchRounded, SortRounded, TuneRounded } from "@mui/icons-material";
 import { createSelector } from "reselect";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { setProducts } from "./slice";
 import { retrieveProducts } from "./selector";
@@ -11,19 +10,10 @@ import { Product, ProductInquiry } from "../../../lib/types/product";
 import { PRODUCT_BRAND_LABELS, PRODUCT_CATEGORY_LABELS, PRODUCT_CONDITION_LABELS, PRODUCT_MEMORY_LABELS, ProductBrand, ProductCategory, ProductCondition, ProductMemory } from "../../../constants/enums";
 import { serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 
 const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 const categories = Object.values(ProductCategory).map((value) => ({ value, label: PRODUCT_CATEGORY_LABELS[value] }));
-const categoryIcons: Record<ProductCategory, JSX.Element> = {
-  [ProductCategory.LAPTOP]: <LaptopMacRounded />,
-  [ProductCategory.SMARTPHONE]: <PhoneIphoneRounded />,
-  [ProductCategory.TV]: <TvRounded />,
-  [ProductCategory.GAMING]: <SportsEsportsRounded />,
-  [ProductCategory.AUDIO]: <HeadphonesRounded />,
-  [ProductCategory.CASES]: <CableRounded />,
-  [ProductCategory.WEARABLES]: <WatchRounded />,
-  [ProductCategory.OTHERS]: <DevicesRounded />,
-};
 const PAGE_SIZE = 9;
 const CATALOG_BATCH_SIZE = 50;
 const MAX_CATALOG_PAGES = 20;
@@ -39,10 +29,10 @@ export default function Products() {
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
   const addedResetTimer = useRef<number | null>(null);
   const { basket: { onAdd }, wishlist } = useGlobals();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory();
   const location = useLocation();
-  const { products } = useSelector(productsRetriever);
+  const { products } = useAppSelector(productsRetriever);
   const initialParams = new URLSearchParams(location.search);
   const searchFromUrl = initialParams.get("search") || "";
   const categoryFromUrl = initialParams.get("category");
@@ -124,11 +114,6 @@ export default function Products() {
   const openProduct = (productId: string) => history.push(`/products/${productId}`);
 
   return <div className="products">
-    <nav className="shop-category-nav" aria-label="Product categories">
-      <div className="shop-category-nav-inner">
-        {categories.map(({ value, label }) => <button type="button" className={productSearch.productCategory === value ? "active" : ""} key={value} onClick={() => selectCategory(productSearch.productCategory === value ? undefined : value)}>{categoryIcons[value]}<span>{label}</span></button>)}
-      </div>
-    </nav>
     <main className="catalog-shell" id="product-catalog">
       <nav className="shop-breadcrumb" aria-label="Breadcrumb"><Link to="/">Home</Link><span>›</span><strong>Shop</strong>{productSearch.productCategory && <><span>›</span><b>{PRODUCT_CATEGORY_LABELS[productSearch.productCategory]}</b></>}</nav>
       <header className="catalog-heading"><h1>{productSearch.productCategory ? PRODUCT_CATEGORY_LABELS[productSearch.productCategory] : "All Products"}</h1><p className="catalog-result-count"><strong>{isLoading ? "—" : visibleProducts.length}</strong> products</p></header>

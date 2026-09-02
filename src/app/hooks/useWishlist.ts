@@ -17,18 +17,21 @@ const readStoredWishlist = (): Product[] => {
 const useWishlist = () => {
   const [items, setItems] = useState<Product[]>(readStoredWishlist);
 
-  const updateItems = (nextItems: Product[]) => {
-    setItems(nextItems);
-    if (nextItems.length) localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(nextItems));
-    else localStorage.removeItem(WISHLIST_STORAGE_KEY);
+  const updateItems = (updater: (current: Product[]) => Product[]) => {
+    setItems((current) => {
+      const nextItems = updater(current);
+      if (nextItems.length) localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(nextItems));
+      else localStorage.removeItem(WISHLIST_STORAGE_KEY);
+      return nextItems;
+    });
   };
 
   const has = (productId: string) => items.some((item) => item._id === productId);
-  const toggle = (product: Product) => updateItems(has(product._id)
-    ? items.filter((item) => item._id !== product._id)
-    : [...items, product]);
-  const remove = (productId: string) => updateItems(items.filter((item) => item._id !== productId));
-  const clear = () => updateItems([]);
+  const toggle = (product: Product) => updateItems((current) => current.some((item) => item._id === product._id)
+    ? current.filter((item) => item._id !== product._id)
+    : [...current, product]);
+  const remove = (productId: string) => updateItems((current) => current.filter((item) => item._id !== productId));
+  const clear = () => updateItems(() => []);
 
   return { items, has, toggle, remove, clear };
 };

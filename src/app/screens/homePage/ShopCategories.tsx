@@ -41,7 +41,19 @@ export default function ShopCategories() {
               aria-label={`Shop ${category.label || PRODUCT_CATEGORY_LABELS[category.value]}`}
             >
               <div className="category-tile__media">
-                <img src={category.image} alt="" loading="lazy" />
+                <img
+                  src={category.image}
+                  alt=""
+                  loading="lazy"
+                  style={{
+                    width: "auto",
+                    height: "auto",
+                    maxWidth: "calc(100% - 48px)",
+                    maxHeight: "calc(100% - 48px)",
+                    objectFit: "contain",
+                    objectPosition: "center",
+                  }}
+                />
               </div>
               <div className="category-tile__copy">
                 <h3>{category.label || PRODUCT_CATEGORY_LABELS[category.value]}</h3>

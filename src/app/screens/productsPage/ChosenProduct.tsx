@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -40,6 +40,8 @@ export default function ChosenProduct() {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<"related" | "other">("related");
+  const [isAdded, setIsAdded] = useState(false);
+  const addedResetTimer = useRef<number | null>(null);
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
     const image = event.currentTarget;
@@ -48,6 +50,7 @@ export default function ChosenProduct() {
   };
 
   useEffect(() => {
+    let isCancelled = false;
     const service = new ProductService();
     const showcaseProduct = findShowcaseProduct(productId);
     dispatch(setChosenProduct(null));
@@ -62,21 +65,28 @@ export default function ChosenProduct() {
     }
     service
       .getProduct(productId)
-      .then((data) => dispatch(setChosenProduct(data)))
+      .then((data) => { if (!isCancelled) dispatch(setChosenProduct(data)); })
       .catch(() => {
-        setHasError(true);
+        if (!isCancelled) setHasError(true);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => { if (!isCancelled) setIsLoading(false); });
     service
       .getProducts({ page: 1, limit: 12, order: "createdAt" })
-      .then((data) => setCatalogProducts(Array.isArray(data) ? data : []))
-      .catch(() => setCatalogProducts([]));
+      .then((data) => { if (!isCancelled) setCatalogProducts(Array.isArray(data) ? data : []); })
+      .catch(() => { if (!isCancelled) setCatalogProducts([]); });
+    return () => { isCancelled = true; };
   }, [dispatch, productId]);
 
   useEffect(() => {
     setQuantity(1);
     setActiveImage(0);
+    setIsAdded(false);
+    if (addedResetTimer.current !== null) window.clearTimeout(addedResetTimer.current);
   }, [productId]);
+
+  useEffect(() => () => {
+    if (addedResetTimer.current !== null) window.clearTimeout(addedResetTimer.current);
+  }, []);
 
   if (isLoading) {
     return <main className="product-detail-status">Loading product...</main>;
@@ -110,15 +120,18 @@ export default function ChosenProduct() {
       price: chosenProduct.productPrice,
       image: chosenProduct.productImages?.[0] || "",
     });
+    setIsAdded(true);
+    if (addedResetTimer.current !== null) window.clearTimeout(addedResetTimer.current);
+    addedResetTimer.current = window.setTimeout(() => setIsAdded(false), 1800);
   };
 
   return (
     <main className="techanor-product-detail">
       <section className="product-detail-shell">
-        <div className="product-breadcrumb">
-          Products <span>/</span> {formatLabel(chosenProduct.productCategory)} <span>/</span>
+        <nav className="product-breadcrumb" aria-label="Breadcrumb">
+          <Link to="/products">Products</Link> <span>/</span> {formatLabel(chosenProduct.productCategory)} <span>/</span>
           <strong>{chosenProduct.productName}</strong>
-        </div>
+        </nav>
 
         <div className="product-detail-grid">
           <div className="product-gallery">
@@ -134,6 +147,7 @@ export default function ChosenProduct() {
                   <button
                     key={`${image}-${index}`}
                     className={index === activeImage ? "active" : ""}
+                    type="button"
                     onClick={() => setActiveImage(index)}
                     aria-label={`View image ${index + 1}`}
                   >
@@ -166,16 +180,16 @@ export default function ChosenProduct() {
               <div className="product-quantity-block">
                 <span>Quantity</span>
                 <div className="quantity-control">
-                  <button onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity <= 1 || chosenProduct.productLeftCount <= 0} aria-label="Decrease quantity"><RemoveIcon /></button>
+                  <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={quantity <= 1 || chosenProduct.productLeftCount <= 0} aria-label="Decrease quantity"><RemoveIcon /></button>
                   <strong>{quantity}</strong>
-                  <button onClick={() => setQuantity((value) => Math.min(chosenProduct.productLeftCount, value + 1))} disabled={chosenProduct.productLeftCount <= 0 || quantity >= chosenProduct.productLeftCount} aria-label="Increase quantity"><AddIcon /></button>
+                  <button type="button" onClick={() => setQuantity((value) => Math.min(chosenProduct.productLeftCount, value + 1))} disabled={chosenProduct.productLeftCount <= 0 || quantity >= chosenProduct.productLeftCount} aria-label="Increase quantity"><AddIcon /></button>
                 </div>
               </div>
             </div>
 
             <div className="product-action-row">
               <button className={`product-wishlist-button${wishlist.has(chosenProduct._id) ? " active" : ""}`} type="button" onClick={() => wishlist.toggle(chosenProduct)} aria-label={`${wishlist.has(chosenProduct._id) ? "Remove" : "Add"} ${chosenProduct.productName} ${wishlist.has(chosenProduct._id) ? "from" : "to"} wishlist`}>{wishlist.has(chosenProduct._id) ? <FavoriteRoundedIcon /> : <FavoriteBorderRoundedIcon />}<span>{wishlist.has(chosenProduct._id) ? "Saved" : "Add to wishlist"}</span></button>
-              <button className="product-add-button" onClick={addToBasket} disabled={chosenProduct.productLeftCount <= 0 || !isMongoObjectId(chosenProduct._id)}><ShoppingCartIcon /> {!isMongoObjectId(chosenProduct._id) ? "Preview only" : chosenProduct.productLeftCount > 0 ? "Add to cart" : "Out of stock"}</button>
+              <button className={`product-add-button${isAdded ? " is-added" : ""}`} type="button" onClick={addToBasket} disabled={isAdded || chosenProduct.productLeftCount <= 0 || !isMongoObjectId(chosenProduct._id)} aria-live="polite"><ShoppingCartIcon /> {!isMongoObjectId(chosenProduct._id) ? "Preview only" : chosenProduct.productLeftCount <= 0 ? "Out of stock" : isAdded ? "Added ✓" : "Add to cart"}</button>
             </div>
             <p className="product-stock-note">
               {chosenProduct.productLeftCount > 0 ? `${chosenProduct.productLeftCount} items available` : "Currently out of stock"}
@@ -191,8 +205,8 @@ export default function ChosenProduct() {
 
       <section className="product-detail-lower">
         <div className="product-detail-tabs" role="tablist">
-          <button className={activeTab === "related" ? "active" : ""} onClick={() => setActiveTab("related")}>Related products</button>
-          <button className={activeTab === "other" ? "active" : ""} onClick={() => setActiveTab("other")}>Other products</button>
+          <button type="button" role="tab" aria-selected={activeTab === "related"} className={activeTab === "related" ? "active" : ""} onClick={() => setActiveTab("related")}>Related products</button>
+          <button type="button" role="tab" aria-selected={activeTab === "other"} className={activeTab === "other" ? "active" : ""} onClick={() => setActiveTab("other")}>Other products</button>
         </div>
 
         {activeTab === "related" && (

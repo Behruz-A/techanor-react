@@ -3,9 +3,8 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
 import Button from "@mui/material/Button";
 import { useGlobals } from "../../hooks/useGlobals";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { MemberUpdateInput } from "../../../lib/types/member";
-import { T } from "../../../lib/types/common";
 import {
   sweetErrorHandling,
   sweetTopSmallSuccessAlert,
@@ -41,25 +40,9 @@ export function Settings() {
   }, []);
 
   /**HANDLERS */
-  const memberNickHandler = (e: T) => {
-    memberUpdateInput.memberNick = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
-  };
-
-  const memberPhoneHandler = (e: T) => {
-    memberUpdateInput.memberPhone = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
-  };
-
-  const memberAddressHandler = (e: T) => {
-    memberUpdateInput.memberAddress = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
-  };
-
-  const memberDescriptionHandler = (e: T) => {
-    memberUpdateInput.memberDesc = e.target.value;
-    setMemberUpdateInput({ ...memberUpdateInput });
-  };
+  const updateField = (field: keyof MemberUpdateInput) => (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => setMemberUpdateInput((current) => ({ ...current, [field]: event.target.value }));
 
   const handleSubmitButton = async () => {
     try {
@@ -82,13 +65,12 @@ export function Settings() {
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
       setMemberImage(result.memberImage ? `${serverApi}/${result.memberImage}` : "/icons/default-user.svg");
-      setMemberUpdateInput({ ...memberUpdateInput, memberImage: result.memberImage });
+      setMemberUpdateInput((current) => ({ ...current, memberImage: result.memberImage }));
       setSelectedImageName("");
       setIsEditing(false);
 
       await sweetTopSmallSuccessAlert("Modified successfully!", 700);
     } catch (err) {
-      console.log(err);
       sweetErrorHandling(err).then();
     } finally {
       setIsSaving(false);
@@ -104,22 +86,22 @@ export function Settings() {
     setIsEditing(false);
   };
 
-  const handleImageViewer = (e: T) => {
-    const file = e.target.files[0];
+  const handleImageViewer = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
     const validateImageTypes = ["image/jpeg", "image/png", "image/webp"];
 
     if (!validateImageTypes.includes(file.type)) {
       sweetErrorHandling("Choose a JPG, PNG or WebP image.").then();
-      e.target.value = "";
+      event.target.value = "";
     } else if (file.size > 5 * 1024 * 1024) {
       sweetErrorHandling("Profile image must be smaller than 5 MB.").then();
-      e.target.value = "";
+      event.target.value = "";
     } else {
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
       const previewUrl = URL.createObjectURL(file);
       previewUrlRef.current = previewUrl;
-      setMemberUpdateInput({ ...memberUpdateInput, memberImage: file });
+      setMemberUpdateInput((current) => ({ ...current, memberImage: file }));
       setMemberImage(previewUrl);
       setSelectedImageName(file.name);
     }
@@ -129,19 +111,19 @@ export function Settings() {
     <Box className={"settings"}>
       <Box className="edit-profile-row"><div><strong>Account details</strong><span>{isEditing ? "Editing is enabled. Review your details before saving." : "Your personal and delivery information is securely stored."}</span></div><Button className="edit-profile-button" onClick={() => setIsEditing(true)} disabled={isEditing}>Edit profile</Button></Box>
       <Box className={"member-media-frame"}>
-        <Button className="avatar-upload" component="label" onChange={handleImageViewer} aria-label="Change profile picture" disabled={!isEditing}>
+        <Button className="avatar-upload" component="label" aria-label="Change profile picture" disabled={!isEditing}>
           <img src={memberImage} className={"mb-image"} alt="Profile" />
           <span className="avatar-camera"><PhotoCameraOutlinedIcon /></span>
-          <input type="file" accept="image/jpeg,image/png,image/webp" hidden />
+          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageViewer} hidden />
         </Button>
         <div className={"media-change-box"}>
           <span>Profile photo</span>
           <p>JPG, PNG or WebP up to 5 MB. Square images work best.</p>
           {selectedImageName && <small className="avatar-file-ready">Ready to upload · {selectedImageName}</small>}
           <div className={"up-del-box"}>
-            <Button component="label" onChange={handleImageViewer} disabled={!isEditing}>
+            <Button component="label" disabled={!isEditing}>
               <CloudDownloadIcon /><span>Change photo</span>
-              <input type="file" accept="image/jpeg,image/png,image/webp" hidden />
+              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageViewer} hidden />
             </Button>
           </div>
         </div>
@@ -155,7 +137,7 @@ export function Settings() {
             placeholder="Add your display name"
             value={memberUpdateInput.memberNick ?? ""}
             name="memberNick"
-            onChange={memberNickHandler}
+            onChange={updateField("memberNick")}
             disabled={!isEditing}
           />
         </div>
@@ -169,7 +151,7 @@ export function Settings() {
             placeholder="Add your phone number"
             value={memberUpdateInput.memberPhone ?? ""}
             name="memberPhone"
-            onChange={memberPhoneHandler}
+            onChange={updateField("memberPhone")}
             disabled={!isEditing}
           />
           <small className="field-helper">Use international format, e.g. +82 10-1234-5678.</small>
@@ -182,7 +164,7 @@ export function Settings() {
             placeholder="Add your address"
             value={memberUpdateInput.memberAddress ?? ""}
             name="memberAddress"
-            onChange={memberAddressHandler}
+            onChange={updateField("memberAddress")}
             disabled={!isEditing}
           />
           <small className="field-helper">Used as your default checkout address.</small>
@@ -196,7 +178,7 @@ export function Settings() {
             placeholder="Tell us a little about yourself"
             value={memberUpdateInput.memberDesc ?? ""}
             name="memberDesc"
-            onChange={memberDescriptionHandler}
+            onChange={updateField("memberDesc")}
             disabled={!isEditing}
             rows={3}
           />

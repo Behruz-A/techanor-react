@@ -936,8 +936,8 @@
 .home-banner-hero .home-hero-eyebrow::before{background:#ff9a4d}
 .home-banner-hero .home-slide-content .home-hero-center h1{color:#fff;text-shadow:0 4px 28px rgba(0,0,0,.22)}
 .home-banner-hero .home-slide-content .home-hero-center>p{color:rgba(255,255,255,.78)}
-.home-banner-hero .home-slide-cta{background:#fff;color:#111}
-.home-banner-hero .home-slide-cta:hover{background:#ff8a36;color:#111}
+.home-banner-hero .home-slide-cta{background:#ff8a36;color:#081c25;box-shadow:0 10px 28px rgba(255,138,54,.24)}
+.home-banner-hero .home-slide-cta:hover{background:#ffad73;color:#081c25;box-shadow:0 13px 32px rgba(255,138,54,.32)}
 @media(max-width:760px){.home-hero.home-banner-hero{display:block;height:calc(100vh - 124px);min-height:590px}.home-banner-hero::after{background:linear-gradient(0deg,rgba(3,18,25,.95) 0%,rgba(3,18,25,.68) 44%,rgba(3,18,25,.08) 76%)}.home-banner-hero .home-banner-image{object-position:65% center}.home-banner-hero .home-slide-content{padding:40px 24px 52px;justify-content:flex-end}.home-banner-hero .home-hero-center{max-width:440px}.home-banner-hero .home-slide-content .home-hero-center h1{font-size:clamp(44px,13vw,58px)}}
 
 /* Premium campaign navigation */
