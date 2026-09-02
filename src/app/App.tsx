@@ -7,6 +7,7 @@ import HomeNavbar from "./components/headers/HomeNavbar";
 import OtherNavbar from "./components/headers/OtherNavbar";
 import Footer from "./components/footer";
 import HelpPage from "./screens/helpPage";
+import AboutPage from "./screens/aboutPage";
 import CheckoutPage from "./screens/checkoutPage";
 import BlogPage from "./screens/blogPage";
 import BlogDetail from "./screens/blogPage/BlogDetail";
@@ -101,6 +102,9 @@ function App() {
         </Route>
         <Route path="/help">
           <HelpPage />
+        </Route>
+        <Route exact path="/about">
+          <AboutPage />
         </Route>
         <Route path="/contact">
           <Redirect to="/help?tab=contact" />

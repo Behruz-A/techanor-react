@@ -1,25 +1,26 @@
 .site-footer {
   width: 100%;
-  border-top: 1px solid #e5e7eb;
-  background: #f5f5f7;
-  color: #111827;
+  border-top: 1px solid rgba(255,255,255,.1);
+  background: #0a2733;
+  color: #f8fafc;
 }
 
 .footer-back-to-top {
-  min-height: 76px;
+  min-height: 72px;
   display: grid;
   place-items: center;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid rgba(255,255,255,.12);
 }
 
 .footer-back-to-top button {
-  min-height: 46px;
-  padding: 0 22px;
+  min-height: 42px;
+  padding: 0 20px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   border: 0;
   border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.2);
   background: #2563eb;
   color: #fff;
   font: inherit;
@@ -30,6 +31,7 @@
 }
 
 .footer-back-to-top button:hover {
+  border-color: rgba(255,255,255,.38);
   background: #1d4ed8;
   transform: translateY(-2px);
 }
@@ -59,7 +61,7 @@
 .footer-description {
   max-width: 310px;
   margin: 24px 0 22px;
-  color: #59616e;
+  color: #aebbc4;
   font-size: 14px;
   line-height: 1.75;
 }
@@ -68,7 +70,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  color: #59616e;
+  color: #aebbc4;
   font-size: 13px;
   font-style: normal;
 }
@@ -86,10 +88,10 @@
   width: 17px;
   height: 17px;
   flex: 0 0 auto;
-  color: #6b7280;
+  color: #8fa1ad;
 }
 
-.footer-contact a:hover { color: #2563eb; }
+.footer-contact a:hover { color: #60a5fa; }
 
 .footer-socials {
   margin-top: 25px;
@@ -102,9 +104,9 @@
   height: 40px;
   display: grid;
   place-items: center;
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgba(255,255,255,.18);
   border-radius: 50%;
-  background: #fff;
+  background: rgba(255,255,255,.06);
   text-decoration: none;
   transition: border-color 180ms ease, transform 180ms ease;
 }
@@ -113,7 +115,7 @@
   width: 18px;
   height: 18px;
   display: block;
-  background: #303744;
+  background: #f8fafc;
   mask-position: center;
   mask-repeat: no-repeat;
   mask-size: contain;
@@ -126,12 +128,12 @@
 .footer-social-instagram { mask-image: url("/public/icons/brand-instagram.svg"); -webkit-mask-image: url("/public/icons/brand-instagram.svg"); }
 .footer-social-telegram { mask-image: url("/public/icons/brand-telegram.svg"); -webkit-mask-image: url("/public/icons/brand-telegram.svg"); }
 .footer-social-youtube { mask-image: url("/public/icons/brand-youtube.svg"); -webkit-mask-image: url("/public/icons/brand-youtube.svg"); }
-.footer-socials a:hover { border-color: #2563eb; transform: translateY(-2px); }
-.footer-socials a:hover .footer-social-icon { background: #2563eb; }
+.footer-socials a:hover { border-color: #60a5fa; background: rgba(96,165,250,.1); transform: translateY(-2px); }
+.footer-socials a:hover .footer-social-icon { background: #60a5fa; }
 
 .footer-title {
   margin: 5px 0 23px;
-  color: #111827;
+  color: #f8fafc;
   font-size: 13px;
   font-weight: 750;
   letter-spacing: 0.08em;
@@ -147,7 +149,7 @@
 .footer-links a {
   width: max-content;
   max-width: 100%;
-  color: #59616e;
+  color: #aebbc4;
   font-size: 14px;
   line-height: 1.45;
   text-decoration: none;
@@ -155,7 +157,7 @@
 }
 
 .footer-links a:hover {
-  color: #2563eb;
+  color: #60a5fa;
   transform: translateX(3px);
 }
 
@@ -164,14 +166,14 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  color: #2563eb;
+  color: #60a5fa;
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
 }
 
 .footer-accent-link span { transition: transform 180ms ease; }
-.footer-accent-link:hover { color: #1d4ed8; }
+.footer-accent-link:hover { color: #93c5fd; }
 .footer-accent-link:hover span { transform: translateX(4px); }
 
 .footer-bottom {
@@ -180,8 +182,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  border-top: 1px solid #e5e7eb;
-  color: #59616e;
+  border-top: 1px solid rgba(255,255,255,.12);
+  color: #91a2ad;
   font-size: 12px;
 }
 
@@ -194,7 +196,7 @@
 .footer-bottom div i {
   width: 1px;
   height: 15px;
-  background: #d1d5db;
+  background: rgba(255,255,255,.2);
 }
 
 .footer-bottom a,
@@ -203,7 +205,7 @@
   text-decoration: none;
 }
 
-.footer-bottom a:hover { color: #2563eb; }
+.footer-bottom a:hover { color: #60a5fa; }
 
 @media (max-width: 1080px) {
   .footer-grid {
@@ -214,7 +216,7 @@
 
 @media (max-width: 700px) {
   .footer-container { width: calc(100% - 40px); }
-  .footer-back-to-top { min-height: 78px; }
+  .footer-back-to-top { min-height: 68px; }
   .footer-grid {
     padding: 48px 0 46px;
     grid-template-columns: 1.25fr 1fr;

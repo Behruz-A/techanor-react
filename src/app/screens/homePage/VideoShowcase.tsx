@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 
 export default function VideoShowcase() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isInViewRef = useRef(false);
 
   const resumeVideo = useCallback(() => {
     const video = videoRef.current;
@@ -16,19 +17,18 @@ export default function VideoShowcase() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    let isInView = false;
-
     const resumeWhenVisible = () => {
-      if (document.visibilityState === "visible" && isInView) resumeVideo();
+      if (document.visibilityState === "visible" && isInViewRef.current) resumeVideo();
       else video.pause();
     };
     const observer = new IntersectionObserver(([entry]) => {
-      isInView = entry.isIntersecting;
+      isInViewRef.current = entry.isIntersecting;
       resumeWhenVisible();
     }, { rootMargin: "120px 0px", threshold: 0.05 });
     observer.observe(video);
     document.addEventListener("visibilitychange", resumeWhenVisible);
     return () => {
+      isInViewRef.current = false;
       observer.disconnect();
       document.removeEventListener("visibilitychange", resumeWhenVisible);
     };
@@ -46,6 +46,9 @@ export default function VideoShowcase() {
           disablePictureInPicture
           aria-label="Techanor technology showcase"
           tabIndex={-1}
+          onCanPlay={() => {
+            if (isInViewRef.current && document.visibilityState === "visible") resumeVideo();
+          }}
         >
           <source src="/video/Odyssey G7 37   Official Introduction   Samsung_(0).mp4" type="video/mp4" />
         </video>

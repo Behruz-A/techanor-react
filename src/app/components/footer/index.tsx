@@ -23,6 +23,7 @@ const serviceLinks = [
 ];
 
 const aboutLinks = [
+  { label: "About Us", to: "/about" },
   { label: "Blog", to: "/blog" },
   { label: "Contact Us", to: "/help?tab=contact" },
 ];
@@ -42,7 +43,7 @@ export default function Footer() {
         <div className="footer-grid">
           <section className="footer-brand-column">
             <Link className="footer-brand" to="/" aria-label="Techanor home">
-              <BrandLogo tone="dark" />
+              <BrandLogo tone="light" />
             </Link>
             <p className="footer-description">
               Smart technology, carefully selected. Discover devices and accessories built for work, creativity and everyday life.

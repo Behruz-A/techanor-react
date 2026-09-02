@@ -16,6 +16,8 @@ import { findShowcaseProduct, showcaseProducts } from "./showcaseProducts";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { isMongoObjectId } from "../../../lib/utils/objectId";
 import ShoppingCartIcon from "../../components/icons/ShoppingCartIcon";
+import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 
 const resolveImage = (image?: string) => {
   if (!image) return "";
@@ -28,7 +30,7 @@ const formatLabel = (value?: string) =>
     : "Not specified";
 
 export default function ChosenProduct() {
-  const { basket: { onAdd } } = useGlobals();
+  const { basket: { onAdd }, wishlist } = useGlobals();
   const { productId } = useParams<{ productId: string }>();
   const dispatch = useAppDispatch();
   const chosenProduct = useAppSelector(retrieveChosenProduct);
@@ -37,7 +39,13 @@ export default function ChosenProduct() {
   const [hasError, setHasError] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
-  const [activeTab, setActiveTab] = useState<"related" | "reviews" | "other">("related");
+  const [activeTab, setActiveTab] = useState<"related" | "other">("related");
+
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const image = event.currentTarget;
+    image.onerror = null;
+    image.src = "/img/noimage-list.svg";
+  };
 
   useEffect(() => {
     const service = new ProductService();
@@ -55,8 +63,7 @@ export default function ChosenProduct() {
     service
       .getProduct(productId)
       .then((data) => dispatch(setChosenProduct(data)))
-      .catch((err) => {
-        console.log("Error, chosen product:", err);
+      .catch(() => {
         setHasError(true);
       })
       .finally(() => setIsLoading(false));
@@ -117,13 +124,12 @@ export default function ChosenProduct() {
           <div className="product-gallery">
             <div className="product-main-image">
               {images[activeImage] ? (
-                <img src={resolveImage(images[activeImage])} alt={chosenProduct.productName} />
+                <img src={resolveImage(images[activeImage])} alt={chosenProduct.productName} onError={handleImageError} />
               ) : (
                 <div className="product-image-placeholder">Image unavailable</div>
               )}
             </div>
-            {images.length > 1 && (
-              <div className="product-thumbnails" aria-label="Product images">
+            <div className="product-thumbnails" aria-label="Product images">
                 {images.map((image, index) => (
                   <button
                     key={`${image}-${index}`}
@@ -131,11 +137,10 @@ export default function ChosenProduct() {
                     onClick={() => setActiveImage(index)}
                     aria-label={`View image ${index + 1}`}
                   >
-                    <img src={resolveImage(image)} alt="" />
+                    {image ? <img src={resolveImage(image)} alt="" onError={handleImageError} /> : <span>Image unavailable</span>}
                   </button>
                 ))}
-              </div>
-            )}
+            </div>
           </div>
 
           <div className="product-detail-copy">
@@ -168,7 +173,10 @@ export default function ChosenProduct() {
               </div>
             </div>
 
-            <button className="product-add-button" onClick={addToBasket} disabled={chosenProduct.productLeftCount <= 0 || !isMongoObjectId(chosenProduct._id)}><ShoppingCartIcon /> {!isMongoObjectId(chosenProduct._id) ? "Preview only" : chosenProduct.productLeftCount > 0 ? "Add to cart" : "Out of stock"}</button>
+            <div className="product-action-row">
+              <button className={`product-wishlist-button${wishlist.has(chosenProduct._id) ? " active" : ""}`} type="button" onClick={() => wishlist.toggle(chosenProduct)} aria-label={`${wishlist.has(chosenProduct._id) ? "Remove" : "Add"} ${chosenProduct.productName} ${wishlist.has(chosenProduct._id) ? "from" : "to"} wishlist`}>{wishlist.has(chosenProduct._id) ? <FavoriteRoundedIcon /> : <FavoriteBorderRoundedIcon />}<span>{wishlist.has(chosenProduct._id) ? "Saved" : "Add to wishlist"}</span></button>
+              <button className="product-add-button" onClick={addToBasket} disabled={chosenProduct.productLeftCount <= 0 || !isMongoObjectId(chosenProduct._id)}><ShoppingCartIcon /> {!isMongoObjectId(chosenProduct._id) ? "Preview only" : chosenProduct.productLeftCount > 0 ? "Add to cart" : "Out of stock"}</button>
+            </div>
             <p className="product-stock-note">
               {chosenProduct.productLeftCount > 0 ? `${chosenProduct.productLeftCount} items available` : "Currently out of stock"}
             </p>
@@ -184,7 +192,6 @@ export default function ChosenProduct() {
       <section className="product-detail-lower">
         <div className="product-detail-tabs" role="tablist">
           <button className={activeTab === "related" ? "active" : ""} onClick={() => setActiveTab("related")}>Related products</button>
-          <button className={activeTab === "reviews" ? "active" : ""} onClick={() => setActiveTab("reviews")}>Customer reviews</button>
           <button className={activeTab === "other" ? "active" : ""} onClick={() => setActiveTab("other")}>Other products</button>
         </div>
 
@@ -192,7 +199,7 @@ export default function ChosenProduct() {
           <div className="related-product-grid">
             {relatedProducts.length ? relatedProducts.map((product: Product) => (
               <article className="related-product-card" key={product._id}>
-                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0])} alt={product.productName} loading="lazy" /></Link>
+                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0]) || "/img/noimage-list.svg"} alt={product.productName} loading="lazy" onError={handleImageError} /></Link>
                 <span>{formatLabel(product.productCategory)}</span>
                 <h3>{product.productName}</h3>
                 <strong>${product.productPrice.toLocaleString()}</strong>
@@ -202,14 +209,11 @@ export default function ChosenProduct() {
             )}
           </div>
         )}
-        {activeTab === "reviews" && (
-          <div className="product-tab-message"><strong>No customer reviews yet.</strong><span>Verified reviews will appear here after completed purchases.</span></div>
-        )}
         {activeTab === "other" && (
           <div className="related-product-grid">
             {otherProducts.length ? otherProducts.map((product: Product) => (
               <article className="related-product-card" key={product._id}>
-                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0])} alt={product.productName} loading="lazy" /></Link>
+                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0]) || "/img/noimage-list.svg"} alt={product.productName} loading="lazy" onError={handleImageError} /></Link>
                 <span>{formatLabel(product.productCategory)}</span>
                 <h3>{product.productName}</h3>
                 <strong>${product.productPrice.toLocaleString()}</strong>

@@ -48,6 +48,7 @@ export default function HomeNavbar({
           <NavLink exact to="/" activeClassName="active">Home</NavLink>
           <NavLink to="/products" activeClassName="active">Shop</NavLink>
           <NavLink to="/blog" activeClassName="active">Blog</NavLink>
+          <NavLink to="/about" activeClassName="active">About Us</NavLink>
           <NavLink to="/help" activeClassName="active">Help</NavLink>
           {authMember && <NavLink to="/orders" activeClassName="active">Orders</NavLink>}
         </div>

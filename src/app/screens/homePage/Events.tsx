@@ -23,20 +23,20 @@ export default function Events() {
       <div className="events-main">
         <header className="events-text">
           <div><span>Tips and news</span><h2 id="stories-title">Recent News and Resources</h2></div>
-          <Link className="events-view-all" to="/blog">View all <span><ArrowForwardRoundedIcon /></span></Link>
+          <Link className="events-view-all" to="/blog">View all articles <ArrowForwardRoundedIcon /></Link>
         </header>
 
         <Swiper
           className="events-info"
-          slidesPerView={1.15}
+          slidesPerView={1.08}
           spaceBetween={14}
           grabCursor
           navigation={{ prevEl: ".events-prev", nextEl: ".events-next" }}
           scrollbar={{ el: ".events-progress", draggable: true }}
           breakpoints={{
-            600: { slidesPerView: 2.2, spaceBetween: 18 },
-            980: { slidesPerView: 3, spaceBetween: 20 },
-            1200: { slidesPerView: 3.5, spaceBetween: 22 },
+            600: { slidesPerView: 2.18, spaceBetween: 18 },
+            980: { slidesPerView: 3.2, spaceBetween: 20 },
+            1200: { slidesPerView: 3.2, spaceBetween: 22 },
           }}
         >
           {stories.map((story) => (

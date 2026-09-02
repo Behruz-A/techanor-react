@@ -45,6 +45,7 @@ export default function OtherNavbar({
           <NavLink exact to="/" activeClassName="active" onClick={closeMobileMenu}>Home</NavLink>
           <NavLink to="/products" activeClassName="active" onClick={closeMobileMenu}>Shop</NavLink>
           <NavLink to="/blog" activeClassName="active" onClick={closeMobileMenu}>Blog</NavLink>
+          <NavLink to="/about" activeClassName="active" onClick={closeMobileMenu}>About Us</NavLink>
           <NavLink to="/help" activeClassName="active" onClick={closeMobileMenu}>Help</NavLink>
           {authMember && <NavLink to="/orders" activeClassName="active" onClick={closeMobileMenu}>Orders</NavLink>}
         </div>
