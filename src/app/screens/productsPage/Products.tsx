@@ -8,23 +8,15 @@ import { retrieveProducts } from "./selector";
 import ProductService from "../../services/ProductService";
 import { Product, ProductInquiry } from "../../../lib/types/product";
 import { PRODUCT_BRAND_LABELS, PRODUCT_CATEGORY_LABELS, PRODUCT_CONDITION_LABELS, PRODUCT_MEMORY_LABELS, ProductBrand, ProductCategory, ProductCondition, ProductMemory } from "../../../constants/enums";
-import { serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 
 const productsRetriever = createSelector(retrieveProducts, (products) => ({ products }));
 const categories = Object.values(ProductCategory).map((value) => ({ value, label: PRODUCT_CATEGORY_LABELS[value] }));
 const PAGE_SIZE = 9;
 const CATALOG_BATCH_SIZE = 50;
 const MAX_CATALOG_PAGES = 20;
-const imageUrl = (path?: string) => !path ? "" : path.startsWith("/") || path.startsWith("http") ? path : `${serverApi}/${path}`;
-const imageScaleClass = (product: Product) => {
-  const name = product.productName.toLowerCase();
-  if (name.includes("rolex") || name.includes("watch")) return "catalog-card-media--small-product";
-  if (name.includes("airphone") || name.includes("earphone") || name.includes("headphone")) return "catalog-card-media--large-product";
-  return "";
-};
-
 export default function Products() {
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
   const addedResetTimer = useRef<number | null>(null);
@@ -136,9 +128,9 @@ export default function Products() {
         </aside>
         <section className="catalog-results" aria-live="polite">
         {!isLoading && !hasError && <div className="catalog-grid">{paginatedProducts.map((product) => <article className="catalog-card" key={product._id}>
-          <div className={`catalog-card-media ${imageScaleClass(product)}`} role="link" tabIndex={0} aria-label={`View ${product.productName}`} onClick={() => openProduct(product._id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openProduct(product._id); } }}>
+          <div className="catalog-card-media" role="link" tabIndex={0} aria-label={`View ${product.productName}`} onClick={() => openProduct(product._id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); openProduct(product._id); } }}>
             <button className={wishlist.has(product._id) ? "catalog-wishlist active" : "catalog-wishlist"} type="button" aria-label={`${wishlist.has(product._id) ? "Remove" : "Save"} ${product.productName}`} onClick={(event) => { event.stopPropagation(); wishlist.toggle(product); }}>{wishlist.has(product._id) ? <Favorite /> : <FavoriteBorderRounded />}</button>
-            {imageUrl(product.productImages?.[0]) ? <img src={imageUrl(product.productImages[0])} alt={product.productName} loading="lazy" /> : <span className="catalog-image-placeholder">Image unavailable</span>}
+            {product.productImages?.[0] ? <img src={resolveMediaUrl(product.productImages[0])} alt={product.productName} loading="lazy" onError={replaceBrokenImage} /> : <span className="catalog-image-placeholder">Image unavailable</span>}
           </div>
           <div className="catalog-card-body">{product.productCategory && <span className="catalog-card-category">{PRODUCT_CATEGORY_LABELS[product.productCategory]}</span>}<h3>{product.productName}</h3><p>{product.productDesc || "Premium technology selected for everyday performance."}</p><div className="catalog-card-footer"><div><strong>${product.productPrice.toLocaleString()}</strong></div><button className={addedProductId === product._id ? "is-added" : ""} type="button" onClick={() => addToBasket(product)} disabled={addedProductId === product._id || product.productLeftCount <= 0} aria-live="polite">{product.productLeftCount <= 0 ? "Out of stock" : addedProductId === product._id ? "Added ✓" : "Add to cart"}</button></div></div>
         </article>)}</div>}

@@ -1,23 +1,42 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Navigation, Scrollbar } from "swiper";
 import "swiper/css";
 import "swiper/css/scrollbar";
 
+import { BLOG_CATEGORY_LABELS } from "../../../constants/enums";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import BlogService from "../../services/BlogService";
+import { formatBlogDate, getBlogMediaUrl, getBlogReadTime } from "../blogPage/blogUtils";
+import { retrieveBlogs } from "../blogPage/selector";
+import { setBlogs } from "../blogPage/slice";
+
 SwiperCore.use([Navigation, Scrollbar]);
 
-const stories = [
-  { title: "How to Build a Better Everyday Audio Setup", date: "Aug 28, 2026", readTime: "5 min read", image: "/img/testheadphone.avif" },
-  { title: "The Smart Devices Worth Adding to Your Home", date: "Aug 24, 2026", readTime: "6 min read", image: "/img/samsunggalaxy.jpg" },
-  { title: "How to Choose the Right Gaming Setup", date: "Aug 19, 2026", readTime: "7 min read", image: "/img/gamingimg.jpg" },
-  { title: "A Smarter Way to Work Anywhere", date: "Aug 15, 2026", readTime: "5 min read", image: "/img/mackboooook.jpg" },
-  { title: "What Makes a Great Everyday Phone", date: "Aug 11, 2026", readTime: "4 min read", image: "/img/iphone17silver.jpg" },
-  { title: "Capture the Details That Matter", date: "Aug 7, 2026", readTime: "6 min read", image: "/img/cameraimg.jpg" },
-];
+const RECENT_BLOG_LIMIT = 5;
 
 export default function Events() {
+  const dispatch = useAppDispatch();
+  const blogs = useAppSelector(retrieveBlogs);
+  const [isLoading, setIsLoading] = useState(blogs.length === 0);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    let isCancelled = false;
+    setIsLoading(true);
+    setHasError(false);
+    new BlogService().getBlogs({ page: 1, limit: RECENT_BLOG_LIMIT })
+      .then((data) => { if (!isCancelled) dispatch(setBlogs(Array.isArray(data) ? data : [])); })
+      .catch(() => { if (!isCancelled) setHasError(true); })
+      .finally(() => { if (!isCancelled) setIsLoading(false); });
+    return () => { isCancelled = true; };
+  }, [dispatch]);
+
+  const recentBlogs = blogs.slice(0, RECENT_BLOG_LIMIT);
+
   return (
     <section className="events-frame" aria-labelledby="stories-title">
       <div className="events-main">
@@ -26,33 +45,21 @@ export default function Events() {
           <Link className="events-view-all" to="/blog">View all articles <ArrowForwardRoundedIcon /></Link>
         </header>
 
-        <Swiper
-          className="events-info"
-          slidesPerView={1.08}
-          spaceBetween={14}
-          grabCursor
-          navigation={{ prevEl: ".events-prev", nextEl: ".events-next" }}
-          scrollbar={{ el: ".events-progress", draggable: true }}
-          breakpoints={{
-            600: { slidesPerView: 2.18, spaceBetween: 18 },
-            980: { slidesPerView: 3.2, spaceBetween: 20 },
-            1200: { slidesPerView: 3.2, spaceBetween: 22 },
-          }}
-        >
-          {stories.map((story) => (
-            <SwiperSlide key={story.title}>
-              <article className="story-card">
-                <Link className="story-card__image" to="/blog" aria-label={`Read ${story.title}`}><img src={story.image} alt={story.title} loading="lazy" /></Link>
-                <div className="story-card__body">
-                  <div className="story-card__meta"><time>{story.date}</time><span aria-hidden="true" /><small>{story.readTime}</small></div>
-                  <h3><Link to="/blog">{story.title}</Link></h3>
-                  <Link className="story-card__link" to="/blog">Read more <ArrowForwardRoundedIcon /></Link>
-                </div>
-              </article>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <div className="events-controls"><div className="events-progress" /><div><button className="events-prev" type="button" aria-label="Previous stories"><ArrowBackRoundedIcon /></button><button className="events-next" type="button" aria-label="Next stories"><ArrowForwardRoundedIcon /></button></div></div>
+        {isLoading && <div className="events-state" role="status">Loading the latest stories...</div>}
+        {!isLoading && hasError && recentBlogs.length === 0 && <div className="events-state">Recent stories are temporarily unavailable.</div>}
+        {!isLoading && !hasError && recentBlogs.length === 0 && <div className="events-state">New stories will appear here.</div>}
+        {recentBlogs.length > 0 && <>
+          <Swiper className="events-info" slidesPerView={1.08} spaceBetween={14} grabCursor navigation={{ prevEl: ".events-prev", nextEl: ".events-next" }} scrollbar={{ el: ".events-progress", draggable: true }} breakpoints={{ 600: { slidesPerView: 2.18, spaceBetween: 18 }, 980: { slidesPerView: 3.2, spaceBetween: 20 }, 1200: { slidesPerView: 3.2, spaceBetween: 22 } }}>
+            {recentBlogs.map((post) => {
+              const image = getBlogMediaUrl(post.blogPostImage);
+              return <SwiperSlide key={post._id}><article className="story-card">
+                <Link className="story-card__image" to={`/blog/${post._id}`} aria-label={`Read ${post.blogPostTitle}`}>{image ? <img src={image} alt={post.blogPostTitle} loading="lazy"/> : <span className="blog-image-placeholder">Image unavailable</span>}</Link>
+                <div className="story-card__body"><span className="story-card__category">{BLOG_CATEGORY_LABELS[post.blogPostCategory]}</span><div className="story-card__meta"><time>{formatBlogDate(post.createdAt)}</time><span aria-hidden="true"/><small>{getBlogReadTime(post.blogPostContent)}</small></div><h3><Link to={`/blog/${post._id}`}>{post.blogPostTitle}</Link></h3><Link className="story-card__link" to={`/blog/${post._id}`}>Read article <ArrowForwardRoundedIcon/></Link></div>
+              </article></SwiperSlide>;
+            })}
+          </Swiper>
+          <div className="events-controls"><div className="events-progress"/><div><button className="events-prev" type="button" aria-label="Previous stories"><ArrowBackRoundedIcon/></button><button className="events-next" type="button" aria-label="Next stories"><ArrowForwardRoundedIcon/></button></div></div>
+        </>}
       </div>
     </section>
   );

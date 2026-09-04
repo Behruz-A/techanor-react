@@ -10,19 +10,13 @@ import { useGlobals } from "../../hooks/useGlobals";
 import { setChosenProduct } from "./slice";
 import { retrieveChosenProduct } from "./selector";
 import ProductService from "../../services/ProductService";
-import { serverApi } from "../../../lib/config";
 import { Product } from "../../../lib/types/product";
-import { findShowcaseProduct, showcaseProducts } from "./showcaseProducts";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { isMongoObjectId } from "../../../lib/utils/objectId";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 import ShoppingCartIcon from "../../components/icons/ShoppingCartIcon";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
-
-const resolveImage = (image?: string) => {
-  if (!image) return "";
-  return image.startsWith("/") || image.startsWith("http") ? image : `${serverApi}/${image}`;
-};
 
 const formatLabel = (value?: string) =>
   value
@@ -43,26 +37,13 @@ export default function ChosenProduct() {
   const [isAdded, setIsAdded] = useState(false);
   const addedResetTimer = useRef<number | null>(null);
 
-  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    const image = event.currentTarget;
-    image.onerror = null;
-    image.src = "/img/noimage-list.svg";
-  };
-
   useEffect(() => {
     let isCancelled = false;
     const service = new ProductService();
-    const showcaseProduct = findShowcaseProduct(productId);
     dispatch(setChosenProduct(null));
     setIsLoading(true);
     setHasError(false);
 
-    if (showcaseProduct) {
-      dispatch(setChosenProduct(showcaseProduct));
-      setCatalogProducts(showcaseProducts);
-      setIsLoading(false);
-      return;
-    }
     service
       .getProduct(productId)
       .then((data) => { if (!isCancelled) dispatch(setChosenProduct(data)); })
@@ -137,7 +118,7 @@ export default function ChosenProduct() {
           <div className="product-gallery">
             <div className="product-main-image">
               {images[activeImage] ? (
-                <img src={resolveImage(images[activeImage])} alt={chosenProduct.productName} onError={handleImageError} />
+                <img src={resolveMediaUrl(images[activeImage])} alt={chosenProduct.productName} onError={replaceBrokenImage} />
               ) : (
                 <div className="product-image-placeholder">Image unavailable</div>
               )}
@@ -151,7 +132,7 @@ export default function ChosenProduct() {
                     onClick={() => setActiveImage(index)}
                     aria-label={`View image ${index + 1}`}
                   >
-                    {image ? <img src={resolveImage(image)} alt="" onError={handleImageError} /> : <span>Image unavailable</span>}
+                    {image ? <img src={resolveMediaUrl(image)} alt="" onError={replaceBrokenImage} /> : <span>Image unavailable</span>}
                   </button>
                 ))}
             </div>
@@ -213,7 +194,7 @@ export default function ChosenProduct() {
           <div className="related-product-grid">
             {relatedProducts.length ? relatedProducts.map((product: Product) => (
               <article className="related-product-card" key={product._id}>
-                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0]) || "/img/noimage-list.svg"} alt={product.productName} loading="lazy" onError={handleImageError} /></Link>
+                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveMediaUrl(product.productImages?.[0], "/img/noimage-list.svg")} alt={product.productName} loading="lazy" onError={replaceBrokenImage} /></Link>
                 <span>{formatLabel(product.productCategory)}</span>
                 <h3>{product.productName}</h3>
                 <strong>${product.productPrice.toLocaleString()}</strong>
@@ -227,7 +208,7 @@ export default function ChosenProduct() {
           <div className="related-product-grid">
             {otherProducts.length ? otherProducts.map((product: Product) => (
               <article className="related-product-card" key={product._id}>
-                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveImage(product.productImages?.[0]) || "/img/noimage-list.svg"} alt={product.productName} loading="lazy" onError={handleImageError} /></Link>
+                <Link to={`/products/${product._id}`} className="related-product-image"><img src={resolveMediaUrl(product.productImages?.[0], "/img/noimage-list.svg")} alt={product.productName} loading="lazy" onError={replaceBrokenImage} /></Link>
                 <span>{formatLabel(product.productCategory)}</span>
                 <h3>{product.productName}</h3>
                 <strong>${product.productPrice.toLocaleString()}</strong>

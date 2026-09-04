@@ -9,7 +9,7 @@ export const faq = [
 	},
 	{
 		question: "Where can I view my orders?",
-		answer: "When you are signed in, open Orders from the navbar or select My orders from the profile menu to see your current and previous orders.",
+		answer: "When you are signed in, open the account menu and select My orders to see your current and previous orders.",
 	},
 	{
 		question: "Can I cancel an order?",

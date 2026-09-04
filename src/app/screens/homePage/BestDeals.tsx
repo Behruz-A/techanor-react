@@ -3,21 +3,11 @@ import { Link } from "react-router-dom";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import ProductService from "../../services/ProductService";
-import { serverApi } from "../../../lib/config";
 import { Product } from "../../../lib/types/product";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
+import { useGlobals } from "../../hooks/useGlobals";
 
 const cardAccents = ["peach", "lavender", "lemon"];
-const dealPresentation = [
-  { name: "Roborock Robot Vacuum", image: "/img/img.jpg", oldPrice: 899, price: 739, discount: 18, stock: 12 },
-  { name: "LG UltraGear OLED Monitor", image: "/img/tvimg.jpg", oldPrice: 999, price: 749, discount: 25, stock: 8 },
-  { name: "Wireless Gaming Controller", image: "/img/controllergamigimg.png", oldPrice: 79, price: 67, discount: 15, stock: 21 },
-];
-
-const resolveProductImage = (image?: string) => {
-  if (!image) return "/img/noimage-list.svg";
-  return image.startsWith("/") || image.startsWith("http") ? image : `${serverApi}/${image}`;
-};
-
 const initialSeconds = 2 * 24 * 60 * 60 + 11 * 60 * 60 + 39 * 60 + 57;
 
 function DealTimer() {
@@ -54,7 +44,7 @@ function DealTimer() {
 }
 
 export default function BestDeals() {
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const { wishlist } = useGlobals();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -102,12 +92,6 @@ export default function BestDeals() {
     return selected;
   }, [products]);
 
-  const toggleFavorite = (id: string) => {
-    setFavorites((current) =>
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
-    );
-  };
-
   return (
     <section className="best-deals" aria-labelledby="best-deals-title">
       <div className="best-deals__container">
@@ -130,30 +114,27 @@ export default function BestDeals() {
           )}
           {!isLoading && !hasError && deals.length === 0 && <p className="best-deals__status">No in-stock deals are available right now.</p>}
           {!isLoading && !hasError && deals.map((deal, index) => {
-            const presentation = dealPresentation[index];
-            const isFavorite = favorites.includes(deal._id);
+            const isFavorite = wishlist.has(deal._id);
             return (
-              <article className={`deal-card deal-card--${cardAccents[index]} deal-card--product-${index + 1}`} key={deal._id}>
+              <article className={`deal-card deal-card--${cardAccents[index]}`} key={deal._id}>
                 <button
                   className={`deal-card__favorite${isFavorite ? " is-active" : ""}`}
-                  onClick={() => toggleFavorite(deal._id)}
-                  aria-label={isFavorite ? `Remove ${presentation.name} from favorites` : `Add ${presentation.name} to favorites`}
+                  onClick={() => wishlist.toggle(deal)}
+                  aria-label={isFavorite ? `Remove ${deal.productName} from favorites` : `Add ${deal.productName} to favorites`}
                   type="button"
                 >
                   {isFavorite ? <FavoriteRoundedIcon /> : <FavoriteBorderRoundedIcon />}
                 </button>
-                <span className="deal-card__discount">-{presentation.discount}%</span>
                 <div className="deal-card__image-wrap">
-                  <img src={presentation.image || resolveProductImage(deal.productImages[0])} alt={presentation.name} loading="lazy" />
+                  <img src={resolveMediaUrl(deal.productImages[0], "/img/noimage-list.svg")} alt={deal.productName} loading="lazy" onError={replaceBrokenImage} />
                 </div>
                 <div className="deal-card__content">
-                  <h3>{presentation.name}</h3>
+                  <h3>{deal.productName}</h3>
                   <div className="deal-card__price">
-                    <del>${presentation.oldPrice.toLocaleString()}</del>
-                    <strong>${presentation.price.toLocaleString()}</strong>
+                    <strong>${deal.productPrice.toLocaleString()}</strong>
                   </div>
                   <div className="deal-card__footer">
-                    <span>Only <strong>{presentation.stock} left</strong></span>
+                    <span>Only <strong>{deal.productLeftCount} left</strong></span>
                     <Link className="deal-card__shop" to={`/products/${deal._id}`}>Shop deal</Link>
                   </div>
                 </div>

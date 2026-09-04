@@ -7,3 +7,8 @@ export const retrieveTrendingDeals = createSelector(
   selectHomePage,
   (homePage) => homePage.trendingDeals,
 );
+
+export const retrieveLatestCategoryProducts = createSelector(
+  selectHomePage,
+  (homePage) => homePage.latestCategoryProducts,
+);

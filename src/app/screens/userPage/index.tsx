@@ -2,13 +2,14 @@ import { Box, Container, Stack } from "@mui/material";
 import { Settings } from "./Settings";
 import { Redirect } from "react-router-dom";
 import { useGlobals } from "../../hooks/useGlobals";
-import { serverApi } from "../../../lib/config";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 import { MapPinIcon } from "../../components/icons/TechanorIcons";
 import PhoneOutlined from "@mui/icons-material/PhoneOutlined";
 import "../../../css/userPage.css";
 
 export default function UserPage() {
-  const { authMember } = useGlobals();
+  const { authMember, authReady } = useGlobals();
+  if (!authReady) return <main className="account-auth-loading" role="status">Loading your account...</main>;
   if (!authMember) return <Redirect to="/" />;
 
   return <main className="user-page">
@@ -23,7 +24,7 @@ export default function UserPage() {
           <Box className="menu-content"><Settings /></Box>
         </Box></Stack>
         <aside className="member-page-burak-card">
-          <img src={authMember?.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt={authMember?.memberNick || "Profile"}/>
+          <img src={resolveMediaUrl(authMember?.memberImage, "/icons/default-user.svg")} alt={authMember?.memberNick || "Profile"} onError={(event) => replaceBrokenImage(event, "/icons/default-user.svg")}/>
           <h2>{authMember.memberNick}</h2>
           <span>{authMember.memberType}</span>
           <div><PhoneOutlined/><p>{authMember.memberPhone || "Phone not provided"}</p></div>

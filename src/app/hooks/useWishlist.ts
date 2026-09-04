@@ -1,13 +1,24 @@
 import { useState } from "react";
 import { Product } from "../../lib/types/product";
+import { isMongoObjectId } from "../../lib/utils/objectId";
 
 const WISHLIST_STORAGE_KEY = "wishlistData";
+
+const isStoredProduct = (value: unknown): value is Product => {
+  if (!value || typeof value !== "object") return false;
+  const product = value as Partial<Product>;
+  return typeof product._id === "string" && isMongoObjectId(product._id)
+    && typeof product.productName === "string"
+    && Number.isFinite(Number(product.productPrice))
+    && Number.isFinite(Number(product.productLeftCount))
+    && Array.isArray(product.productImages);
+};
 
 const readStoredWishlist = (): Product[] => {
   try {
     const storedWishlist = localStorage.getItem(WISHLIST_STORAGE_KEY);
     const parsedWishlist: unknown = storedWishlist ? JSON.parse(storedWishlist) : [];
-    return Array.isArray(parsedWishlist) ? parsedWishlist as Product[] : [];
+    return Array.isArray(parsedWishlist) ? parsedWishlist.filter(isStoredProduct) : [];
   } catch {
     localStorage.removeItem(WISHLIST_STORAGE_KEY);
     return [];

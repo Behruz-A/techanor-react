@@ -9,6 +9,7 @@ import Footer from "./components/footer";
 import HelpPage from "./screens/helpPage";
 import AboutPage from "./screens/aboutPage";
 import CheckoutPage from "./screens/checkoutPage";
+import OrdersPage from "./screens/ordersPage";
 import BlogPage from "./screens/blogPage";
 import BlogDetail from "./screens/blogPage/BlogDetail";
 import AuthenticationModal from "./components/auth";
@@ -96,7 +97,8 @@ function App() {
         <Route path="/products">
           <ProductsPage />
         </Route>
-        <Route path="/orders"><CheckoutPage /></Route>
+        <Route exact path="/orders"><OrdersPage /></Route>
+        <Route path={["/orders/address", "/orders/shipping", "/orders/payment"]}><CheckoutPage /></Route>
         <Route path="/member-page">
           <UserPage />
         </Route>

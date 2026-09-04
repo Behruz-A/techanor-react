@@ -62,10 +62,10 @@ The established collection pattern is reusable:
 | Product grouping | Restaurant/food collections | Electronics condition, category, brand, memory and screen size |
 | Product ordering | Primarily creation, price, views | Allowlisted `createdAt`, `productPrice`, `productViews` |
 | Member domain | Includes restaurant concepts | No restaurant assumption unless Techanor explicitly adds it |
-| Authentication | Session middleware and protected routes | Login/signup only today; protected auth remains pending |
-| Orders | Complete create/list/update flow | Backend routes/models are not yet implemented |
-| Product detail | Route with optional auth/view tracking | Backend route is not yet implemented |
-| Blog | Not the Techanor blog contract | Techanor currently has SSR admin blog management only |
+| Authentication | Session middleware and protected routes | Session login/signup, `/member/me`, update and logout are implemented |
+| Orders | Complete create/list/update flow | Techanor has verified create/list/update routes and stock validation |
+| Product detail | Route with optional auth/view tracking | Public detail route is implemented and increments product views |
+| Blog | Not the Techanor blog contract | Techanor has verified public list/detail routes plus SSR admin management |
 | Redux logging | Burak includes `redux-logger` | Do not add it unless requested; keep production dependencies lean |
 
 ## Things not to copy blindly

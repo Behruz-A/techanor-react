@@ -1,6 +1,5 @@
 /** Application state shared by typed selectors. */
 
-import { Member } from "./member";
 import { Order } from "./order";
 import { Product } from "./product";
 import { BlogPost } from "./blog";
@@ -14,10 +13,10 @@ export interface AppRootState {
 /**HOME PAGE */
 export interface HomePageState {
   trendingDeals: Product[];
+  latestCategoryProducts: Product[];
 }
 /**PRODUCTS PAGE */
 export interface ProductsPageState {
-  restaurant: Member | null;
   chosenProduct: Product | null;
   products: Product[];
 }

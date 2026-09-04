@@ -4,7 +4,7 @@ import { CloseRounded, LoginRounded, Logout, MenuRounded, PersonAddAltRounded, R
 import { Link, NavLink, useHistory } from "react-router-dom";
 import Basket from "./Basket";
 import { useGlobals } from "../../hooks/useGlobals";
-import { serverApi } from "../../../lib/config";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 import BrandLogo from "../BrandLogo";
 import NavbarSearch from "./NavbarSearch";
 import Wishlist from "./Wishlist";
@@ -47,14 +47,13 @@ export default function OtherNavbar({
           <NavLink to="/blog" activeClassName="active" onClick={closeMobileMenu}>Blog</NavLink>
           <NavLink to="/about" activeClassName="active" onClick={closeMobileMenu}>About Us</NavLink>
           <NavLink to="/help" activeClassName="active" onClick={closeMobileMenu}>Help</NavLink>
-          {authMember && <NavLink to="/orders" activeClassName="active" onClick={closeMobileMenu}>Orders</NavLink>}
         </div>
         <div className="other-nav-actions">
           <NavbarSearch />
           <Wishlist />
           <div className="other-nav-basket"><Basket /></div>
           <button className={authMember ? "other-avatar-button" : "navbar-account-button"} type="button" aria-label="Open account menu" aria-haspopup="true" aria-expanded={Boolean(anchorEl)} onClick={handleLogoutClick}>
-            {authMember ? <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" /> : <UserIcon />}
+            {authMember ? <img src={resolveMediaUrl(authMember.memberImage, "/icons/default-user.svg")} alt="Account" onError={(event) => replaceBrokenImage(event, "/icons/default-user.svg")} /> : <UserIcon />}
           </button>
         </div>
         <Menu className="account-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseLogout} transformOrigin={{ horizontal: "right", vertical: "top" }} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>

@@ -7,6 +7,7 @@ import MemberService from "../services/MemberService";
 
 const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [authMember, setAuthMember] = useState<Member | null>(null);
+  const [authReady, setAuthReady] = useState(false);
 
   const [orderBuilder, setOrderBuilder] = useState<Date>(new Date());
 
@@ -22,6 +23,9 @@ const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       .catch(() => {
         localStorage.removeItem("memberData");
         if (isMounted) setAuthMember(null);
+      })
+      .finally(() => {
+        if (isMounted) setAuthReady(true);
       });
 
     return () => {
@@ -33,6 +37,7 @@ const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     <GlobalContext.Provider
       value={{
         authMember,
+        authReady,
         setAuthMember,
         basket,
         wishlist,

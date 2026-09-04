@@ -359,6 +359,21 @@
   }
 }
 
+/* Consistent editorial cards for arbitrary uploaded image proportions. */
+.blog-page .blog-grid{gap:28px 24px}
+.blog-page .blog-card{overflow:hidden;border:1px solid #dfe5e9;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(10,39,51,.045)}
+.blog-page .blog-card:hover{border-color:#c9d4da;box-shadow:0 12px 28px rgba(10,39,51,.075);transform:translateY(-2px)}
+.blog-page .blog-card-image{width:calc(100% - 16px);margin:8px 8px 0;aspect-ratio:16/9;border-radius:10px;background:#edf1f3}
+.blog-page .blog-card-image img,
+.blog-page .blog-card[data-category="PRODUCT_GUIDE"] .blog-card-image img,
+.blog-page .blog-card[data-category="HOW_TO"] .blog-card-image img,
+.blog-page .blog-card[data-category="REVIEWS"] .blog-card-image img,
+.blog-page .blog-card[data-category="HUMOR"] .blog-card-image img{width:100%;height:100%;padding:0;box-sizing:border-box;object-fit:cover;object-position:center}
+.blog-page .blog-card>div{padding:17px 18px 19px}
+.blog-page .blog-card>div>.blog-card-read-more{width:max-content;min-height:36px;margin-top:17px;padding:0 14px;border-radius:8px;background:#0a2733;color:#fff;text-decoration:none}
+.blog-page .blog-card>div>.blog-card-read-more:hover{background:#123b4c;color:#fff}
+.blog-page .blog-card>div>.blog-card-read-more:focus-visible{outline:3px solid rgba(10,39,51,.2);outline-offset:2px}
+
 /* Banner-free Blog index */
 .blog-page .blog-shell-index {
   padding-top: 28px;

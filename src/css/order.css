@@ -117,3 +117,25 @@
 .orders-tab-panel{padding-top:18px!important}
 .modern-order-card{border-radius:12px;box-shadow:0 7px 24px rgba(10,39,51,.04)}
 @media(max-width:760px){.burak-order-tabs .MuiTabs-root{min-height:80px;padding:10px 7px 0}.burak-order-tabs .MuiTab-root{min-height:65px;padding:28px 5px 6px}.burak-order-tabs .MuiTab-root::before{top:10px;width:12px;height:12px}.burak-order-tabs .MuiTabs-flexContainer::before{top:16px}.burak-order-tabs .MuiTab-root span>small{font-size:6px}.burak-order-tabs .MuiTab-root span>strong{font-size:8px}.burak-order-tabs .MuiTab-root span>b{display:none}.burak-order-tabs .orders-toolbar{align-items:stretch;flex-direction:column}.burak-order-tabs .orders-search{width:100%;flex:none}.burak-order-tabs .orders-date-filter{width:100%}}
+
+/* Order history: one focused content column with compact filters and empty state. */
+.order-page{min-height:calc(100vh - 76px)}
+.orders-dashboard{width:min(1120px,calc(100% - 48px));padding:44px 0 72px}
+.orders-dashboard-header{align-items:center;margin-bottom:22px}
+.burak-orders-main{width:100%}
+.burak-order-tabs{border-radius:14px!important}
+.burak-order-tabs .MuiTabs-root{min-height:64px;padding:8px 12px 0}
+.burak-order-tabs .MuiTabs-flexContainer::before{display:none}
+.burak-order-tabs .MuiTab-root{min-height:54px;padding:8px 12px;border-radius:9px!important}
+.burak-order-tabs .MuiTab-root::before{display:none}
+.burak-order-tabs .MuiTab-root.Mui-selected{background:#edf4ff!important;color:#1f5ed5}
+.burak-order-tabs .MuiTab-root>span{display:flex;align-items:center;justify-content:center;gap:8px;text-align:center}
+.burak-order-tabs .MuiTab-root span>strong{font-size:11px}
+.burak-order-tabs .MuiTab-root span>b{position:static;min-width:23px;height:23px}
+.burak-order-tabs .orders-toolbar{padding:12px}
+.burak-order-tabs .orders-search{min-width:260px}
+.orders-empty{min-height:235px;padding:34px 24px;background:#fff}
+.orders-empty-copy>span{width:50px;height:50px;border-radius:14px}
+.orders-empty-copy h3{margin-top:14px}
+.orders-request-state{min-height:280px}
+@media(max-width:680px){.orders-dashboard{width:calc(100% - 28px);padding:30px 0 52px}.orders-dashboard-header{align-items:stretch}.burak-order-tabs .MuiTabs-root{min-height:58px;padding:7px 7px 0}.burak-order-tabs .MuiTabs-scroller{overflow-x:auto!important}.burak-order-tabs .MuiTabs-flexContainer{width:max-content}.burak-order-tabs .MuiTab-root{min-width:106px;min-height:49px;padding:7px 10px}.burak-order-tabs .MuiTab-root span>strong{font-size:9px}.burak-order-tabs .MuiTab-root span>b{display:inline-flex}.burak-order-tabs .orders-search{min-width:0}}

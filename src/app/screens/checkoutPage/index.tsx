@@ -7,7 +7,7 @@ import LockOutlined from "@mui/icons-material/LockOutlined";
 import { useGlobals } from "../../hooks/useGlobals";
 import OrderService from "../../services/OrderService";
 import { DeliveryAddress, DeliveryMethod } from "../../../lib/types/order";
-import { serverApi } from "../../../lib/config";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 import { sweetErrorHandling } from "../../../lib/sweetAlert";
 import { isMongoObjectId } from "../../../lib/utils/objectId";
 import { ZapIcon } from "../../components/icons/TechanorIcons";
@@ -23,7 +23,7 @@ const emptyPayment = { cardholder: "", cardNumber: "", expiry: "", cvv: "" };
 export default function CheckoutPage() {
   const history = useHistory();
   const location = useLocation();
-  const { authMember, setOrderBuilder, basket: { cartItems, onDeleteAll } } = useGlobals();
+  const { authMember, authReady, setOrderBuilder, basket: { cartItems, onDeleteAll } } = useGlobals();
   const [form, setForm] = useState<DeliveryAddress>(emptyAddress);
   const [errors, setErrors] = useState<Partial<Record<keyof DeliveryAddress, string>>>({});
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("STANDARD");
@@ -39,10 +39,11 @@ export default function CheckoutPage() {
   const total = checkoutSubtotal + delivery;
 
   useEffect(() => {
+    if (!authReady) return;
     if (!authMember) { history.replace("/"); return; }
     if (location.pathname === "/orders" || location.pathname === "/orders/") history.replace("/orders/address");
     setForm((current) => ({ ...current, fullName: current.fullName || authMember.memberNick || "", phone: current.phone || authMember.memberPhone || "", address: current.address || authMember.memberAddress || "" }));
-  }, [authMember, history, location.pathname]);
+  }, [authMember, authReady, history, location.pathname]);
 
   const updateField = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const name = event.target.name as keyof DeliveryAddress;
@@ -108,6 +109,7 @@ export default function CheckoutPage() {
     }
   };
 
+  if (!authReady) return <main className="checkout-auth-loading" role="status">Loading your account...</main>;
   if (!authMember) return null;
 
   const checkoutProgress = <div className="checkout-progress" aria-label="Checkout progress"><div className={step === 1 ? "active" : "complete"}><b className="checkout-step-number">1</b><span><b>Address</b><small>Delivery details</small></span></div><i/><div className={step === 2 ? "active" : step > 2 ? "complete" : ""}><b className="checkout-step-number">2</b><span><b>Shipping</b><small>Delivery method</small></span></div><i/><div className={step === 3 ? "active" : ""}><b className="checkout-step-number">3</b><span><b>Payment</b><small>Review order</small></span></div></div>;
@@ -152,7 +154,7 @@ export default function CheckoutPage() {
         </form>
       </div>
       <aside className="checkout-summary-card"><div className="checkout-summary-title"><div><span>ORDER SUMMARY</span><h2>{step === 3 ? "Summary" : "Your bag"}</h2></div><b>{purchasableItems.reduce((sum, item) => sum + item.quantity, 0)} items</b></div>
-        <div className="checkout-summary-items">{purchasableItems.map((item) => { const image = item.image.startsWith("/") || item.image.startsWith("http") ? item.image : `${serverApi}/${item.image}`; return <article key={item._id}><img src={image} alt={item.name}/><div><strong>{item.name}</strong><span>${item.price.toLocaleString()} × {item.quantity}</span></div><b>${(item.price * item.quantity).toLocaleString()}</b></article>; })}</div>
+        <div className="checkout-summary-items">{purchasableItems.map((item) => <article key={item._id}><img src={resolveMediaUrl(item.image, "/img/noimage-list.svg")} alt={item.name} onError={replaceBrokenImage}/><div><strong>{item.name}</strong><span>${item.price.toLocaleString()} × {item.quantity}</span></div><b>${(item.price * item.quantity).toLocaleString()}</b></article>)}</div>
         {step === 3 && <div className="checkout-summary-details"><p><span>ADDRESS</span><b>{form.address}, {form.city} {form.postalCode}</b></p><p><span>SHIPMENT METHOD</span><b>{deliveryMethod === "EXPRESS" ? "Express" : "Standard"} · {delivery ? `$${delivery.toFixed(2)}` : "Free"}</b></p></div>}
         <div className="checkout-totals"><p><span>Subtotal</span><b>${checkoutSubtotal.toFixed(2)}</b></p><p><span>Delivery</span><b className={delivery ? "" : "free"}>{delivery ? `$${delivery.toFixed(2)}` : "Free"}</b></p><div><span>Total</span><strong>${total.toFixed(2)}</strong></div></div>
         {step !== 3 && <><div className="checkout-assurance"><LockOutlined/><div><strong>Secure order</strong><span>Your details are protected and used only for delivery.</span></div></div><div className="checkout-shipping-note"><LocalShippingOutlined/><div><strong>{deliveryMethod === "EXPRESS" ? "Express delivery selected" : standardDelivery ? `$${(FREE_SHIPPING_THRESHOLD - checkoutSubtotal).toFixed(2)} away from free delivery` : "Free delivery unlocked"}</strong><span>{deliveryMethod === "EXPRESS" ? "Priority delivery on the next business day." : standardDelivery ? "Add more products to save the $5 delivery fee." : "Your order qualifies for complimentary delivery."}</span></div></div></>}

@@ -3,12 +3,10 @@ import { Link } from "react-router-dom";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ProductService from "../../services/ProductService";
-import { serverApi } from "../../../lib/config";
 import { setTrendingDeals } from "./slice";
 import { retrieveTrendingDeals } from "./selector";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-
-const resolveProductImage = (path?: string) => !path ? "" : path.startsWith("/") || path.startsWith("http") ? path : `${serverApi}/${path}`;
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 
 export default function TrendingDeals() {
   const dispatch = useAppDispatch();
@@ -101,7 +99,7 @@ export default function TrendingDeals() {
               <article className="trending-card" key={product._id}>
                 <h3 title={product.productName}>{product.productName}</h3>
                 <Link className="trending-card__media" to={`/products/${product._id}`} aria-label={`View ${product.productName}`}>
-                  {resolveProductImage(product.productImages?.[0]) ? <img src={resolveProductImage(product.productImages[0])} alt={product.productName} loading="lazy" /> : <span className="catalog-image-placeholder">Image unavailable</span>}
+                  {product.productImages?.[0] ? <img src={resolveMediaUrl(product.productImages[0])} alt={product.productName} loading="lazy" onError={replaceBrokenImage} /> : <span className="catalog-image-placeholder">Image unavailable</span>}
                 </Link>
                 <Link className="trending-card__buy" to={`/products/${product._id}`}>Browse</Link>
               </article>

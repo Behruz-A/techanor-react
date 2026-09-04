@@ -9,14 +9,15 @@ import {
   sweetErrorHandling,
   sweetTopSmallSuccessAlert,
 } from "../../../lib/sweetAlert";
-import { Messages, serverApi } from "../../../lib/config";
+import { Messages } from "../../../lib/config";
 import MemberService from "../../services/MemberService";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 
 export function Settings() {
   const { authMember, setAuthMember } = useGlobals();
   const [memberImage, setMemberImage] = useState<string>(
     authMember?.memberImage
-      ? `${serverApi}/${authMember.memberImage}`
+      ? resolveMediaUrl(authMember.memberImage)
       : "/icons/default-user.svg",
   );
   const [memberUpdateInput, setMemberUpdateInput] = useState<MemberUpdateInput>(
@@ -33,7 +34,7 @@ export function Settings() {
   const [isSaving, setIsSaving] = useState(false);
   const [selectedImageName, setSelectedImageName] = useState("");
   const previewUrlRef = useRef<string | null>(null);
-  const originalImage = authMember?.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg";
+  const originalImage = resolveMediaUrl(authMember?.memberImage, "/icons/default-user.svg");
 
   useEffect(() => () => {
     if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
@@ -64,7 +65,7 @@ export function Settings() {
       setAuthMember(result);
       if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
-      setMemberImage(result.memberImage ? `${serverApi}/${result.memberImage}` : "/icons/default-user.svg");
+      setMemberImage(resolveMediaUrl(result.memberImage, "/icons/default-user.svg"));
       setMemberUpdateInput((current) => ({ ...current, memberImage: result.memberImage }));
       setSelectedImageName("");
       setIsEditing(false);
@@ -112,7 +113,7 @@ export function Settings() {
       <Box className="edit-profile-row"><div><strong>Account details</strong><span>{isEditing ? "Editing is enabled. Review your details before saving." : "Your personal and delivery information is securely stored."}</span></div><Button className="edit-profile-button" onClick={() => setIsEditing(true)} disabled={isEditing}>Edit profile</Button></Box>
       <Box className={"member-media-frame"}>
         <Button className="avatar-upload" component="label" aria-label="Change profile picture" disabled={!isEditing}>
-          <img src={memberImage} className={"mb-image"} alt="Profile" />
+          <img src={memberImage} className={"mb-image"} alt="Profile" onError={(event) => replaceBrokenImage(event, "/icons/default-user.svg")} />
           <span className="avatar-camera"><PhotoCameraOutlinedIcon /></span>
           <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageViewer} hidden />
         </Button>

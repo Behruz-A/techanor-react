@@ -1,4 +1,4 @@
-import { serverApi } from "../../../lib/config";
+import { resolveMediaUrl } from "../../../lib/utils/media";
 
 export interface ArticleSection {
   heading?: string;
@@ -23,11 +23,7 @@ export const formatBlogDate = (date: string) => new Intl.DateTimeFormat("en-US",
   day: "numeric",
 }).format(new Date(date));
 
-export const getBlogMediaUrl = (path?: string) => {
-  if (!path) return "";
-  if (/^https?:\/\//i.test(path) || path.startsWith("/img/") || path.startsWith("/icons/")) return path;
-  return `${serverApi}/${path.replace(/^\//, "")}`;
-};
+export const getBlogMediaUrl = (path?: string) => resolveMediaUrl(path);
 
 export const parseArticleContent = (content: string) => {
   const blocks = content.split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean);

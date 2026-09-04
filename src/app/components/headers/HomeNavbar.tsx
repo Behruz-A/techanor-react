@@ -3,7 +3,7 @@ import { LoginRounded, Logout, PersonAddAltRounded, ReceiptLongOutlined } from "
 import { Link, NavLink, useHistory } from "react-router-dom";
 
 import { useGlobals } from "../../hooks/useGlobals";
-import { serverApi } from "../../../lib/config";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 import Basket from "./Basket";
 import BrandLogo from "../BrandLogo";
 import NavbarSearch from "./NavbarSearch";
@@ -50,7 +50,6 @@ export default function HomeNavbar({
           <NavLink to="/blog" activeClassName="active">Blog</NavLink>
           <NavLink to="/about" activeClassName="active">About Us</NavLink>
           <NavLink to="/help" activeClassName="active">Help</NavLink>
-          {authMember && <NavLink to="/orders" activeClassName="active">Orders</NavLink>}
         </div>
 
         <div className="home-nav-actions">
@@ -60,7 +59,7 @@ export default function HomeNavbar({
             <Basket />
           </div>
           <button className={authMember ? "home-avatar-button" : "navbar-account-button"} type="button" aria-label="Open account menu" aria-haspopup="true" aria-expanded={Boolean(anchorEl)} onClick={handleLogoutClick}>
-            {authMember ? <img src={authMember.memberImage ? `${serverApi}/${authMember.memberImage}` : "/icons/default-user.svg"} alt="Account" /> : <UserIcon />}
+            {authMember ? <img src={resolveMediaUrl(authMember.memberImage, "/icons/default-user.svg")} alt="Account" onError={(event) => replaceBrokenImage(event, "/icons/default-user.svg")} /> : <UserIcon />}
           </button>
         </div>
 

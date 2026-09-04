@@ -5,6 +5,7 @@ import useWishlist from "./useWishlist";
 
 interface GlobalInterface {
   authMember: Member | null;
+  authReady: boolean;
   setAuthMember: (member: Member | null) => void;
   basket: ReturnType<typeof useBasket>;
   wishlist: ReturnType<typeof useWishlist>;

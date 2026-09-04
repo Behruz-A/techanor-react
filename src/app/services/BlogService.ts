@@ -13,12 +13,12 @@ class BlogService {
     if (input.blogPostCategory) params.set("blogPostCategory", input.blogPostCategory);
     if (input.search) params.set("search", input.search);
 
-    const result = await axios.get(`${this.path}/all?${params.toString()}`);
+    const result = await axios.get<BlogPost[]>(`${this.path}/all?${params.toString()}`, { timeout: 10000 });
     return result.data;
   }
 
   public async getBlog(blogId: string): Promise<BlogPost> {
-    const result = await axios.get(`${this.path}/${blogId}`);
+    const result = await axios.get<BlogPost>(`${this.path}/${blogId}`, { timeout: 10000 });
     return result.data;
   }
 }

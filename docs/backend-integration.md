@@ -1,6 +1,6 @@
 # Techanor backend integration contract
 
-Last verified: 2026-09-02
+Last verified: 2026-09-04
 
 ## Runtime
 
@@ -96,14 +96,13 @@ verified with `200 OK` on 2026-08-30.
 
 ## Not yet available in the Techanor SPA API
 
-Frontend code currently contains calls for several Burak-style routes that are
-not registered in the Techanor backend router. Treat them as pending work, not
-working integrations:
+The following legacy Burak-style routes are not part of the Techanor contract.
+No production frontend code calls them:
 
 | Frontend expectation | Current backend status |
 | --- | --- |
-| `GET /member/top-users` | Missing |
-| `GET /member/restaurant` | Missing and not a Techanor domain concept |
+| `GET /member/top-users` | Missing; unused |
+| `GET /member/restaurant` | Missing, unused and not a Techanor domain concept |
 
 Do not work around a missing backend endpoint with fake production data. Add the
 Techanor backend contract first, then connect its frontend service.

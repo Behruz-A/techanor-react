@@ -7,12 +7,13 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { useHistory } from "react-router-dom";
 import { CartItem } from "../../../lib/types/search";
-import { Messages, serverApi } from "../../../lib/config";
+import { Messages } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
 import { sweetErrorHandling } from "../../../lib/sweetAlert";
 import { isMongoObjectId } from "../../../lib/utils/objectId";
 import ShoppingCartIcon from "../icons/ShoppingCartIcon";
 import { TrashIcon } from "../icons/TechanorIcons";
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 
 interface BasketProps {}
 
@@ -92,10 +93,10 @@ export default function Basket(props: BasketProps) {
             <div className="basket-drawer-tools"><span>{itemCount} {itemCount === 1 ? "item" : "items"} in your bag</span><button type="button" onClick={onDeleteAll}><TrashIcon />Clear all</button></div>
             <div className="basket-drawer-items">
               {cartItems.map((item: CartItem) => {
-                const imagePath = item.image.startsWith("/") || item.image.startsWith("http") ? item.image : `${serverApi}/${item.image}`;
+                const imagePath = resolveMediaUrl(item.image, "/img/noimage-list.svg");
                 return (
                   <article className="basket-drawer-item" key={item._id}>
-                    <div className="basket-drawer-media"><img src={imagePath} alt={item.name} /></div>
+                    <div className="basket-drawer-media"><img src={imagePath} alt={item.name} onError={replaceBrokenImage} /></div>
                     <div className="basket-drawer-item-copy">
                       <h3>{item.name}</h3>
                       <p>${item.price.toLocaleString()} each</p>

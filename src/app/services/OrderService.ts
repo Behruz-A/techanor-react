@@ -18,50 +18,35 @@ class OrderService {
   }
 
   public async createOrder(input: CartItem[], deliveryAddress: DeliveryAddress, deliveryMethod: DeliveryMethod): Promise<Order> {
-    try {
-      const orderItems: OrderItemInput[] = input.map((cartItem: CartItem) => {
-        return {
-          itemQuantity: cartItem.quantity,
-          productId: cartItem._id,
-        };
-      });
+    const orderItems: OrderItemInput[] = input.map((cartItem: CartItem) => ({
+      itemQuantity: cartItem.quantity,
+      productId: cartItem._id,
+    }));
 
-      const url = `${this.path}/order/create`;
-      const result = await axios.post(url, { items: orderItems, deliveryAddress, deliveryMethod }, {
-        withCredentials: true,
-      });
+    const url = `${this.path}/order/create`;
+    const result = await axios.post<Order>(url, { items: orderItems, deliveryAddress, deliveryMethod }, {
+      withCredentials: true,
+    });
 
-      return result.data;
-    } catch (err) {
-      throw err;
-    }
+    return result.data;
   }
 
   public async getMyOrders(input: OrderInquiry): Promise<Order[]> {
-    try {
-      // axios.defaults.withCredentials = true;
-      const url = `${this.path}/order/all`;
-      const query = new URLSearchParams({
-        page: String(input.page),
-        limit: String(input.limit),
-        orderStatus: input.orderStatus,
-      });
+    const url = `${this.path}/order/all`;
+    const query = new URLSearchParams({
+      page: String(input.page),
+      limit: String(input.limit),
+      orderStatus: input.orderStatus,
+    });
 
-      const result = await axios.get(`${url}?${query.toString()}`, { withCredentials: true });
-      return result.data;
-    } catch (err) {
-      throw err;
-    }
+    const result = await axios.get<Order[]>(`${url}?${query.toString()}`, { withCredentials: true });
+    return result.data;
   }
 
   public async updateOrder(input: OrderUpdateInput): Promise<Order> {
-    try {
-      const url = `${this.path}/order/update`;
-      const result = await axios.post(url, input, { withCredentials: true });
-      return result.data;
-    } catch (err) {
-      throw err;
-    }
+    const url = `${this.path}/order/update`;
+    const result = await axios.post<Order>(url, input, { withCredentials: true });
+    return result.data;
   }
 }
 

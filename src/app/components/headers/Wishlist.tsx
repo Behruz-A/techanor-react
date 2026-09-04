@@ -3,16 +3,10 @@ import { Badge, Drawer, IconButton } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import { useHistory } from "react-router-dom";
-import { serverApi } from "../../../lib/config";
 import { useGlobals } from "../../hooks/useGlobals";
 import ShoppingCartIcon from "../icons/ShoppingCartIcon";
 import { TrashIcon } from "../icons/TechanorIcons";
-
-const imageUrl = (path?: string) => {
-  if (!path) return "/icons/noimage-list.svg";
-  if (path.startsWith("http") || path.startsWith("/")) return path;
-  return `${serverApi}/${path}`;
-};
+import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 
 export default function Wishlist() {
   const [open, setOpen] = useState(false);
@@ -58,7 +52,7 @@ export default function Wishlist() {
                 {items.map((product) => (
                   <article key={product._id}>
                     <button className="wishlist-product" type="button" onClick={() => openProduct(product._id)}>
-                      <img src={imageUrl(product.productImages?.[0])} alt="" />
+                      <img src={resolveMediaUrl(product.productImages?.[0], "/img/noimage-list.svg")} alt="" onError={replaceBrokenImage} />
                       <span><strong>{product.productName}</strong><small>${product.productPrice.toLocaleString()}</small></span>
                     </button>
                     <button className="wishlist-add" type="button" onClick={() => addToBasket(product)} disabled={product.productLeftCount <= 0}>

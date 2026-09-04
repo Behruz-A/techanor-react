@@ -24,13 +24,13 @@ class ProductService {
 
     const url = `${this.path}/product/all?${params.toString()}`;
 
-    const result = await axios.get<Product[]>(url);
+    const result = await axios.get<Product[]>(url, { timeout: 10000 });
     return result.data;
   }
 
   public async getProduct(productId: string): Promise<Product> {
     const url = `${this.path}/product/${productId}`;
-    const result = await axios.get<Product>(url);
+    const result = await axios.get<Product>(url, { timeout: 10000 });
     return result.data;
   }
 }
