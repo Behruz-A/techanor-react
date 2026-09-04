@@ -33,6 +33,13 @@ class ProductService {
     const result = await axios.get<Product>(url, { timeout: 10000 });
     return result.data;
   }
+
+  public async getBestSellers(limit = 3): Promise<Product[]> {
+    const params = new URLSearchParams({ limit: String(limit) });
+    const url = `${this.path}/product/best-sellers?${params.toString()}`;
+    const result = await axios.get<Product[]>(url, { timeout: 10000 });
+    return result.data;
+  }
 }
 
 export default ProductService;

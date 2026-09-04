@@ -56,7 +56,7 @@ export default function BestDeals() {
     setIsLoading(true);
     setHasError(false);
 
-    productService.getProducts({ page: 1, limit: 12, order: "productViews" })
+    productService.getBestSellers(3)
       .then((data) => {
         if (!isCancelled) setProducts(data);
       })
@@ -73,23 +73,9 @@ export default function BestDeals() {
   }, [retryKey]);
 
   const deals = useMemo(() => {
-    const available = products.filter((product) => product.productLeftCount > 0 && product.productImages?.length > 0);
-    const selected: Product[] = [];
-    const selectedCategories = new Set<string>();
-
-    available.forEach((product) => {
-      const category = product.productCategory || "uncategorized";
-      if (selected.length < 3 && !selectedCategories.has(category)) {
-        selected.push(product);
-        selectedCategories.add(category);
-      }
-    });
-
-    available.forEach((product) => {
-      if (selected.length < 3 && !selected.some((item) => item._id === product._id)) selected.push(product);
-    });
-
-    return selected;
+    return products
+      .filter((product) => product.productImages?.length > 0)
+      .slice(0, 3);
   }, [products]);
 
   return (
@@ -134,8 +120,8 @@ export default function BestDeals() {
                     <strong>${deal.productPrice.toLocaleString()}</strong>
                   </div>
                   <div className="deal-card__footer">
-                    <span>Only <strong>{deal.productLeftCount} left</strong></span>
-                    <Link className="deal-card__shop" to={`/products/${deal._id}`}>Shop deal</Link>
+                    <span>{deal.productLeftCount > 0 ? <>Only <strong>{deal.productLeftCount} left</strong></> : <strong>Sold out</strong>}</span>
+                    <Link className="deal-card__shop" to={`/products/${deal._id}`}>{deal.productLeftCount > 0 ? "Shop deal" : "View product"}</Link>
                   </div>
                 </div>
               </article>

@@ -10,7 +10,7 @@ const milestones = [
 ];
 
 const expertise = [
-  { image: "/img/export1.jpg", role: "Product Specialist", name: "Daniel Martin", text: "Selects useful technology with quality, value and everyday performance in mind." },
+  { image: "/img/Firefly (47).png", role: "Product Specialist", name: "Daniel Martin", text: "Selects useful technology with quality, value and everyday performance in mind." },
   { image: "/img/export2.jpg", role: "Customer Experience", name: "Sofia Kim", text: "Creates clear guidance and thoughtful support throughout the shopping journey." },
   { image: "/img/newcontactimg.jpg", role: "Store Operations", name: "Techanor Team", text: "Connects product knowledge, customer care and dependable day-to-day store operations." },
 ];

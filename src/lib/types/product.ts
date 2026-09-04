@@ -22,6 +22,7 @@ export interface Product {
   productDesc?: string;
   productImages: string[];
   productViews: number;
+  productSales?: number;
   createdAt: string;
   updatedAt: string;
 }
