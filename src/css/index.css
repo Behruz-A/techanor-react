@@ -14,6 +14,7 @@ code {
 
 /* Global TECHANOR feedback dialog */
 .techanor-alert-container {
+  z-index: 2000 !important;
   padding: 20px;
   background: rgba(7, 24, 32, 0.46) !important;
   backdrop-filter: blur(7px);

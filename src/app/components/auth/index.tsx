@@ -41,6 +41,7 @@ export default function AuthenticationModal({
   const [memberPassword, setMemberPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState("");
   const { setAuthMember } = useGlobals();
   const isSignup = signupOpen;
   const isOpen = signupOpen || loginOpen;
@@ -50,6 +51,12 @@ export default function AuthenticationModal({
     setMemberPhone("");
     setMemberPassword("");
     setShowPassword(false);
+    setFormError("");
+  };
+
+  const getErrorMessage = (err: unknown): string => {
+    const error = err as { message?: string; response?: { data?: { message?: string } } } | null;
+    return error?.response?.data?.message || error?.message || Messages.error1;
   };
 
   const close = () => {
@@ -60,6 +67,7 @@ export default function AuthenticationModal({
 
   const handleSignupRequest = async (event: FormEvent) => {
     event.preventDefault();
+    setFormError("");
     try {
       const normalizedNick = memberNick.trim();
       const normalizedPhone = memberPhone.replace(/[\s()-]/g, "");
@@ -76,7 +84,8 @@ export default function AuthenticationModal({
       setAuthMember(member);
       close();
     } catch (err) {
-      sweetErrorHandling(err).then();
+      setFormError(getErrorMessage(err));
+      await sweetErrorHandling(err);
     } finally {
       setLoading(false);
     }
@@ -84,6 +93,7 @@ export default function AuthenticationModal({
 
   const handleLoginRequest = async (event: FormEvent) => {
     event.preventDefault();
+    setFormError("");
     try {
       if (!memberNick.trim() || !memberPassword) throw new Error(Messages.error3);
       setLoading(true);
@@ -92,7 +102,8 @@ export default function AuthenticationModal({
       setAuthMember(member);
       close();
     } catch (err) {
-      sweetErrorHandling(err).then();
+      setFormError(getErrorMessage(err));
+      await sweetErrorHandling(err);
     } finally {
       setLoading(false);
     }
@@ -117,10 +128,11 @@ export default function AuthenticationModal({
                 <p>{isSignup ? "Join Techanor to save products and manage your orders." : "Welcome back. Enter your Techanor account details."}</p>
               </div>
 
-              <form className="auth-form" onSubmit={isSignup ? handleSignupRequest : handleLoginRequest}>
-                <label className="auth-field"><span>Username</span><div className="auth-input-wrap"><PersonOutlineRounded aria-hidden="true" /><input value={memberNick} onChange={(event) => setMemberNick(event.target.value)} placeholder={isSignup ? "Choose a username" : "Enter your username"} autoComplete="username" minLength={2} maxLength={30} required autoFocus /></div></label>
-                {isSignup && <label className="auth-field"><span>Phone number</span><div className="auth-input-wrap"><PhoneOutlined aria-hidden="true" /><input type="tel" value={memberPhone} onChange={(event) => setMemberPhone(event.target.value)} placeholder="e.g. +82 10-1234-5678" autoComplete="tel" required /></div></label>}
-                <label className="auth-field"><span>Password</span><div className="auth-input-wrap"><LockOutlined aria-hidden="true" /><input type={showPassword ? "text" : "password"} value={memberPassword} onChange={(event) => setMemberPassword(event.target.value)} placeholder="Enter your password" autoComplete={isSignup ? "new-password" : "current-password"} minLength={isSignup ? 6 : undefined} maxLength={72} required /><button type="button" className="auth-password-toggle" aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} onClick={() => setShowPassword((shown) => !shown)}>{showPassword ? <VisibilityOffRounded /> : <VisibilityRounded />}</button></div></label>
+              <form className="auth-form" onSubmit={isSignup ? handleSignupRequest : handleLoginRequest} noValidate>
+                <label className="auth-field"><span>Username</span><div className="auth-input-wrap"><PersonOutlineRounded aria-hidden="true" /><input value={memberNick} onChange={(event) => { setMemberNick(event.target.value); setFormError(""); }} placeholder={isSignup ? "Choose a username" : "Enter your username"} autoComplete="username" minLength={2} maxLength={30} required autoFocus aria-invalid={Boolean(formError)} /></div></label>
+                {isSignup && <label className="auth-field"><span>Phone number</span><div className="auth-input-wrap"><PhoneOutlined aria-hidden="true" /><input type="tel" value={memberPhone} onChange={(event) => { setMemberPhone(event.target.value); setFormError(""); }} placeholder="e.g. +82 10-1234-5678" autoComplete="tel" required aria-invalid={Boolean(formError)} /></div></label>}
+                <label className="auth-field"><span>Password</span><div className="auth-input-wrap"><LockOutlined aria-hidden="true" /><input type={showPassword ? "text" : "password"} value={memberPassword} onChange={(event) => { setMemberPassword(event.target.value); setFormError(""); }} placeholder="Enter your password" autoComplete={isSignup ? "new-password" : "current-password"} minLength={isSignup ? 6 : undefined} maxLength={72} required aria-invalid={Boolean(formError)} /><button type="button" className="auth-password-toggle" aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} onClick={() => setShowPassword((shown) => !shown)}>{showPassword ? <VisibilityOffRounded /> : <VisibilityRounded />}</button></div></label>
+                {formError && <p className="auth-form-error" role="alert" aria-live="assertive">{formError}</p>}
                 <button className="auth-submit" type="submit" disabled={loading}>{loading ? (isSignup ? "Creating account…" : "Signing in…") : (isSignup ? "Create account" : "Sign in")}{!loading && <ArrowForwardRounded aria-hidden="true" />}</button>
               </form>
 

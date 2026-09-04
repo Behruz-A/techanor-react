@@ -30,7 +30,10 @@ class ProductService {
 
   public async getProduct(productId: string): Promise<Product> {
     const url = `${this.path}/product/${productId}`;
-    const result = await axios.get<Product>(url, { timeout: 10000 });
+    const result = await axios.get<Product>(url, {
+      timeout: 10000,
+      withCredentials: true,
+    });
     return result.data;
   }
 

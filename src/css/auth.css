@@ -20,10 +20,12 @@
 .auth-input-wrap input { width:100%; height:58px; padding:0 50px 0 52px; box-sizing:border-box; border:1px solid #b9c3cf; border-radius:2px; outline:0; background:#fff; color:#172033; font:inherit; font-size:15px; transition:border-color 150ms ease,box-shadow 150ms ease; }
 .auth-input-wrap input::placeholder { color:#8793a3; }
 .auth-input-wrap input:focus { border-color:#0672ce; box-shadow:inset 4px 0 0 #0672ce,0 0 0 1px #0672ce; }
+.auth-input-wrap input[aria-invalid="true"] { border-color:#dc3f49; box-shadow:inset 4px 0 0 #dc3f49; }
 .auth-input-wrap:focus-within > svg { color:#0672ce; }
 .auth-password-toggle { position:absolute; top:50%; right:8px; width:40px; height:40px; display:grid; place-items:center; border:0; border-radius:6px; background:transparent; color:#66778e; cursor:pointer; transform:translateY(-50%); }
 .auth-password-toggle:hover,.auth-password-toggle:focus-visible { background:#edf5fb; color:#0672ce; outline:none; }
 .auth-password-toggle svg { width:21px; height:21px; }
+.auth-form-error { margin:-4px 0 0; padding:11px 13px; border:1px solid #fecaca; border-radius:7px; background:#fff1f2; color:#b4232c; font-size:12px; font-weight:600; line-height:1.5; }
 .auth-submit { height:58px; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:13px; border:0; border-radius:2px; background:#0672ce; color:#fff; font:inherit; font-size:16px; font-weight:700; cursor:pointer; transition:background 150ms ease; }
 .auth-submit:hover:not(:disabled),.auth-submit:focus-visible { background:#055ca6; outline:none; }
 .auth-submit:disabled { opacity:.65; cursor:wait; }
