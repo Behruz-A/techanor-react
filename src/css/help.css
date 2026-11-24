@@ -1,0 +1,381 @@
+.help-page {
+  width: 100%;
+  height: auto;
+  display: flex;
+  background: #f8f8ff;
+}
+
+.help-page .help-container {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  flex-direction: row;
+}
+
+.help-page .help-menu {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-bottom: 1px solid #f8f8ff;
+}
+
+.help-page .help-menu .table-list {
+  display: flex;
+  justify-content: space-between;
+}
+
+.help-page .css-1gsv261 {
+  width: 75%;
+}
+
+.help-page .css-heg063-MuiTabs-flexContainer {
+  justify-content: space-between;
+}
+
+.help-page .css-19kzrtu {
+  padding-top: 24px;
+}
+
+.help-page .help-main-content {
+  width: 100%;
+  height: auto;
+  min-height: 680px;
+}
+
+.help-page .help-contact-panel {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.help-page .rules-box {
+  padding: 24px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8ff;
+  border: 1px solid #ededed;
+  box-shadow: 0px 20px 30px rgba(25, 25, 46, 0.04);
+  border-radius: 8px;
+}
+
+.rules-box .rules-frame {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.rules-box .rules-frame p {
+  border-bottom: 1px solid #dddddd;
+  color: #000000;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: 0.00938em;
+}
+
+.help-page .accordion-menu {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.help-page .admin-letter-box {
+  padding: 60px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8ff;
+  border: 1px solid #ededed;
+  box-shadow: 0px 20px 30px rgba(25, 25, 46, 0.04);
+  border-radius: 8px;
+}
+
+.help-page .admin-letter-box .admin-letter-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.help-page .admin-letter-container .admin-letter-frame {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.help-page .admin-letter-frame span {
+  font-family: "ABeeZee";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  color: #140342;
+}
+
+.help-page .admin-letter-frame p {
+  margin-top: 20px;
+  font-family: "Sedan";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 26px;
+  color: #4f547b;
+}
+
+.help-page .admin-letter-container .admin-letter-frame {
+  display: flex;
+  flex-direction: column;
+}
+
+.help-page .admin-letter-frame .admin-input-box {
+  margin-top: 30px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.help-page .admin-letter-frame .admin-input-box label {
+  font-family: "Verdana";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  color: #140342;
+}
+
+.help-page .admin-letter-frame .admin-input-box input {
+  margin-top: 10px;
+  padding: 20px;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  background: #f8f8ff;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  font-family: "Verdana";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 26px;
+  color: #4f547b;
+}
+
+.help-page .admin-letter-frame .admin-input-box textarea {
+  margin-top: 10px;
+  padding: 20px;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  background: #f8f8ff;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  font-family: "Verdana";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 26px;
+  color: #4f547b;
+}
+
+/* Techanor help center */
+.help-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  color: #0a2733;
+}
+
+.help-page .help-container {
+  width: min(1300px, calc(100% - 48px));
+  max-width: 1300px;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 72px 0 88px;
+}
+
+.help-heading {
+  max-width: 690px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.help-heading > span {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2.2px;
+}
+
+.help-heading h1 {
+  margin: 12px 0 0;
+  color: #0a2733;
+  font-size: clamp(42px, 4.2vw, 60px);
+  font-weight: 680;
+  line-height: 1.06;
+  letter-spacing: -2.4px;
+}
+
+.help-heading p {
+  max-width: 600px;
+  margin: 17px auto 0;
+  color: #667085;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.help-page .help-menu {
+  height: auto;
+  border: 0;
+}
+
+.help-page .help-tabs-border {
+  width: 100%;
+  border-bottom: 1px solid #dfe4ea;
+}
+
+.help-page .table_list .MuiTabs-flexContainer {
+  justify-content: center;
+  gap: clamp(44px, 8vw, 120px);
+}
+
+.help-page .table_list .MuiTab-root {
+  min-width: 110px;
+  min-height: 54px;
+  padding: 0 12px;
+  color: #7b8490;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 1px;
+}
+
+.help-page .table_list .MuiTab-root.Mui-selected { color: #0a2733; }
+.help-page .table_list .MuiTabs-indicator { height: 2px; background: #2563eb; }
+
+.help-page .help-main-content {
+  min-height: 620px;
+}
+
+.help-page .help-tab-panel {
+  padding: 34px 0 0;
+}
+
+.help-page .rules-box {
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.help-term-card {
+  min-height: 156px;
+  padding: 26px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 18px;
+  border: 1px solid #e1e6ec;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, .035);
+}
+
+.help-term-card > span,
+.faq-number {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.help-term-card h2 {
+  margin: 0;
+  color: #0a2733;
+  font-size: 16px;
+  font-weight: 720;
+}
+
+.help-term-card p {
+  margin: 10px 0 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.help-page .accordion-menu {
+  gap: 10px;
+}
+
+.help-page .accordion-menu .MuiAccordion-root {
+  overflow: hidden;
+  border: 1px solid #e1e6ec;
+  border-radius: 13px !important;
+  background: #fff;
+  box-shadow: none;
+}
+
+.help-page .accordion-menu .MuiAccordion-root::before { display: none; }
+.help-page .accordion-menu .MuiAccordion-root.Mui-expanded { border-color: #bfd0ef; }
+
+.help-page .accordion-menu .MuiAccordionSummary-root {
+  min-height: 66px;
+  padding: 0 22px;
+}
+
+.help-page .accordion-menu .MuiAccordionSummary-content {
+  margin: 17px 0;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.help-page .accordion-menu .MuiAccordionSummary-content h2 {
+  margin: 0;
+  color: #172f3a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.help-page .accordion-menu .MuiAccordionSummary-expandIconWrapper { color: #667085; }
+.help-page .accordion-menu .MuiAccordionSummary-expandIconWrapper.Mui-expanded { color: #2563eb; }
+
+.help-page .accordion-menu .MuiAccordionDetails-root {
+  padding: 0 62px 22px 76px;
+}
+
+.help-page .accordion-menu .MuiAccordionDetails-root p {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.help-page .help-contact-panel { padding-top: 10px; }
+
+@media(max-width:700px) {
+  .help-page .help-container {
+    width: calc(100% - 32px);
+    padding: 54px 0 68px;
+  }
+  .help-heading { margin-bottom: 34px; }
+  .help-heading h1 { font-size: 38px; letter-spacing: -1.6px; }
+  .help-heading p { font-size: 14px; }
+  .help-page .table_list .MuiTabs-flexContainer { gap: 0; }
+  .help-page .table_list .MuiTab-root { min-width: 0; flex: 1; font-size: 11px; }
+  .help-page .rules-box { grid-template-columns: 1fr; }
+  .help-term-card { min-height: 0; padding: 22px 18px; gap: 12px; }
+  .help-page .accordion-menu .MuiAccordionSummary-root { padding: 0 16px; }
+  .help-page .accordion-menu .MuiAccordionSummary-content { gap: 12px; }
+  .help-page .accordion-menu .MuiAccordionDetails-root { padding: 0 18px 20px 51px; }
+}

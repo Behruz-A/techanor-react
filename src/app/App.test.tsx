@@ -1,15 +1,18 @@
-import React from "react";
 import { render } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { store } from "./store";
-import App from "./App";
+import { MemoryRouter } from "react-router-dom";
 
-test("renders learn react link", () => {
-  const { getByText } = render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
+import Footer from "./components/footer";
+
+test("renders the Techanor footer navigation", () => {
+  // Testing Library v9 uses the legacy ReactDOM API and logs a React 18 warning.
+  const consoleError = jest.spyOn(console, "error").mockImplementation(() => undefined);
+  const { getByLabelText, getByText } = render(
+    <MemoryRouter>
+      <Footer />
+    </MemoryRouter>,
   );
 
-  expect(getByText(/learn/i)).toBeInTheDocument();
+  expect(getByLabelText("Techanor home", { selector: ".footer-brand" })).toBeInTheDocument();
+  expect(getByText(/Back to top/i, { selector: "button" })).toBeInTheDocument();
+  consoleError.mockRestore();
 });

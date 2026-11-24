@@ -1,0 +1,171 @@
+<div id="techanor-auth-concept">
+  <style>
+    #techanor-auth-concept {
+      width: 100%;
+      padding: 36px 20px;
+      box-sizing: border-box;
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--muted) 52%, transparent);
+      color: var(--foreground);
+    }
+    #techanor-auth-concept .techanor-login-window {
+      width: min(100%, 560px);
+    }
+    #techanor-auth-concept .techanor-login-inner {
+      padding: 14px 10px 6px;
+    }
+    #techanor-auth-concept .techanor-login-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 26px;
+    }
+    #techanor-auth-concept .techanor-login-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      letter-spacing: .08em;
+    }
+    #techanor-auth-concept .techanor-login-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-weight: 500;
+    }
+    #techanor-auth-concept .techanor-login-copy {
+      margin-bottom: 26px;
+    }
+    #techanor-auth-concept .techanor-login-copy h2 {
+      margin-bottom: 8px;
+    }
+    #techanor-auth-concept .techanor-login-form {
+      display: grid;
+      gap: 18px;
+    }
+    #techanor-auth-concept .techanor-field {
+      display: grid;
+      gap: 7px;
+    }
+    #techanor-auth-concept .techanor-password-wrap {
+      position: relative;
+    }
+    #techanor-auth-concept .techanor-password-wrap .form-control {
+      width: 100%;
+      box-sizing: border-box;
+      padding-right: 44px;
+    }
+    #techanor-auth-concept .techanor-password-toggle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    #techanor-auth-concept .techanor-login-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    #techanor-auth-concept .techanor-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    #techanor-auth-concept .techanor-account-link {
+      margin: 22px 0 0;
+      text-align: center;
+    }
+    #techanor-auth-concept .techanor-trust-row {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    #techanor-auth-concept .techanor-trust-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+    @media (max-width: 520px) {
+      #techanor-auth-concept { padding: 20px 10px; }
+      #techanor-auth-concept .techanor-login-actions { align-items: flex-start; flex-direction: column; }
+      #techanor-auth-concept .techanor-trust-row { grid-template-columns: 1fr; }
+      #techanor-auth-concept .techanor-trust-item { justify-content: flex-start; }
+    }
+  </style>
+
+  <section class="card techanor-login-window" aria-label="Techanor login concept">
+    <div class="techanor-login-inner">
+      <div class="techanor-login-top">
+        <div class="techanor-login-brand"><span class="techanor-login-mark">T</span><span>TECHANOR</span></div>
+        <button type="button" class="btn btn-ghost" aria-label="Close login"><i data-lucide="x" aria-hidden="true"></i></button>
+      </div>
+
+      <div class="techanor-login-copy">
+        <h2>Welcome back</h2>
+        <p class="text-muted">Log in to manage orders, saved products and your account.</p>
+      </div>
+
+      <form class="techanor-login-form">
+        <label class="techanor-field">
+          <span class="form-label">Username</span>
+          <input class="form-control" type="text" placeholder="Enter your username" autocomplete="username">
+        </label>
+
+        <label class="techanor-field">
+          <span class="form-label">Password</span>
+          <span class="techanor-password-wrap">
+            <input id="techanor-concept-password" class="form-control" type="password" placeholder="Enter your password" autocomplete="current-password">
+            <button id="techanor-concept-toggle" type="button" class="btn btn-ghost techanor-password-toggle" aria-label="Show password"><i data-lucide="eye" aria-hidden="true"></i></button>
+          </span>
+        </label>
+
+        <div class="techanor-login-actions">
+          <label class="form-check">
+            <input class="form-check-input" type="checkbox">
+            <span class="form-check-label">Remember me</span>
+          </label>
+          <a href="#forgot">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block techanor-submit">Log in securely <i data-lucide="arrow-right" aria-hidden="true"></i></button>
+      </form>
+
+      <p class="techanor-account-link text-muted">New to Techanor? <a href="#signup">Create an account</a></p>
+
+      <div class="techanor-trust-row" aria-label="Account benefits">
+        <span class="techanor-trust-item text-small"><i data-lucide="shield-check" aria-hidden="true"></i> Secure checkout</span>
+        <span class="techanor-trust-item text-small"><i data-lucide="package" aria-hidden="true"></i> Track orders</span>
+        <span class="techanor-trust-item text-small"><i data-lucide="heart" aria-hidden="true"></i> Saved items</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const root = document.getElementById('techanor-auth-concept');
+      const toggle = root.querySelector('#techanor-concept-toggle');
+      const password = root.querySelector('#techanor-concept-password');
+      toggle.addEventListener('click', () => {
+        const showing = password.type === 'text';
+        password.type = showing ? 'password' : 'text';
+        toggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        toggle.innerHTML = `<i data-lucide="${showing ? 'eye' : 'eye-off'}" aria-hidden="true"></i>`;
+        lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      });
+    })();
+  </script>
+</div>
