@@ -1,0 +1,41 @@
+.product-showcase {
+  position: relative;
+  overflow: hidden;
+  background: #f3f6fb;
+  color: #000;
+}
+
+.product-showcase__slide { position: relative; height: clamp(420px, 28vw, 640px); }
+.product-showcase__container { position: relative; z-index: 1; width: min(1460px, 77.2%); height: 100%; margin: 0 auto; display: flex; align-items: center; }
+.product-showcase__copy { width: 42%; min-width: 0; padding: 32px 0 70px; }
+.product-showcase__copy h2 { margin: 0; font-size: clamp(32px, 3.4vw, 62px); line-height: 1.1; font-weight: 700; letter-spacing: -1.5px; overflow-wrap: anywhere; }
+.product-showcase__copy h2 a { color: inherit; text-decoration: none; }
+.product-showcase__subtitle { margin: 16px 0 0; color: #686970; font-size: 18px; text-transform: uppercase; }
+.product-showcase__link { width: fit-content; display: flex; align-items: center; gap: 8px; margin-top: 40px; color: #000; font-size: 15px; font-weight: 600; text-decoration: none; }
+.product-showcase__link:hover { color: #2454db; }
+.product-showcase__image { position: absolute; inset: 0 0 0 22%; overflow: hidden; }
+.product-showcase__image img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: right center; }
+.product-showcase__arrow { position: absolute; z-index: 2; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 48px; height: 56px; padding: 0; border: 0; background: transparent; color: #000; cursor: pointer; }
+.product-showcase__arrow svg { font-size: 48px; }
+.product-showcase__prev { left: 3%; }
+.product-showcase__next { right: 3%; }
+.product-showcase__pagination { position: absolute; z-index: 2; left: max(11.4%, calc((100% - 1460px) / 2)); bottom: 34px; display: flex; gap: 22px; }
+.product-showcase__pagination .swiper-pagination-bullet { display: block; box-sizing: border-box; width: 13px; height: 13px; padding: 0; border: 2px solid #000; border-radius: 50%; background: transparent; cursor: pointer; }
+.product-showcase__pagination .swiper-pagination-bullet-active { background: #000; }
+.product-showcase :focus-visible { outline: 3px solid #2454db; outline-offset: 5px; }
+
+@media (max-width: 767px) {
+  .product-showcase__slide { height: 580px; }
+  .product-showcase__container { width: calc(100% - 64px); height: auto; padding-top: 32px; }
+  .product-showcase__copy { width: 100%; padding: 0; }
+  .product-showcase__copy h2 { font-size: clamp(28px, 6vw, 40px); letter-spacing: -.7px; }
+  .product-showcase__subtitle { margin-top: 10px; font-size: 14px; }
+  .product-showcase__link { margin-top: 20px; font-size: 14px; }
+  .product-showcase__image { inset: 210px 0 55px; }
+  .product-showcase__image img { object-position: center; }
+  .product-showcase__arrow { width: 30px; height: 44px; top: 64%; }
+  .product-showcase__arrow svg { font-size: 32px; }
+  .product-showcase__prev { left: 0; }
+  .product-showcase__next { right: 0; }
+  .product-showcase__pagination { left: 32px; bottom: 24px; }
+}

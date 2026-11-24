@@ -5,3 +5,4 @@ const selectBlogPage = (state: AppRootState) => state.blogPage;
 
 export const retrieveBlogs = createSelector(selectBlogPage, (blogPage) => blogPage.blogs);
 export const retrieveChosenBlog = createSelector(selectBlogPage, (blogPage) => blogPage.chosenBlog);
+export const retrieveComments = createSelector(selectBlogPage, (blogPage) => blogPage.comments);

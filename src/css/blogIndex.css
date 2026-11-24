@@ -1,0 +1,42 @@
+/* Match the Shop catalog's container, heading and search controls. */
+.blog-page .blog-shell-index {
+  width: min(1300px, calc(100% - 48px));
+  padding: 26px 0 64px;
+}
+
+.blog-index-breadcrumb {
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #8a929d;
+  font-size: 11px;
+}
+.blog-index-breadcrumb a { color: inherit; text-decoration: none; }
+.blog-index-breadcrumb a:hover { color: #2563eb; }
+.blog-index-breadcrumb strong { color: #65707d; font-weight: 600; }
+.blog-index-heading { min-height: 40px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.blog-index-heading h1 { margin: 0; color: #0f172a; font-size: clamp(30px, 2.3vw, 34px); font-weight: 700; line-height: 1.1; letter-spacing: -.9px; }
+.blog-index-count { margin: 0; flex-shrink: 0; color: #7b8490; font-size: 11px; }
+.blog-index-count strong { margin-right: 4px; color: #344054; font-size: 13px; font-weight: 600; }
+.blog-index-toolbar { min-height: 66px; margin-top: 8px; padding: 8px 0 12px; display: flex; align-items: center; border-bottom: 1px solid #e8ebef; }
+.blog-page .blog-index-toolbar .blog-search { width: 280px; height: 45px; padding: 0 15px; gap: 12px; border: 1px solid #e2e6ea; border-radius: 12px; background: #fafbfc; }
+.blog-index-toolbar .blog-search input { min-width: 0; font-family: inherit; font-size: 12px; line-height: 1.5; }
+.blog-index-toolbar .blog-search svg { width: 20px; height: 20px; flex-shrink: 0; }
+.blog-page .blog-index-toolbar .blog-search:focus-within { border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+.blog-shell-index .blog-categories { margin-top: 18px; }
+.blog-shell-index .blog-categories button { flex-shrink: 0; }
+.blog-shell-index .blog-grid { padding-top: 24px; }
+.blog-shell-index a:focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
+
+@media (max-width: 720px) {
+  .blog-page .blog-shell-index { width: calc(100% - 36px); padding-top: 22px; }
+  .blog-index-breadcrumb { margin-bottom: 16px; }
+  .blog-index-heading h1 { font-size: 28px; }
+  .blog-page .blog-shell-index .blog-categories { width: 100%; padding: 0 0 5px; flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; }
+  .blog-shell-index .blog-categories::-webkit-scrollbar { display: none; }
+}
+
+@media (max-width: 480px) {
+  .blog-page .blog-index-toolbar .blog-search { width: 100%; }
+}

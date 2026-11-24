@@ -13,6 +13,6 @@ test("renders the Techanor footer navigation", () => {
   );
 
   expect(getByLabelText("Techanor home", { selector: ".footer-brand" })).toBeInTheDocument();
-  expect(getByText(/Back to top/i, { selector: "button" })).toBeInTheDocument();
+  expect(getByText("Customer Service")).toBeInTheDocument();
   consoleError.mockRestore();
 });

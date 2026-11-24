@@ -128,7 +128,7 @@ export default function Events() {
                         <span>{BLOG_CATEGORY_LABELS[post.blogPostCategory]}</span>
                         <time dateTime={post.createdAt}>{formatBlogDate(post.createdAt)}</time>
                       </Box>
-                      <h3><Link to={articleUrl}>{post.blogPostTitle}</Link></h3>
+                      <h3><Link to={articleUrl} title={post.blogPostTitle}>{post.blogPostTitle}</Link></h3>
                       <p className="events-excerpt">{getBlogExcerpt(post.blogPostContent)}</p>
                       <Link className="events-read-more" to={articleUrl}>
                         Read more

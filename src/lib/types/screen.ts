@@ -2,7 +2,7 @@
 
 import { Order } from "./order";
 import { Product } from "./product";
-import { BlogPost } from "./blog";
+import { BlogPost, BlogCommentList } from "./blog";
 
 export interface AppRootState {
   homePage: HomePageState;
@@ -12,8 +12,8 @@ export interface AppRootState {
 }
 /**HOME PAGE */
 export interface HomePageState {
-  trendingDeals: Product[];
-  latestCategoryProducts: Product[];
+  featuredProducts: Product[];
+  trendingProducts: Product[];
 }
 /**PRODUCTS PAGE */
 export interface ProductsPageState {
@@ -32,4 +32,5 @@ export interface OrdersPageState {
 export interface BlogPageState {
   blogs: BlogPost[];
   chosenBlog: BlogPost | null;
+  comments: BlogCommentList;
 }

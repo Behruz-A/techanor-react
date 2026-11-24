@@ -3,10 +3,17 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import { useHistory, useLocation } from "react-router-dom";
 
-export default function NavbarSearch() {
+import { ProductCategory, PRODUCT_CATEGORY_LABELS } from "../../../constants/enums";
+
+interface NavbarSearchProps {
+  variant?: "popover" | "inline";
+}
+
+export default function NavbarSearch({ variant = "popover" }: NavbarSearchProps) {
   const history = useHistory();
   const location = useLocation();
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<ProductCategory | "">("");
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -19,6 +26,8 @@ export default function NavbarSearch() {
   useEffect(() => {
     const search = new URLSearchParams(location.search).get("search") || "";
     setQuery(location.pathname === "/products" ? search : "");
+    const categoryValue = new URLSearchParams(location.search).get("category");
+    setCategory(location.pathname === "/products" ? Object.values(ProductCategory).find((value) => value === categoryValue) || "" : "");
   }, [location.pathname, location.search]);
 
   useEffect(() => {
@@ -39,9 +48,35 @@ export default function NavbarSearch() {
   const submitSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const normalizedQuery = query.trim();
-    history.push(normalizedQuery ? `/products?search=${encodeURIComponent(normalizedQuery)}` : "/products");
+    const params = new URLSearchParams();
+    if (normalizedQuery) params.set("search", normalizedQuery);
+    if (variant === "inline" && category) params.set("category", category);
+    history.push(`/products${params.toString() ? `?${params.toString()}` : ""}`);
     setIsOpen(false);
   };
+
+  if (variant === "inline") {
+    return (
+      <form className="catalog-search" role="search" aria-label="Search catalog" onSubmit={submitSearch}>
+        <select
+          aria-label="Product category"
+          value={category}
+          onChange={(event) => setCategory(Object.values(ProductCategory).find((value) => value === event.target.value) || "")}
+        >
+          <option value="">All Categories</option>
+          {Object.values(ProductCategory).map((value) => <option key={value} value={value}>{PRODUCT_CATEGORY_LABELS[value]}</option>)}
+        </select>
+        <input
+          type="search"
+          aria-label="Search products"
+          placeholder="Search for Product..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+        <button type="submit" aria-label="Search catalog"><SearchRoundedIcon /></button>
+      </form>
+    );
+  }
 
   return (
     <div className={`navbar-search-shell${isOpen ? " is-open" : ""}`}>

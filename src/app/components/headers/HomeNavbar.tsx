@@ -1,4 +1,4 @@
-import { ListItemIcon, Menu, MenuItem } from "@mui/material";
+import { Box, ListItemIcon, Menu, MenuItem, Stack } from "@mui/material";
 import { LoginRounded, Logout, PersonAddAltRounded, ReceiptLongOutlined } from "@mui/icons-material";
 import { Link, NavLink, useHistory } from "react-router-dom";
 
@@ -7,8 +7,10 @@ import { replaceBrokenImage, resolveMediaUrl } from "../../../lib/utils/media";
 import Basket from "./Basket";
 import BrandLogo from "../BrandLogo";
 import NavbarSearch from "./NavbarSearch";
+import HomeHero from "./HomeHero";
 import Wishlist from "./Wishlist";
 import { UserIcon } from "../icons/TechanorIcons";
+import "../../../css/homeNavbar.css";
 
 interface HomeNavbarProps {
   setSignupOpen: (isOpen: boolean) => void;
@@ -27,7 +29,8 @@ export default function HomeNavbar({
   handleCloseLogout,
   handleLogoutRequest,
 }: HomeNavbarProps) {
-  const { authMember } = useGlobals();
+  const { authMember, basket: { cartItems } } = useGlobals();
+  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const history = useHistory();
 
   const goTo = (path: string) => {
@@ -36,33 +39,35 @@ export default function HomeNavbar({
   };
 
   return (
-    <header className="home-navbar">
-      <nav className="home-nav" aria-label="Main navigation">
-        <div className="home-nav-left">
-          <Link className="home-brand" to="/" aria-label="Techanor home">
-            <BrandLogo />
-          </Link>
+    <header className="store-header">
+      <Box className="store-header__utility">
+        <div className="store-header__container store-header__utility-inner">
+          <span>Welcome to Techanor store</span>
+          <Link to="/help?tab=contact">Help &amp; Contact</Link>
         </div>
-
-        <div className="home-nav-links">
-          <NavLink exact to="/" activeClassName="active">Home</NavLink>
-          <NavLink to="/products" activeClassName="active">Shop</NavLink>
-          <NavLink to="/blog" activeClassName="active">Blog</NavLink>
-          <NavLink to="/about" activeClassName="active">About Us</NavLink>
-          <NavLink to="/help" activeClassName="active">Help</NavLink>
-        </div>
-
-        <div className="home-nav-actions">
-          <NavbarSearch />
-          <Wishlist />
-          <div className="home-nav-basket">
-            <Basket />
-          </div>
-          <button className={authMember ? "home-avatar-button" : "navbar-account-button"} type="button" aria-label="Open account menu" aria-haspopup="true" aria-expanded={Boolean(anchorEl)} onClick={handleLogoutClick}>
+      </Box>
+      <div className="store-header__container store-header__main">
+        <Link className="store-header__brand" to="/" aria-label="Techanor home">
+          <BrandLogo tone="dark" />
+        </Link>
+        <NavbarSearch variant="inline" />
+        <Stack className="store-header__actions">
+          <button
+            className="store-header__account"
+            type="button"
+            aria-label="Open account menu"
+            aria-haspopup="true"
+            aria-expanded={Boolean(anchorEl)}
+            onClick={handleLogoutClick}
+          >
             {authMember ? <img src={resolveMediaUrl(authMember.memberImage, "/icons/default-user.svg")} alt="Account" onError={(event) => replaceBrokenImage(event, "/icons/default-user.svg")} /> : <UserIcon />}
           </button>
-        </div>
-
+          <Wishlist />
+          <div className="store-header__basket">
+            <Basket />
+            <span aria-label={`Cart subtotal: ${subtotal.toFixed(2)} dollars`}>${subtotal.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+          </div>
+        </Stack>
         <Menu className="account-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseLogout} transformOrigin={{ horizontal: "right", vertical: "top" }} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
           {!authMember ? [
             <MenuItem key="login" onClick={() => { handleCloseLogout(); setLoginOpen(true); }}><ListItemIcon><LoginRounded fontSize="small" /></ListItemIcon>Log in</MenuItem>,
@@ -73,24 +78,17 @@ export default function HomeNavbar({
             <MenuItem key="logout" onClick={() => { handleCloseLogout(); handleLogoutRequest(); }}><ListItemIcon><Logout fontSize="small" /></ListItemIcon>Logout</MenuItem>,
           ]}
         </Menu>
-      </nav>
-
-      <section className="home-hero home-banner-hero" aria-label="Featured Techanor collection">
-        <div className="home-slide-image-wrap" aria-hidden="true">
-          <img className="home-banner-image" src="/img/home-iphone17-lifestyle.png" alt="" />
-        </div>
-        <div className="home-slide-content">
-          <div className="home-hero-center">
-            <span className="home-hero-eyebrow">The new iPhone 17 Pro</span>
-            <h1>Pro power.<br />Boldly yours.</h1>
-            <p>Performance and design in perfect balance.</p>
-
-            <div className="home-hero-actions" aria-label="Explore Techanor">
-              <Link className="home-slide-cta" to="/products">Shop collection</Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
+      <Box className="store-header__navigation">
+        <Stack component="nav" className="store-header__container store-header__links" aria-label="Main navigation">
+          <NavLink exact to="/" activeClassName="active">Home</NavLink>
+          <NavLink to="/products" activeClassName="active">Shop</NavLink>
+          <NavLink to="/blog" activeClassName="active">Blog</NavLink>
+          <NavLink to="/about" activeClassName="active">About Us</NavLink>
+          <NavLink to="/help" activeClassName="active">Help</NavLink>
+        </Stack>
+      </Box>
+      <HomeHero />
     </header>
   );
 }

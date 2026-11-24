@@ -1,0 +1,78 @@
+/* Homepage store navigation. */
+.store-header { width: 100%; background: #fff; color: #000; }
+.store-header a { text-decoration: none; }
+.store-header__container { width: min(1460px, 77.2%); margin: 0 auto; }
+.store-header__utility { background: #f3f6fb; color: #737d98; }
+.store-header__utility-inner { min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: 12px; line-height: 1.5; text-transform: uppercase; }
+.store-header__utility a { color: inherit; }
+.store-header__main { min-height: 108px; display: grid; grid-template-columns: 180px minmax(0, 1fr) auto; align-items: center; gap: 34px; }
+.store-header__brand { width: fit-content; color: #000; }
+.store-header__brand .brand-logo { color: #000; font-size: 25px; }
+.store-header__brand .brand-logo__mark { color: #244cda; }
+.store-header__actions { flex-direction: row !important; align-items: center; gap: 20px; }
+.store-header__account, .store-header .navbar-icon-button.MuiIconButton-root, .store-header__basket .MuiIconButton-root {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 42px;
+  padding: 6px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  box-shadow: none;
+  cursor: pointer;
+}
+.store-header__account svg, .store-header .navbar-icon-button svg, .store-header__basket .MuiIconButton-root img { width: 27px; height: 27px; }
+.store-header__account img { width: 30px; height: 30px; object-fit: cover; border-radius: 50%; }
+.store-header__basket { display: flex; align-items: center; gap: 9px; }
+.store-header__basket > span { color: #000; font-size: 18px; font-weight: 500; white-space: nowrap; }
+.store-header .MuiBadge-badge { background: #f56b00; color: #fff; }
+.store-header__account:hover, .store-header .navbar-icon-button.MuiIconButton-root:hover, .store-header__basket .MuiIconButton-root:hover { background: transparent; color: #244cda; }
+.store-header__basket .MuiIconButton-root img { filter: brightness(0); }
+.store-header__navigation { background: #244cda; }
+.store-header__links { flex-direction: row !important; align-items: stretch; min-height: 60px; }
+.store-header__links a { display: flex; align-items: center; justify-content: center; padding: 0 26px; color: #fff; font-size: 16px; font-weight: 600; white-space: nowrap; }
+.store-header__links a:hover, .store-header__links a.active { background: #2035e3; }
+.store-header :is(a, button, select, input):focus-visible { outline: 2px solid #244cda; outline-offset: 4px; }
+.store-header__links a:focus-visible { outline-color: #fff; outline-offset: -5px; }
+.catalog-search { min-width: 0; min-height: 58px; display: flex; align-items: center; border: 1px solid #e5e5e5; border-radius: 9px; background: #fff; }
+.catalog-search select { width: 175px; min-width: 0; height: 30px; padding: 0 30px 0 18px; border: 0; border-right: 1px solid #e5e5e5; border-radius: 0; background: transparent; color: #000; font: inherit; font-size: 14px; cursor: pointer; }
+.catalog-search select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='m5 3 4 4-4 4' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+.catalog-search input { flex: 1; min-width: 0; width: 100%; height: 54px; padding: 0 20px; border: 0; border-radius: 0; background: transparent; color: #000; font: inherit; font-size: 16px; }
+.catalog-search input::placeholder { color: #798198; }
+.catalog-search > button { width: 54px; height: 54px; padding: 0; display: grid; place-items: center; flex-shrink: 0; border: 0; border-radius: 8px; background: transparent; color: #000; cursor: pointer; }
+.catalog-search > button svg { width: 28px; height: 28px; }
+.catalog-search > button:hover { color: #244cda; }
+.catalog-search:focus-within { border-color: #244cda; }
+
+@media (max-width: 1250px) {
+  .store-header__container { width: calc(100% - 48px); }
+  .store-header__main { grid-template-columns: 155px minmax(0, 1fr) auto; gap: 24px; }
+  .store-header__actions { gap: 12px; }
+  .catalog-search select { width: 150px; padding-left: 14px; font-size: 13px; }
+}
+@media (max-width: 950px) {
+  .store-header__main { padding: 22px 0; grid-template-columns: 1fr auto; gap: 20px; }
+  .store-header__main > .catalog-search { grid-column: 1 / -1; grid-row: 2; }
+  .store-header__links a { min-height: 56px; padding: 0 24px; }
+  .store-header__actions { gap: 16px; }
+}
+@media (max-width: 600px) {
+  .store-header__container { width: calc(100% - 36px); }
+  .store-header__utility-inner { min-height: 32px; font-size: 10px; gap: 12px; }
+  .store-header__main { padding: 16px 0; gap: 16px; }
+  .store-header__brand .brand-logo { font-size: 21px; }
+  .store-header__brand .brand-logo__name { display: inline; }
+  .store-header__actions { gap: 7px; }
+  .store-header__account, .store-header .navbar-icon-button.MuiIconButton-root, .store-header__basket .MuiIconButton-root { width: 34px; height: 36px; padding: 4px; }
+  .store-header__account svg, .store-header .navbar-icon-button svg, .store-header__basket .MuiIconButton-root img { width: 24px; height: 24px; }
+  .store-header__basket > span { display: none; }
+  .store-header__links { width: 100%; overflow-x: auto; padding: 0 12px; box-sizing: border-box; min-height: 50px; }
+  .store-header__links a { flex-shrink: 0; padding: 0 17px; min-height: 50px; font-size: 14px; }
+  .catalog-search { min-height: 52px; }
+  .catalog-search select { width: 128px; padding-left: 10px; padding-right: 26px; font-size: 12px; background-position: right 8px center; }
+  .catalog-search input { height: 50px; padding: 0 12px; font-size: 14px; }
+  .catalog-search > button { width: 40px; height: 50px; }
+  .catalog-search > button svg { width: 24px; height: 24px; }
+}

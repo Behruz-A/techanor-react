@@ -6,6 +6,7 @@ import UserPage from "./screens/userPage";
 import HomeNavbar from "./components/headers/HomeNavbar";
 import OtherNavbar from "./components/headers/OtherNavbar";
 import Footer from "./components/footer";
+import BackToTop from "./components/BackToTop";
 import HelpPage from "./screens/helpPage";
 import AboutPage from "./screens/aboutPage";
 import CheckoutPage from "./screens/checkoutPage";
@@ -116,6 +117,7 @@ function App() {
         </Route>
       </Switch>
       <Footer />
+      <BackToTop />
 
       <AuthenticationModal
         signupOpen={signupOpen}

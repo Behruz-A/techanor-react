@@ -21,3 +21,25 @@ export interface BlogPostInquiry {
   blogPostCategory?: BlogPostCategory;
   search?: string;
 }
+
+export interface BlogComment {
+  _id: string;
+  blogPostId: string;
+  parentId: string | null;
+  name: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface BlogCommentInput {
+  name: string;
+  email: string;
+  content: string;
+  website?: string;
+  parentId?: string;
+}
+
+export interface BlogCommentList {
+  list: BlogComment[];
+  total: number;
+}

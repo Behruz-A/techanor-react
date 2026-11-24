@@ -3,22 +3,22 @@ import { HomePageState } from "../../../lib/types/screen";
 import { Product } from "../../../lib/types/product";
 
 const initialState: HomePageState = {
-  trendingDeals: [],
-  latestCategoryProducts: [],
+  featuredProducts: [],
+  trendingProducts: [],
 };
 
 const homePageSlice = createSlice({
   name: "homePage",
   initialState,
   reducers: {
-    setTrendingDeals: (state, action: PayloadAction<Product[]>) => {
-      state.trendingDeals = action.payload;
+    setFeaturedProducts: (state, action: PayloadAction<Product[]>) => {
+      state.featuredProducts = action.payload;
     },
-    setLatestCategoryProducts: (state, action: PayloadAction<Product[]>) => {
-      state.latestCategoryProducts = action.payload;
+    setTrendingProducts: (state, action: PayloadAction<Product[]>) => {
+      state.trendingProducts = action.payload;
     },
   },
 });
 
-export const { setTrendingDeals, setLatestCategoryProducts } = homePageSlice.actions;
+export const { setFeaturedProducts, setTrendingProducts } = homePageSlice.actions;
 export default homePageSlice.reducer;
