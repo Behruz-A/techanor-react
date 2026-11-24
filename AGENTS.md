@@ -13,8 +13,13 @@ This repository is the customer-facing React application for Techanor.
 `burak` and `burak-react` are reference projects only. Never connect Techanor
 to the Burak backend, copy a Burak endpoint without checking Techanor, or edit a
 Burak repository while implementing Techanor work.
+CO
 
 ## Required workflow
+
+# CODE RULES
+
+1 read "path": "C:/developer/Software Projects/burak-react" and write a sam code structure and style with this project
 
 Before adding or changing a backend integration:
 
@@ -73,4 +78,3 @@ flow unless the project deliberately adopts async thunks or RTK Query later.
 - Redux state and selectors are correctly typed.
 - Images resolve from local public assets or the Techanor backend.
 - `npm.cmd run build` succeeds on Windows.
-

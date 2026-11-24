@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
+import { Box, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore, { Navigation, Scrollbar } from "swiper";
+import SwiperCore, { Navigation } from "swiper";
 import "swiper/css";
-import "swiper/css/scrollbar";
 
 import { BLOG_CATEGORY_LABELS } from "../../../constants/enums";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import BlogService from "../../services/BlogService";
-import { formatBlogDate, getBlogMediaUrl, getBlogReadTime } from "../blogPage/blogUtils";
+import { formatBlogDate, getBlogExcerpt, getBlogMediaUrl } from "../blogPage/blogUtils";
 import { retrieveBlogs } from "../blogPage/selector";
 import { setBlogs } from "../blogPage/slice";
 
-SwiperCore.use([Navigation, Scrollbar]);
+SwiperCore.use([Navigation]);
 
 const RECENT_BLOG_LIMIT = 5;
 
@@ -28,39 +29,122 @@ export default function Events() {
     let isCancelled = false;
     setIsLoading(true);
     setHasError(false);
-    new BlogService().getBlogs({ page: 1, limit: RECENT_BLOG_LIMIT })
-      .then((data) => { if (!isCancelled) dispatch(setBlogs(Array.isArray(data) ? data : [])); })
-      .catch(() => { if (!isCancelled) setHasError(true); })
-      .finally(() => { if (!isCancelled) setIsLoading(false); });
-    return () => { isCancelled = true; };
+
+    new BlogService()
+      .getBlogs({ page: 1, limit: RECENT_BLOG_LIMIT })
+      .then((data) => {
+        if (!isCancelled) dispatch(setBlogs(Array.isArray(data) ? data : []));
+      })
+      .catch(() => {
+        if (!isCancelled) setHasError(true);
+      })
+      .finally(() => {
+        if (!isCancelled) setIsLoading(false);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [dispatch]);
 
   const recentBlogs = blogs.slice(0, RECENT_BLOG_LIMIT);
 
   return (
     <section className="events-frame" aria-labelledby="stories-title">
-      <div className="events-main">
-        <header className="events-text">
-          <div><span>Tips and news</span><h2 id="stories-title">Recent News and Resources</h2></div>
-          <Link className="events-view-all" to="/blog">View all articles <ArrowForwardRoundedIcon /></Link>
-        </header>
+      <Stack className="events-main">
+        <Box component="header" className="events-text">
+          <h2 id="stories-title">Latest blog posts</h2>
+          <Box className="events-navigation" aria-label="Blog carousel controls">
+            <button
+              className="events-prev"
+              type="button"
+              aria-label="Previous blog posts"
+              disabled={recentBlogs.length === 0}
+              aria-controls="latest-blog-posts"
+            >
+              <ChevronLeftRoundedIcon />
+            </button>
+            <button
+              className="events-next"
+              type="button"
+              aria-label="Next blog posts"
+              disabled={recentBlogs.length === 0}
+              aria-controls="latest-blog-posts"
+            >
+              <ChevronRightRoundedIcon />
+            </button>
+          </Box>
+        </Box>
 
-        {isLoading && <div className="events-state" role="status">Loading the latest stories...</div>}
-        {!isLoading && hasError && recentBlogs.length === 0 && <div className="events-state">Recent stories are temporarily unavailable.</div>}
-        {!isLoading && !hasError && recentBlogs.length === 0 && <div className="events-state">New stories will appear here.</div>}
-        {recentBlogs.length > 0 && <>
-          <Swiper className="events-info" slidesPerView={1.08} spaceBetween={14} grabCursor navigation={{ prevEl: ".events-prev", nextEl: ".events-next" }} scrollbar={{ el: ".events-progress", draggable: true }} breakpoints={{ 600: { slidesPerView: 2.18, spaceBetween: 18 }, 980: { slidesPerView: 3.2, spaceBetween: 20 }, 1200: { slidesPerView: 3.2, spaceBetween: 22 } }}>
+        {isLoading && (
+          <div className="events-state" role="status">Loading the latest blog posts...</div>
+        )}
+        {!isLoading && hasError && recentBlogs.length === 0 && (
+          <div className="events-state" role="alert">
+            Recent blog posts are temporarily unavailable. Please try again later.
+          </div>
+        )}
+        {!isLoading && !hasError && recentBlogs.length === 0 && (
+          <div className="events-state">New blog posts will appear here.</div>
+        )}
+
+        {recentBlogs.length > 0 && (
+          <Swiper
+            id="latest-blog-posts"
+            className="events-info"
+            slidesPerView={1}
+            spaceBetween={24}
+            grabCursor
+            watchOverflow
+            navigation={{
+              prevEl: ".events-prev",
+              nextEl: ".events-next",
+            }}
+            breakpoints={{
+              640: { slidesPerView: 2, spaceBetween: 24 },
+              1024: { slidesPerView: 3, spaceBetween: 24 },
+            }}
+          >
             {recentBlogs.map((post) => {
               const image = getBlogMediaUrl(post.blogPostImage);
-              return <SwiperSlide key={post._id}><article className="story-card">
-                <Link className="story-card__image" to={`/blog/${post._id}`} aria-label={`Read ${post.blogPostTitle}`}>{image ? <img src={image} alt={post.blogPostTitle} loading="lazy"/> : <span className="blog-image-placeholder">Image unavailable</span>}</Link>
-                <div className="story-card__body"><span className="story-card__category">{BLOG_CATEGORY_LABELS[post.blogPostCategory]}</span><div className="story-card__meta"><time>{formatBlogDate(post.createdAt)}</time><span aria-hidden="true"/><small>{getBlogReadTime(post.blogPostContent)}</small></div><h3><Link to={`/blog/${post._id}`}>{post.blogPostTitle}</Link></h3><Link className="story-card__link" to={`/blog/${post._id}`}>Read article <ArrowForwardRoundedIcon/></Link></div>
-              </article></SwiperSlide>;
+              const articleUrl = `/blog/${post._id}`;
+
+              return (
+                <SwiperSlide key={post._id} className="events-info-frame">
+                  <Box component="article" className="events-article">
+                    <Link
+                      className="events-img"
+                      to={articleUrl}
+                      aria-label={`Read ${post.blogPostTitle}`}
+                    >
+                      {image ? (
+                        <img src={image} alt={post.blogPostTitle} loading="lazy" />
+                      ) : (
+                        <span className="events-image-placeholder">Image unavailable</span>
+                      )}
+                    </Link>
+                    <Stack className="events-desc">
+                      <Box className="events-meta">
+                        <span>{BLOG_CATEGORY_LABELS[post.blogPostCategory]}</span>
+                        <time dateTime={post.createdAt}>{formatBlogDate(post.createdAt)}</time>
+                      </Box>
+                      <h3><Link to={articleUrl}>{post.blogPostTitle}</Link></h3>
+                      <p className="events-excerpt">{getBlogExcerpt(post.blogPostContent)}</p>
+                      <Link className="events-read-more" to={articleUrl}>
+                        Read more
+                        <span className="events-read-more__icon" aria-hidden="true">
+                          <ChevronRightRoundedIcon className="events-read-more__chevron" />
+                          <AddRoundedIcon className="events-read-more__plus" />
+                        </span>
+                      </Link>
+                    </Stack>
+                  </Box>
+                </SwiperSlide>
+              );
             })}
           </Swiper>
-          <div className="events-controls"><div className="events-progress"/><div><button className="events-prev" type="button" aria-label="Previous stories"><ArrowBackRoundedIcon/></button><button className="events-next" type="button" aria-label="Next stories"><ArrowForwardRoundedIcon/></button></div></div>
-        </>}
-      </div>
+        )}
+      </Stack>
     </section>
   );
 }
